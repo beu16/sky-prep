@@ -21,6 +21,7 @@ import { PaymentFlowScreen } from './components/PaymentFlowScreen';
 import { AdminVerificationModal } from './components/AdminVerificationModal';
 import { VerifiedReadyCertificate } from './components/VerifiedReadyCertificate';
 import { SupabaseConfigModal } from './components/SupabaseConfigModal';
+import { ScreenProtectionGuard } from './components/ScreenProtectionGuard';
 
 export default function App() {
   const [user, setUser] = useState<UserProfile | null>(null);
@@ -113,9 +114,10 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F7F9FC] text-slate-900 flex flex-col font-sans selection:bg-blue-200">
-      
-      {/* Header Bar */}
+    <ScreenProtectionGuard user={user}>
+      <div className="min-h-screen bg-[#F7F9FC] text-slate-900 flex flex-col font-sans selection:bg-blue-200">
+        
+        {/* Header Bar */}
       <Header
         user={user}
         activeTab={activeTab}
@@ -291,6 +293,7 @@ export default function App() {
         />
       )}
 
-    </div>
+      </div>
+    </ScreenProtectionGuard>
   );
 }
