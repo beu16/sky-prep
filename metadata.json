@@ -1,0 +1,6 @@
+{
+  "name": "Sky Prep",
+  "description": "Professional airline exam and interview preparation app modeled on Ethiopian Airlines hiring process with practice exams, group discussion guides, interview prep, and Telebirr payment verification.",
+  "requestFramePermissions": ["microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
