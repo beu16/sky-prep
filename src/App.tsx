@@ -46,6 +46,9 @@ export default function App() {
     const existing = getStoredUserProfile();
     if (existing) {
       setUser(existing);
+      if (existing.selected_role) {
+        setSelectedRole(existing.selected_role);
+      }
       setScreen('main');
       const userAttempts = getStoredExamAttempts(existing.id);
       setAttempts(userAttempts);
@@ -61,6 +64,9 @@ export default function App() {
     const current = getStoredUserProfile();
     if (current) {
       setUser({ ...current });
+      if (current.selected_role) {
+        setSelectedRole(current.selected_role);
+      }
       const userAttempts = getStoredExamAttempts(current.id);
       setAttempts([...userAttempts]);
     }
@@ -68,28 +74,11 @@ export default function App() {
 
   const handleAuthenticated = (profile: UserProfile) => {
     setUser(profile);
+    if (profile.selected_role) {
+      setSelectedRole(profile.selected_role);
+    }
     setScreen('main');
     const userAttempts = getStoredExamAttempts(profile.id);
-    setAttempts(userAttempts);
-  };
-
-  const handleQuickDemo = () => {
-    let demo = getStoredUserProfile();
-    if (!demo) {
-      demo = {
-        id: 'demo_user_101',
-        phone_number: '+251 91 123 4567',
-        full_name: 'Yared Bekele',
-        is_paid: false,
-        paid_at: null,
-        free_exam_used: false,
-        created_at: new Date().toISOString(),
-      };
-      saveUserProfile(demo);
-    }
-    setUser(demo);
-    setScreen('main');
-    const userAttempts = getStoredExamAttempts(demo.id);
     setAttempts(userAttempts);
   };
 
@@ -118,27 +107,27 @@ export default function App() {
       <div className="min-h-screen bg-[#F7F9FC] text-slate-900 flex flex-col font-sans selection:bg-blue-200">
         
         {/* Header Bar */}
-      <Header
-        user={user}
-        activeTab={activeTab}
-        setActiveTab={(tab) => {
-          setActiveTab(tab);
-          setShowExamScreen(false);
-          setShowGDGuide(false);
-        }}
-        selectedRole={selectedRole}
-        setSelectedRole={setSelectedRole}
-        lang={lang}
-        setLang={setLang}
-        onOpenGD={() => {
-          setActiveTab('practice');
-          setShowGDGuide(true);
-        }}
-        onOpenPaywall={() => setShowPaywall(true)}
-        onOpenDbConfig={() => setShowDbConfig(true)}
-        onOpenAdmin={() => setShowAdmin(true)}
-        onLogout={handleLogout}
-      />
+        <Header
+          user={user}
+          activeTab={activeTab}
+          setActiveTab={(tab) => {
+            setActiveTab(tab);
+            setShowExamScreen(false);
+            setShowGDGuide(false);
+          }}
+          selectedRole={selectedRole}
+          setSelectedRole={setSelectedRole}
+          lang={lang}
+          setLang={setLang}
+          onOpenGD={() => {
+            setActiveTab('practice');
+            setShowGDGuide(true);
+          }}
+          onOpenPaywall={() => setShowPaywall(true)}
+          onOpenDbConfig={() => setShowDbConfig(true)}
+          onOpenAdmin={() => setShowAdmin(true)}
+          onLogout={handleLogout}
+        />
 
       {/* Main Content Area */}
       <main className="flex-1">
@@ -147,7 +136,6 @@ export default function App() {
             lang={lang}
             setLang={setLang}
             onStart={() => setScreen('auth')}
-            onQuickDemo={handleQuickDemo}
           />
         )}
 
@@ -265,7 +253,9 @@ export default function App() {
       {/* Modals & Overlays */}
       {showPaywall && (
         <PaywallModal
+          user={user}
           lang={lang}
+          onUserUpdated={(updated) => setUser(updated)}
           onProceedToPayment={() => {
             setShowPaywall(false);
             setScreen('payment');

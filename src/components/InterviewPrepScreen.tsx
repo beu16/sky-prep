@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { UserProfile, InterviewQuestion, AudioRecording, AviationRole, Language } from '../types';
 import { INTERVIEW_QUESTIONS } from '../data/interviewQuestions';
 import { getAudioRecordings, saveAudioRecording, deleteAudioRecording } from '../services/supabase';
-import { Mic, Lock, Play, Square, Trash2, Sparkles, Volume2, Shield, ChevronRight, CheckCircle2 } from 'lucide-react';
+import { Mic, Lock, Play, Square, Trash2, Sparkles, Volume2, Shield, ChevronRight, CheckCircle2, GraduationCap, Briefcase } from 'lucide-react';
 import { TRANSLATION } from '../data/translations';
 
 interface InterviewPrepScreenProps {
@@ -22,7 +22,6 @@ export const InterviewPrepScreen: React.FC<InterviewPrepScreenProps> = ({
   const isPaid = user.is_paid;
   const [internalTab, setInternalTab] = useState<'questions' | 'recordings'>('questions');
   const [activeCategory, setActiveCategory] = useState<string>('All');
-  const [expandedId, setExpandedId] = useState<string | null>(INTERVIEW_QUESTIONS[0].id);
   const [recordings, setRecordings] = useState<Record<string, AudioRecording>>({});
   
   // MediaRecorder state
@@ -32,6 +31,21 @@ export const InterviewPrepScreen: React.FC<InterviewPrepScreenProps> = ({
   const audioChunksRef = useRef<Blob[]>([]);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
+  const schoolName = user.training_school || user.department || 'CABIN CREW TRAINING SCHOOL';
+  const programName = user.training_program || user.field || 'INITIAL CABIN CREW (FLIGHT ATTENDANT)';
+
+  // Filter questions by user's training school
+  const schoolQuestions = INTERVIEW_QUESTIONS.filter(q => {
+    if (q.training_school && q.training_school !== schoolName) {
+      return false;
+    }
+    return true;
+  });
+
+  const finalQuestions = schoolQuestions.length > 0 ? schoolQuestions : INTERVIEW_QUESTIONS;
+
+  const [expandedId, setExpandedId] = useState<string | null>(finalQuestions[0]?.id || null);
+
   // Load recordings on mount
   useEffect(() => {
     const allRecs = getAudioRecordings();
@@ -40,17 +54,15 @@ export const InterviewPrepScreen: React.FC<InterviewPrepScreenProps> = ({
     setRecordings(map);
   }, []);
 
-  const categories = ['All', 'HR', 'Technical', 'Situational', 'Customer Service'];
+  const categories = ['All', 'HR & Behavioral', 'Technical & Aviation', 'Leadership & Scenarios', 'Customer Service'];
 
-  const filteredQuestions = INTERVIEW_QUESTIONS.filter((q) => {
-    let matchesCategory = true;
-    if (activeCategory === 'HR') matchesCategory = q.category === 'Behavioral & Scenario';
-    else if (activeCategory === 'Technical') matchesCategory = q.category === 'Aviation Knowledge';
-    else if (activeCategory === 'Situational') matchesCategory = q.category === 'Leadership & Pressure';
-    else if (activeCategory === 'Customer Service') matchesCategory = q.category === 'Customer Service';
-
-    const matchesRole = selectedRole === 'All' || !q.role || q.role === selectedRole;
-    return matchesCategory && matchesRole;
+  const filteredQuestions = finalQuestions.filter((q) => {
+    if (activeCategory === 'All') return true;
+    if (activeCategory === 'HR & Behavioral') return q.category === 'Behavioral & Scenario';
+    if (activeCategory === 'Technical & Aviation') return q.category === 'Aviation Knowledge';
+    if (activeCategory === 'Leadership & Scenarios') return q.category === 'Leadership & Pressure';
+    if (activeCategory === 'Customer Service') return q.category === 'Customer Service';
+    return true;
   });
 
   // --- AUDIO RECORDING HANDLERS ---
@@ -115,38 +127,44 @@ export const InterviewPrepScreen: React.FC<InterviewPrepScreenProps> = ({
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-6 space-y-6 pb-28">
+    <div className="max-w-4xl mx-auto px-4 py-6 space-y-6 pb-28 animate-fadeIn">
       
-      {/* Title Header with Real High-Quality Cabin Crew Aviation Banner */}
+      {/* Title Header with Real High-Quality Aviation Banner */}
       <div className="relative rounded-3xl p-6 text-white shadow-xl overflow-hidden border border-slate-800">
         <img
           src="/src/assets/images/cabin_crew_1786443078115.jpg"
-          alt="Aviation Cabin Crew"
+          alt="Aviation Assessment Panel"
           className="absolute inset-0 w-full h-full object-cover object-center"
         />
-        <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-[1px]" />
+        <div className="absolute inset-0 bg-slate-950/85 backdrop-blur-[1px]" />
 
-        <div className="relative z-10 flex items-center justify-between">
-          <div>
-            <div className="inline-flex items-center gap-1.5 bg-amber-500/20 text-amber-300 text-xs font-black px-3 py-1 rounded-full border border-amber-500/30 mb-2">
+        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="space-y-2">
+            <div className="inline-flex items-center gap-1.5 bg-amber-500/20 text-amber-300 text-xs font-black px-3 py-1 rounded-full border border-amber-500/30">
               <Sparkles className="w-3.5 h-3.5 fill-amber-300" />
-              <span>AIRLINE ASSESSMENT BOARD</span>
+              <span>AIRLINE INTERVIEW BOARD</span>
             </div>
-            <h1 className="text-2xl font-black text-white tracking-tight flex items-center gap-2">
-              <span>Aviation Interview Prep</span>
+            
+            <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+              {schoolName} Interviews
             </h1>
-            <p className="text-xs text-slate-200 font-medium mt-1 max-w-md leading-relaxed">
-              Master STAR model answer frameworks and practice voice recordings with real aviation panel questions.
+            
+            <p className="text-xs text-amber-300 font-bold">
+              Field of Study: {programName}
+            </p>
+            
+            <p className="text-xs text-slate-200 font-medium max-w-md leading-relaxed">
+              Master STAR framework answers (Situation, Task, Action, Result) with voice recording practice calibrated for {schoolName} screening.
             </p>
           </div>
 
           {!isPaid && (
             <button
               onClick={onOpenPaywall}
-              className="bg-[#F2B134] hover:bg-amber-400 text-[#0B2545] font-black text-xs px-3.5 py-2.5 rounded-xl gold-glow flex items-center gap-1.5 transition-all active:scale-95 shadow-lg shrink-0"
+              className="bg-[#F2B134] hover:bg-amber-400 text-[#0B2545] font-black text-xs px-4 py-2.5 rounded-xl gold-glow flex items-center gap-1.5 transition-all active:scale-95 shadow-lg shrink-0 self-start sm:self-auto"
             >
               <Sparkles className="w-3.5 h-3.5 fill-[#0B2545]" />
-              <span>Unlock All</span>
+              <span>Unlock All (99 ETB)</span>
             </button>
           )}
         </div>
@@ -162,7 +180,7 @@ export const InterviewPrepScreen: React.FC<InterviewPrepScreenProps> = ({
               : 'text-slate-600 hover:text-slate-900'
           }`}
         >
-          Questions
+          {schoolName.split(' ')[0]} Question Bank ({filteredQuestions.length})
         </button>
 
         <button
@@ -180,12 +198,12 @@ export const InterviewPrepScreen: React.FC<InterviewPrepScreenProps> = ({
           }`}
         >
           <Mic className="w-3.5 h-3.5 text-[#F2B134]" />
-          <span>Record & Review</span>
+          <span>My Audio Recordings</span>
           {!isPaid && <Lock className="w-3 h-3 text-amber-600" />}
         </button>
       </div>
 
-      {/* Category Pills */}
+      {/* Category Filter Pills */}
       {internalTab === 'questions' && (
         <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
           {categories.map((cat) => (
@@ -235,8 +253,11 @@ export const InterviewPrepScreen: React.FC<InterviewPrepScreenProps> = ({
                   }}
                   className="p-5 cursor-pointer flex items-center justify-between gap-4 select-none hover:bg-slate-50/80 transition-colors"
                 >
-                  <div className="space-y-1">
+                  <div className="space-y-1.5">
                     <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-black uppercase text-blue-900 bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-200">
+                        {q.training_school || schoolName}
+                      </span>
                       <span className="text-[10px] font-black uppercase text-slate-500 bg-slate-100 px-2.5 py-0.5 rounded-full border border-slate-200">
                         {q.category}
                       </span>
@@ -318,7 +339,7 @@ export const InterviewPrepScreen: React.FC<InterviewPrepScreenProps> = ({
                     {/* Key Phrases */}
                     <div className="space-y-1.5">
                       <span className="text-[10px] font-black uppercase tracking-wider text-slate-500">
-                        Key Power Phrases
+                        Key Evaluator Buzzwords
                       </span>
                       <div className="flex flex-wrap gap-1.5">
                         {q.keyPhrases.map((phrase, idx) => (
@@ -334,7 +355,7 @@ export const InterviewPrepScreen: React.FC<InterviewPrepScreenProps> = ({
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-black text-[#0B2545] flex items-center gap-1.5">
                           <Mic className="w-4 h-4 text-[#E4483E]" />
-                          <span>Voice Recording Practice (On-Device Private)</span>
+                          <span>Voice Recording Practice</span>
                         </span>
 
                         {rec && (
@@ -348,28 +369,28 @@ export const InterviewPrepScreen: React.FC<InterviewPrepScreenProps> = ({
                         {isRecordingThis ? (
                           <button
                             onClick={stopRecording}
-                            className="bg-[#E4483E] hover:bg-rose-700 text-white font-black text-xs px-4 py-2.5 rounded-xl flex items-center gap-2 animate-pulse min-h-[44px]"
+                            className="bg-rose-600 hover:bg-rose-700 text-white font-black text-xs px-4 py-2.5 rounded-xl flex items-center gap-2 animate-pulse shadow min-h-[44px]"
                           >
                             <Square className="w-4 h-4 fill-white" />
-                            <span>Stop Recording ({recordingSeconds}s)</span>
+                            <span>Stop ({recordingSeconds}s)</span>
                           </button>
                         ) : (
                           <button
                             onClick={() => startRecording(q.id)}
-                            className="bg-[#0B2545] hover:bg-[#2E86FF] text-white font-black text-xs px-4 py-2.5 rounded-xl flex items-center gap-2 active:scale-95 transition-all min-h-[44px]"
+                            className="bg-[#2E86FF] hover:bg-blue-600 text-white font-black text-xs px-4 py-2.5 rounded-xl flex items-center gap-2 shadow min-h-[44px] active:scale-95"
                           >
-                            <Mic className="w-4 h-4 text-[#F2B134]" />
-                            <span>{rec ? 'Re-record Answer' : 'Record Voice Answer'}</span>
+                            <Mic className="w-4 h-4" />
+                            <span>{rec ? 'Re-record Audio' : 'Record Answer'}</span>
                           </button>
                         )}
 
-                        {rec && !isRecordingThis && (
+                        {rec && (
                           <div className="flex items-center gap-2">
-                            <audio src={rec.audioUrl} controls className="h-9 max-w-[180px]" />
+                            <audio controls src={rec.audioUrl} className="h-9 max-w-[200px]" />
                             <button
                               onClick={() => handleDeleteRecording(q.id)}
-                              className="p-2 text-[#E4483E] hover:bg-rose-50 rounded-lg transition-colors"
-                              title="Delete voice recording"
+                              className="p-2 text-slate-400 hover:text-rose-500 rounded-lg hover:bg-slate-100"
+                              title="Delete Recording"
                             >
                               <Trash2 className="w-4 h-4" />
                             </button>
@@ -386,28 +407,42 @@ export const InterviewPrepScreen: React.FC<InterviewPrepScreenProps> = ({
         </div>
       )}
 
-      {/* Record & Review Tab Content */}
+      {/* Recordings Tab Content */}
       {internalTab === 'recordings' && (
         <div className="space-y-4">
-          <h2 className="text-sm font-black text-[#0B2545] uppercase tracking-wider">
-            Your Recorded Interview Answers ({Object.keys(recordings).length})
-          </h2>
+          <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-2">
+            <h3 className="text-sm font-black text-[#0B2545]">
+              My Saved Audio Practice Sessions
+            </h3>
+            <p className="text-xs text-slate-500">
+              Listen back to your speech pacing, clarity, and tone to build airline panel confidence.
+            </p>
+          </div>
 
           {Object.keys(recordings).length > 0 ? (
             <div className="space-y-3">
-              {(Object.values(recordings) as AudioRecording[]).map((rec: AudioRecording) => {
-                const question = INTERVIEW_QUESTIONS.find(q => q.id === rec.questionId);
-                return (
-                  <div key={rec.questionId} className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-3">
-                    <h4 className="text-xs font-black text-[#0B2545]">
-                      {question ? question.question : 'Interview Question'}
-                    </h4>
+              {Object.entries(recordings).map(([qId, rec]: [string, AudioRecording]) => {
+                const matchedQ = INTERVIEW_QUESTIONS.find(item => item.id === qId);
 
-                    <div className="flex items-center justify-between gap-3">
-                      <audio src={rec.audioUrl} controls className="h-9 flex-1" />
+                return (
+                  <div key={qId} className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="space-y-1">
+                      <span className="text-[10px] font-black uppercase text-[#2E86FF] bg-blue-50 px-2 py-0.5 rounded-md border border-blue-200">
+                        {matchedQ?.category || 'Question'}
+                      </span>
+                      <h4 className="text-xs font-black text-[#0B2545]">
+                        {matchedQ?.question || 'Interview Question'}
+                      </h4>
+                      <span className="text-[10px] text-slate-400 block">
+                        Duration: {rec.durationSeconds}s • {new Date(rec.recordedAt).toLocaleDateString()}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-2 self-end sm:self-center">
+                      <audio controls src={rec.audioUrl} className="h-9" />
                       <button
-                        onClick={() => handleDeleteRecording(rec.questionId)}
-                        className="p-2.5 text-[#E4483E] hover:bg-rose-50 rounded-xl transition-colors"
+                        onClick={() => handleDeleteRecording(qId)}
+                        className="p-2 text-slate-400 hover:text-rose-500 rounded-lg hover:bg-slate-100"
                         title="Delete recording"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -419,9 +454,11 @@ export const InterviewPrepScreen: React.FC<InterviewPrepScreenProps> = ({
             </div>
           ) : (
             <div className="bg-white rounded-2xl p-8 border border-slate-200 text-center space-y-2">
-              <Mic className="w-8 h-8 text-slate-300 mx-auto" />
-              <p className="text-xs font-bold text-slate-700">No recordings saved yet</p>
-              <p className="text-[11px] text-slate-400">Expand any interview question and record your voice answer to review your delivery.</p>
+              <div className="w-12 h-12 rounded-full bg-slate-100 text-slate-400 mx-auto flex items-center justify-center">
+                <Mic className="w-6 h-6" />
+              </div>
+              <p className="text-xs font-bold text-slate-700">No voice recordings saved yet</p>
+              <p className="text-[11px] text-slate-400">Expand any interview question and click "Record Answer" to practice your verbal delivery.</p>
             </div>
           )}
         </div>

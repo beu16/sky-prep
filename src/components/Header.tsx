@@ -216,7 +216,11 @@ export const Header: React.FC<HeaderProps> = ({
         setActiveTab={setActiveTab}
         onOpenGD={onOpenGD}
         onOpenPaywall={onOpenPaywall}
-        onOpenHelp={() => alert('Support desk: Contact @SkyPrepSupport on Telegram for assistance.')}
+        onOpenHelp={() => {
+          if (typeof window !== 'undefined') {
+            window.open('https://t.me/skywardsupports', '_blank', 'noopener,noreferrer');
+          }
+        }}
         onOpenAbout={() => alert('Sky Prep — Get hired-ready. Professional aviation career preparation suite.')}
         onLogout={onLogout}
         lang={lang}

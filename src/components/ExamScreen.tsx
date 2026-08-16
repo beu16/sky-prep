@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { UserProfile, ExamCategory, ExamQuestion, ExamAttempt, AviationRole, Language } from '../types';
 import { EXAM_QUESTIONS } from '../data/examQuestions';
 import { saveExamAttempt } from '../services/supabase';
-import { Clock, CheckCircle2, XCircle, ArrowRight, RotateCcw, AlertTriangle, Sparkles, BookOpen } from 'lucide-react';
+import { Clock, CheckCircle2, XCircle, ArrowRight, RotateCcw, AlertTriangle, Sparkles, BookOpen, GraduationCap, Briefcase } from 'lucide-react';
 import { TRANSLATION } from '../data/translations';
 
 interface ExamScreenProps {
@@ -34,6 +34,9 @@ export const ExamScreen: React.FC<ExamScreenProps> = ({
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
+  const schoolName = user.training_school || user.department || 'CABIN CREW TRAINING SCHOOL';
+  const programName = user.training_program || user.field || 'INITIAL CABIN CREW (FLIGHT ATTENDANT)';
+
   // Check if free user already used 1 free exam
   const cannotTakeExam = !user.is_paid && user.free_exam_used;
 
@@ -43,15 +46,25 @@ export const ExamScreen: React.FC<ExamScreenProps> = ({
       return;
     }
 
-    let filtered = EXAM_QUESTIONS;
+    // Filter questions first by user's training school if present
+    let filtered = EXAM_QUESTIONS.filter(q => {
+      if (q.training_school && q.training_school !== schoolName) {
+        return false;
+      }
+      return true;
+    });
+
     if (selectedCategory !== 'All') {
       filtered = filtered.filter(q => q.category === selectedCategory);
     }
-    if (selectedRole !== 'All') {
-      filtered = filtered.filter(q => !q.role || q.role === selectedRole);
-    }
-    if (filtered.length === 0) {
-      filtered = EXAM_QUESTIONS;
+
+    // If filter is too restrictive, fallback to all questions for that category
+    if (filtered.length < 5) {
+      if (selectedCategory !== 'All') {
+        filtered = EXAM_QUESTIONS.filter(q => q.category === selectedCategory);
+      } else {
+        filtered = EXAM_QUESTIONS;
+      }
     }
 
     // Prepare up to 20 questions
@@ -115,7 +128,7 @@ export const ExamScreen: React.FC<ExamScreenProps> = ({
       id: `attempt_${Date.now()}`,
       user_id: user.id,
       category: categoryToSave,
-      role: selectedRole as AviationRole,
+      role: (user.selected_role || selectedRole || 'Cabin Crew') as AviationRole,
       score,
       total_questions: questions.length,
       time_taken_seconds: duration,
@@ -136,11 +149,11 @@ export const ExamScreen: React.FC<ExamScreenProps> = ({
   // --- RENDER SETUP ---
   if (examState === 'setup') {
     return (
-      <div className="max-w-3xl mx-auto px-4 py-8 space-y-6 pb-24 md:pb-12">
+      <div className="max-w-3xl mx-auto px-4 py-8 space-y-6 pb-24 md:pb-12 animate-fadeIn">
         <div className="relative text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-slate-800 space-y-4 overflow-hidden">
           <img
             src="/src/assets/images/pilots_briefing_1786528412510.jpg"
-            alt="Airline Pilot Briefing"
+            alt="Airline Assessment Briefing"
             className="absolute inset-0 w-full h-full object-cover object-center"
           />
           <div className="absolute inset-0 bg-slate-950/85 backdrop-blur-[1px]" />
@@ -148,23 +161,28 @@ export const ExamScreen: React.FC<ExamScreenProps> = ({
           <div className="relative z-10 space-y-4">
             <div className="inline-flex items-center gap-1.5 bg-blue-500/30 text-blue-300 text-xs font-black px-3.5 py-1 rounded-full border border-blue-400/40 uppercase tracking-wider">
               <BookOpen className="w-3.5 h-3.5" />
-              <span>TIMED ASSESSMENT SIMULATOR</span>
+              <span>OFFICIAL AIRLINE EXAM SIMULATOR</span>
             </div>
 
-            <h1 className="text-2xl sm:text-3xl font-black text-white">
-              {t.writtenExams}
-            </h1>
+            <div className="space-y-1">
+              <h1 className="text-2xl sm:text-3xl font-black text-white">
+                {schoolName}
+              </h1>
+              <p className="text-amber-400 font-extrabold text-xs sm:text-sm">
+                Target Field: {programName}
+              </p>
+            </div>
 
             <p className="text-xs sm:text-sm text-slate-200 leading-relaxed font-medium">
               {lang === 'en'
-                ? '20 Multiple Choice Questions • 15 Minutes Time Limit • Real-time score & explanations upon completion.'
-                : '20 ጥያቄዎች • 15 ደቂቃ • የፈተና ውጤት እና ማብራሪያ።'}
+                ? '20 Multiple Choice Questions • 15 Minutes Time Limit • Department-calibrated scoring & explanations.'
+                : '20 ጥያቄዎች • 15 ደቂቃ • የፈተና ውጤት እና ዝርዝር ማብራሪያ።'}
             </p>
 
             <div className="pt-2 border-t border-slate-700/80 grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-slate-200">
               <div className="flex items-center gap-2">
                 <Clock className="w-4 h-4 text-amber-400" />
-                <span>15 Minutes Timer</span>
+                <span>15 Minutes Countdown Timer</span>
               </div>
               <div className="flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-emerald-400" />
@@ -177,12 +195,12 @@ export const ExamScreen: React.FC<ExamScreenProps> = ({
         {/* Category Filter */}
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
           <h2 className="text-sm font-black text-slate-900 uppercase tracking-wider">
-            {lang === 'en' ? 'Select Exam Category:' : 'የፈተና ዘርፍ ይምረጡ:'}
+            {lang === 'en' ? 'Select Question Focus Area:' : 'የፈተና ዘርፍ ይምረጡ:'}
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {[
-              { id: 'All', name: t.allRoles },
+              { id: 'All', name: `${schoolName} Comprehensive` },
               { id: 'English', name: t.englishProficiency },
               { id: 'Numerical Reasoning', name: t.numericalReasoning },
               { id: 'Verbal Reasoning', name: t.verbalReasoning },
@@ -197,8 +215,8 @@ export const ExamScreen: React.FC<ExamScreenProps> = ({
                     : 'bg-slate-50 text-slate-800 border-slate-200 hover:border-slate-300'
                 }`}
               >
-                <span>{cat.name}</span>
-                {selectedCategory === cat.id && <CheckCircle2 className="w-4 h-4 text-white" />}
+                <span className="truncate pr-2">{cat.name}</span>
+                {selectedCategory === cat.id && <CheckCircle2 className="w-4 h-4 text-white shrink-0" />}
               </button>
             ))}
           </div>
@@ -221,7 +239,7 @@ export const ExamScreen: React.FC<ExamScreenProps> = ({
                 onClick={handleStartExam}
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white font-black text-sm py-4 px-6 rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2 active:scale-95 min-h-[48px]"
               >
-                <span>{t.startExam}</span>
+                <span>Start {schoolName.split(' ')[0]} Exam</span>
                 <ArrowRight className="w-5 h-5" />
               </button>
             )}
@@ -230,7 +248,7 @@ export const ExamScreen: React.FC<ExamScreenProps> = ({
               onClick={onBackToHome}
               className="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs py-3 rounded-xl transition-all"
             >
-              {t.prevQuestion}
+              Return to Dashboard
             </button>
           </div>
         </div>
@@ -244,13 +262,13 @@ export const ExamScreen: React.FC<ExamScreenProps> = ({
     const isAnswered = userAnswers[currentIdx] !== undefined;
 
     return (
-      <div className="max-w-3xl mx-auto px-4 py-6 space-y-6 pb-24 md:pb-12">
+      <div className="max-w-3xl mx-auto px-4 py-6 space-y-6 pb-24 md:pb-12 animate-fadeIn">
         
         {/* Exam Header Status Bar */}
         <div className="bg-slate-900 text-white rounded-2xl p-4 shadow-lg border border-slate-800 flex items-center justify-between">
           <div>
             <span className="text-[10px] font-black uppercase text-amber-400 tracking-wider block">
-              {q.category} • {q.role || 'General'}
+              {q.training_school || schoolName} • {q.category}
             </span>
             <span className="text-xs font-extrabold text-white">
               {t.question} {currentIdx + 1} {t.of} {questions.length}
@@ -346,14 +364,14 @@ export const ExamScreen: React.FC<ExamScreenProps> = ({
   const isPassed = percentage >= 70;
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8 space-y-6 pb-24 md:pb-12">
+    <div className="max-w-3xl mx-auto px-4 py-8 space-y-6 pb-24 md:pb-12 animate-fadeIn">
       
       {/* Score Summary Box */}
       <div className={`rounded-3xl p-6 sm:p-8 text-white shadow-xl text-center space-y-4 ${
         isPassed ? 'bg-gradient-to-br from-emerald-900 via-slate-900 to-slate-900 border border-emerald-500/40' : 'bg-slate-900 border border-slate-800'
       }`}>
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-white/10 text-slate-200">
-          <span>{t.examResults}</span>
+          <span>{schoolName} Scorecard</span>
         </div>
 
         <h1 className="text-4xl sm:text-5xl font-black tracking-tight">
@@ -387,7 +405,7 @@ export const ExamScreen: React.FC<ExamScreenProps> = ({
       {/* Question Explanations List */}
       <div className="space-y-4">
         <h2 className="text-sm font-black text-slate-900 uppercase tracking-wider">
-          {t.explanation}
+          {t.explanation} & Solutions
         </h2>
 
         {questions.map((q, idx) => {

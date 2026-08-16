@@ -70,15 +70,7 @@ export const ScreenProtectionGuard: React.FC<ScreenProtectionGuardProps> = ({ ch
       }
     };
 
-    // 3. Obscure screen when window loses focus (e.g., snippet tool or screen recorder active)
-    const handleBlur = () => {
-      setIsObscured(true);
-    };
-
-    const handleFocus = () => {
-      setIsObscured(false);
-    };
-
+    // 3. Obscure screen when page is truly hidden (tab switch or backgrounded)
     const handleVisibilityChange = () => {
       if (document.hidden) {
         setIsObscured(true);
@@ -95,16 +87,12 @@ export const ScreenProtectionGuard: React.FC<ScreenProtectionGuardProps> = ({ ch
 
     window.addEventListener('contextmenu', handleContextMenu);
     window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('blur', handleBlur);
-    window.addEventListener('focus', handleFocus);
     document.addEventListener('visibilitychange', handleVisibilityChange);
     window.addEventListener('dragstart', handleDragStart);
 
     return () => {
       window.removeEventListener('contextmenu', handleContextMenu);
       window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('blur', handleBlur);
-      window.removeEventListener('focus', handleFocus);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('dragstart', handleDragStart);
     };

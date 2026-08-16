@@ -1,5 +1,5 @@
 import React from 'react';
-import { Shield, Plane, Users, Mic, Award, ArrowRight, CheckCircle, Globe, Zap } from 'lucide-react';
+import { Shield, Plane, Users, Mic, Award, ArrowRight, CheckCircle, Globe } from 'lucide-react';
 import { Language } from '../types';
 import { TRANSLATION } from '../data/translations';
 
@@ -7,10 +7,9 @@ interface WelcomeScreenProps {
   lang: Language;
   setLang: (lang: Language) => void;
   onStart: () => void;
-  onQuickDemo: () => void;
 }
 
-export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ lang, setLang, onStart, onQuickDemo }) => {
+export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ lang, setLang, onStart }) => {
   const t = TRANSLATION[lang];
 
   return (
@@ -120,22 +119,14 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ lang, setLang, onS
             </div>
           </div>
 
-          {/* Action Buttons */}
-          <div className="pt-2 flex flex-col sm:flex-row items-center gap-3">
+          {/* Action Button */}
+          <div className="pt-2">
             <button
               onClick={onStart}
-              className="flex-1 w-full bg-blue-600 hover:bg-blue-700 text-white font-black text-sm py-3.5 px-6 rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2 active:scale-95 min-h-[48px]"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-black text-sm py-4 px-6 rounded-2xl shadow-xl shadow-blue-500/20 transition-all flex items-center justify-center gap-2 active:scale-95 min-h-[50px]"
             >
               <span>{t.getStarted}</span>
               <ArrowRight className="w-5 h-5" />
-            </button>
-
-            <button
-              onClick={onQuickDemo}
-              className="flex-1 w-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-extrabold text-xs py-3.5 px-5 rounded-2xl border border-slate-200 hover:border-slate-300 transition-all flex items-center justify-center gap-1.5 active:scale-95 min-h-[48px]"
-            >
-              <Zap className="w-4 h-4 text-amber-500 fill-amber-500" />
-              <span>{t.quickDemo}</span>
             </button>
           </div>
         </div>

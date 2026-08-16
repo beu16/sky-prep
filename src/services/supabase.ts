@@ -88,18 +88,56 @@ export function saveUserProfile(profile: UserProfile): void {
       id: profile.id,
       phone_number: profile.phone_number,
       full_name: profile.full_name || null,
-      department: profile.department || null,
+      training_school: profile.training_school || profile.department || null,
+      training_program: profile.training_program || profile.field || null,
+      department: profile.department || profile.training_school || null,
+      field: profile.field || profile.training_program || null,
       stage: profile.stage || null,
       email: profile.email || null,
       selected_role: profile.selected_role || null,
       is_paid: profile.is_paid,
       paid_at: profile.paid_at,
+      interested_to_upgrade: profile.interested_to_upgrade || false,
+      upgrade_interest_at: profile.upgrade_interest_at || null,
       free_exam_used: profile.free_exam_used,
       created_at: profile.created_at,
     }).then(({ error }) => {
       if (error) console.log('Supabase profile sync note:', error.message);
     });
   }
+}
+
+export async function registerUpgradeInterest(user: UserProfile): Promise<{ success: boolean; user: UserProfile }> {
+  const timestamp = new Date().toISOString();
+  const updatedUser: UserProfile = {
+    ...user,
+    interested_to_upgrade: true,
+    upgrade_interest_at: timestamp,
+  };
+
+  // Save to local storage & sync profile
+  saveUserProfile(updatedUser);
+
+  // Also log into dedicated upgrade_interests table in Supabase
+  const sb = getSupabase();
+  if (sb) {
+    try {
+      await sb.from('upgrade_interests').insert({
+        id: `interest_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
+        user_id: user.id,
+        phone_number: user.phone_number,
+        full_name: user.full_name || 'Candidate',
+        training_school: user.training_school || user.department || 'CABIN CREW TRAINING SCHOOL',
+        training_program: user.training_program || user.field || 'CABIN CREW TRAINEE (ET-SPONSORED)',
+        status: 'interested_to_upgrade',
+        registered_at: timestamp,
+      });
+    } catch (e) {
+      console.log('Supabase upgrade_interests insert note:', e);
+    }
+  }
+
+  return { success: true, user: updatedUser };
 }
 
 export function getStoredExamAttempts(userId: string): ExamAttempt[] {
@@ -276,25 +314,47 @@ export const PART_3_SUPABASE_SQL = `-- Sky Prep Supabase Database Schema (Paste 
 
 -- 1. Profiles Table (with Candidate Registration details)
 create table if not exists public.profiles (
-  id uuid references auth.users(id) primary key,
+  id uuid default gen_random_uuid() primary key,
   phone_number text unique,
   full_name text,
+  training_school text,
+  training_program text,
   department text,
+  field text,
   stage text,
   email text,
   selected_role text,
   is_paid boolean default false,
   paid_at timestamptz,
+  interested_to_upgrade boolean default false,
+  upgrade_interest_at timestamptz,
   free_exam_used boolean default false,
   created_at timestamptz default now()
 );
 
 -- Ensure columns exist if table was created previously
 alter table public.profiles add column if not exists full_name text;
+alter table public.profiles add column if not exists training_school text;
+alter table public.profiles add column if not exists training_program text;
 alter table public.profiles add column if not exists department text;
+alter table public.profiles add column if not exists field text;
 alter table public.profiles add column if not exists stage text;
 alter table public.profiles add column if not exists email text;
 alter table public.profiles add column if not exists selected_role text;
+alter table public.profiles add column if not exists interested_to_upgrade boolean default false;
+alter table public.profiles add column if not exists upgrade_interest_at timestamptz;
+
+-- 2. Upgrade Interests Table
+create table if not exists public.upgrade_interests (
+  id text primary key,
+  user_id text not null,
+  phone_number text,
+  full_name text,
+  training_school text,
+  training_program text,
+  status text default 'interested_to_upgrade',
+  registered_at timestamptz default now()
+);
 
 -- 2. Payment Submissions Table
 create table if not exists public.payment_submissions (

@@ -1,9 +1,11 @@
 import { GroupDiscussionTopic } from '../types';
 
 export const GROUP_DISCUSSION_TOPICS: GroupDiscussionTopic[] = [
+  // --- CABIN CREW TRAINING SCHOOL ---
   {
     id: 'gd-1',
     role: 'Cabin Crew',
+    training_school: 'CABIN CREW TRAINING SCHOOL',
     title: 'Managing Overbooked Flights with High-Yield Passengers',
     amharicTitle: 'ሞልቶ በተያዘ (Overbooked) በረራ ላይ ተሳፋሪዎችን የማስተናገድ ዘዴ',
     scenario: 'Flight 302 is overbooked by 6 economy seats during peak season. A family of 4 and 2 business travelers need boarding. How does the crew prioritize resolution with maximum customer care?',
@@ -30,8 +32,40 @@ export const GROUP_DISCUSSION_TOPICS: GroupDiscussionTopic[] = [
     ]
   },
   {
+    id: 'gd-5',
+    role: 'Cabin Crew',
+    training_school: 'CABIN CREW TRAINING SCHOOL',
+    title: 'Is College Degree Essential vs Soft Skills & Empathy for Cabin Crew?',
+    amharicTitle: 'ለአየር መንገድ አስተናጋጅነት ዲግሪ ይፈለጋል ወይስ ተግባቦት እና ደግነት?',
+    scenario: 'Some recruitment panellists argue a university degree should be mandatory for all Cabin Crew hires, while others argue emotional intelligence, language fluency, and hospitality skills matter more. What is your group stance?',
+    amharicScenario: 'አንዳንዶች ለአስተናጋጅነት የዩኒቨርሲቲ ዲግሪ ግዴታ መሆን አለበት ሲሉ ሌሎች ደግሞ ስነ-ምግባር፣ የስሜት ብስለት እና የእንግሊዝኛ ቋንቋ ችሎታ ይበልጣል ይላሉ። ቡድናችሁ ምን ይወስናል?',
+    evaluatorCriteria: [
+      'Balanced perspective and logical arguments',
+      'Active listening and polite counter-arguments',
+      'Customer-first mindset'
+    ],
+    dos: [
+      'Acknowledge value of academic discipline while highlighting soft skills, language, and safety instincts',
+      'Propose a holistic assessment score balancing academic achievement with communication skills',
+      'Encourage all group participants to share their viewpoints'
+    ],
+    donts: [
+      'Do not dismiss degree holders or non-degree holders aggressively',
+      'Avoid interrupting others while they present their points',
+      'Do not get emotional or off-topic'
+    ],
+    starterPhrases: [
+      '"While a degree demonstrates academic discipline, cabin safety and customer empathy are equally critical in daily flight operations."',
+      '"I believe a balanced evaluation framework considering both educational foundation and interpersonal communication serves the airline best."',
+      '"What are your thoughts on combining language proficiency tests with behavioral scenario ratings?"'
+    ]
+  },
+
+  // --- PILOT TRAINING SCHOOL ---
+  {
     id: 'gd-2',
     role: 'Pilot / Cadet',
+    training_school: 'PILOT TRAINING SCHOOL',
     title: 'Adverse Weather vs Schedule Pressure Decision',
     amharicTitle: 'መጥፎ የአየር ሁኔታ እና የበረራ ሰዓት እጥረት ሲያጋጥም መወሰን',
     scenario: 'A severe squall line is approaching the departure airport. The flight deck receives pressure from ground ops to depart before storm closure. How should the team weigh safety vs delay costs?',
@@ -57,9 +91,12 @@ export const GROUP_DISCUSSION_TOPICS: GroupDiscussionTopic[] = [
       '"Should we consult ATC for updated convective weather movements before engine start?"'
     ]
   },
+
+  // --- AIRCRAFT MAINTENANCE TECHNICIAN TRAINING SCHOOL ---
   {
     id: 'gd-3',
     role: 'Aircraft Maintenance (AMT)',
+    training_school: 'AIRCRAFT MAINTENANCE TECHNICIAN TRAINING SCHOOL',
     title: 'Deferred Maintenance vs On-Time Flight Release',
     amharicTitle: 'የጥገና ጊዜ እና የጊዜ ጥበቃ ምርጫ',
     scenario: 'An auxiliary power unit (APU) generator shows intermittent readings 15 minutes before scheduled departure. Ground power is available at destination. How do technicians resolve this?',
@@ -85,9 +122,12 @@ export const GROUP_DISCUSSION_TOPICS: GroupDiscussionTopic[] = [
       '"Safety and airworthiness documentation must be 100% compliant before release."'
     ]
   },
+
+  // --- COMMERCIAL AND GROUND SERVICE TRAINING SCHOOL ---
   {
     id: 'gd-4',
     role: 'Ground Operations',
+    training_school: 'COMMERCIAL AND GROUND SERVICE TRAINING SCHOOL',
     title: 'Misplaced Priority Baggage during Rapid Connection',
     amharicTitle: 'የጠፋ የተሳፋሪ ሻንጣ በቶሎ ማግኘት እና ማስተናገድ',
     scenario: 'Thirty priority transfer bags missed their connecting flight due to late inbound arrival. Disembarking passengers are waiting at the carousel. How should ground teams handle the communication?',
@@ -114,36 +154,9 @@ export const GROUP_DISCUSSION_TOPICS: GroupDiscussionTopic[] = [
     ]
   },
   {
-    id: 'gd-5',
-    role: 'Cabin Crew',
-    title: 'Is College Degree Essential vs Soft Skills & Empathy for Cabin Crew?',
-    amharicTitle: 'ለአየር መንገድ አስተናጋጅነት ዲግሪ ይፈለጋል ወይስ ተግባቦት እና ደግነት?',
-    scenario: 'Some recruitment panellists argue a university degree should be mandatory for all Cabin Crew hires, while others argue emotional intelligence, language fluency, and hospitality skills matter more. What is your group stance?',
-    amharicScenario: 'አንዳንዶች ለአስተናጋጅነት የዩኒቨርሲቲ ዲግሪ ግዴታ መሆን አለበት ሲሉ ሌሎች ደግሞ ስነ-ምግባር፣ የስሜት ብስለት እና የእንግሊዝኛ ቋንቋ ችሎታ ይበልጣል ይላሉ። ቡድናችሁ ምን ይወስናል?',
-    evaluatorCriteria: [
-      'Balanced perspective and logical arguments',
-      'Active listening and polite counter-arguments',
-      'Customer-first mindset'
-    ],
-    dos: [
-      'Acknowledge value of academic discipline while highlighting soft skills, language, and safety instincts',
-      'Propose a holistic assessment score balancing academic achievement with communication skills',
-      'Encourage all group participants to share their viewpoints'
-    ],
-    donts: [
-      'Do not dismiss degree holders or non-degree holders aggressively',
-      'Avoid interrupting others while they present their points',
-      'Do not get emotional or off-topic'
-    ],
-    starterPhrases: [
-      '"While a degree demonstrates academic discipline, cabin safety and customer empathy are equally critical in daily flight operations."',
-      '"I believe a balanced evaluation framework considering both educational foundation and interpersonal communication serves the airline best."',
-      '"What are your thoughts on combining language proficiency tests with behavioral scenario ratings?"'
-    ]
-  },
-  {
     id: 'gd-6',
     role: 'Ground Operations',
+    training_school: 'COMMERCIAL AND GROUND SERVICE TRAINING SCHOOL',
     title: 'Technology & Automation vs Personal Human Touch in Passenger Check-in',
     amharicTitle: 'የቴክኖሎጂ (Kiosk/Online) እና የሰው ልጅ መስተንግዶ በኤርፖርት',
     scenario: 'Bole International Airport introduces 100% self-service check-in kiosks and automated bag drops. Some passengers feel alienated without human interaction. How should ground ops balance efficiency with hospitality?',

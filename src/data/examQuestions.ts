@@ -1,12 +1,85 @@
 import { ExamQuestion } from '../types';
 
 export const EXAM_QUESTIONS: ExamQuestion[] = [
-  // --- ENGLISH GRAMMAR & VOCABULARY (Cabin Crew & General) ---
+  // =========================================================================
+  // 1. CABIN CREW TRAINING SCHOOL
+  // Programs: Initial Cabin Crew, Senior Cabin Crew, VIP/Executive, Safety & Emergency
+  // =========================================================================
   {
-    id: 'eng-1',
+    id: 'cc-1',
     category: 'English',
     role: 'Cabin Crew',
-    question: 'Choose the sentence that demonstrates correct aviation terminology and grammar:',
+    training_school: 'CABIN CREW TRAINING SCHOOL',
+    question: 'During boarding, a passenger refuses to stow their heavy handbag under the seat or in the overhead bin. Which response demonstrates professional airline courtesy and authority?',
+    amharicQuestion: 'ተሳፋሪው ቦርሳውን ከመቀመጫው ስር ወይም ከላይ ሳጥን ውስጥ ለማስቀመጥ ፈቃደኛ ካልሆነ የትኛው አነጋገር ሙያዊ ጨዋነትን እና ህግን ያሳያል?',
+    options: [
+      '"For your safety and aviation regulations, all taxiways and aisle exits must remain clear in case of emergency. May I assist you in securing it?"',
+      '"You have to put it away right now or I will tell the captain to remove you from this flight."',
+      '"Just keep it on your lap until we take off and then put it down on the aisle floor."',
+      '"If you do not want to follow rules, airline travel is not suitable for you."'
+    ],
+    amharicOptions: [
+      '"ለደህንነትዎ እና ለአቪዬሽን ህግጋት ሲባል የመተላለፊያ መንገዶች ክፍት መሆን አለባቸው። እንዳስቀምጥልዎ ላግዝዎት?"',
+      '"አሁኑኑ ካላስቀመጡ ካፒቴኑ ከበረራው እንዲያወጣዎት አደርጋለሁ።"',
+      '"እስክንነሳ ድረስ እቅፍዎ ላይ ያድርጉትና ከዚያ ወለሉ ላይ ያስቀምጡት።"',
+      '"ህጉን መከተል ካልፈለጉ በረራ ለእርስዎ አይሆንም።"'
+    ],
+    correctIndex: 0,
+    explanation: 'Professional cabin crew combine regulatory safety compliance with polite, solution-oriented assistance and empathy.',
+    amharicExplanation: 'ሙያዊ የበረራ አስተናጋጆች የደህንነት ህግጋትን በአክብሮት እና ተሳፋሪን በመርዳት መንፈስ ያስፈጽማሉ።'
+  },
+  {
+    id: 'cc-2',
+    category: 'Aviation Safety & Regulations',
+    role: 'Cabin Crew',
+    training_school: 'CABIN CREW TRAINING SCHOOL',
+    question: 'What is the maximum target time allotted for a full emergency evacuation of a commercial transport aircraft in accordance with ICAO / FAA standards?',
+    amharicQuestion: 'በዓለም አቀፍ የአቪዬሽን ህግ (ICAO/FAA) መሰረት የአደጋ ጊዜ የተሳፋሪዎች ሙሉ ማውጣት (Evacuation) በስንት ሰከንድ ውስጥ መጠናቀቅ አለበት?',
+    options: [
+      '90 seconds with 50% of exits available',
+      '180 seconds with all doors open',
+      '60 seconds under full runway lighting',
+      '120 seconds using all slide rafts'
+    ],
+    amharicOptions: [
+      'በ 90 ሰከንድ ውስጥ (50% የሚሆኑት በሮች ብቻ ቢሰሩ እንኳን)',
+      'በ 180 ሰከንድ ውስጥ (ሁሉም በሮች ክፍት ሆነው)',
+      'በ 60 ሰከንድ ውስጥ (ሙሉ የመብራት አቅርቦት እያለ)',
+      'በ 120 ሰከንድ ውስጥ'
+    ],
+    correctIndex: 0,
+    explanation: 'Standard certification requires a full commercial aircraft evacuation within 90 seconds using only half the emergency exits.',
+    amharicExplanation: 'ዓለም አቀፍ የአቪዬሽን ማረጋገጫ መስፈርት ግማሹ የአደጋ ጊዜ በሮች ብቻ ቢሰሩ እንኳን በ90 ሰከንድ ውስጥ ተሳፋሪዎችን ማስወጣትን ይጠይቃል።'
+  },
+  {
+    id: 'cc-3',
+    category: 'Aviation Safety & Regulations',
+    role: 'Cabin Crew',
+    training_school: 'CABIN CREW TRAINING SCHOOL',
+    question: 'In the event of sudden cabin depressurization at 35,000 feet, what is the immediate first action of a cabin crew member?',
+    amharicQuestion: 'በ 35,000 ጫማ ከፍታ ላይ ድንገተኛ የካቢን አየር ግፊት መቀነስ (Depressurization) ቢያጋጥም የበረራ አስተናጋጅ የመጀመሪያው አስቸኳይ እርምጃ ምንድነው?',
+    options: [
+      'Immediately don the nearest oxygen mask and secure yourself before assisting others',
+      'Rush through the cabin shouting instructions to all passengers',
+      'Call the flight deck on the interphone to ask what happened',
+      'Begin serving water to passengers experiencing hypoxia'
+    ],
+    amharicOptions: [
+      'ወዲያውኑ በአቅራቢያ የሚገኘውን የኦክስጅን ማስክ በማድረግ እራስን ማዳንና ማስጠበቅ',
+      'ወደ ካቢኑ በመሮጥ ለተሳፋሪዎች መመሪያዎችን መጮህ',
+      'ወደ አብራሪው በመደወል ምን እንደተፈጠረ መጠየቅ',
+      'የመተንፈስ ችግር ላጋጠማቸው ውሃ ማደል መጀመር'
+    ],
+    correctIndex: 0,
+    explanation: 'Time of Useful Consciousness (TUC) at 35,000 ft is only 30-60 seconds. Crew must secure their own oxygen mask first to avoid losing consciousness.',
+    amharicExplanation: 'በከፍተኛ ከፍታ ላይ ያለ ኦክስጅን ሰው በ30-60 ሰከንድ ውስጥ ራሱን ስለሚስት፤ አስተናጋጁ በመጀመሪያ የራሱን ማስክ ማድረግ አለበት።'
+  },
+  {
+    id: 'cc-4',
+    category: 'English',
+    role: 'Cabin Crew',
+    training_school: 'CABIN CREW TRAINING SCHOOL',
+    question: 'Select the sentence that demonstrates correct aviation terminology and grammar:',
     amharicQuestion: 'ትክክለኛውን የአቪዬሽን ቋንቋ አጠቃቀም እና ሰዋሰው የያዘውን ዓረፍተ ነገር ይምረጡ፡',
     options: [
       'The flight crew was forced to divert due to adverse weather conditions.',
@@ -25,288 +98,33 @@ export const EXAM_QUESTIONS: ExamQuestion[] = [
     amharicExplanation: 'በአቪዬሽን "divert" ማለት በድንገተኛ አየር ሁኔታ ወይም በቴክኒክ ምክንያት የአውሮፕላኑን የማረፊያ አቅጣጫ መቀየር ማለት ነው።'
   },
   {
-    id: 'eng-2',
-    category: 'English',
-    role: 'Ground Operations',
-    question: 'Select the synonym for the word "Punctual" as expected in airline operations:',
-    amharicQuestion: 'በአየር መንገድ ስራዎች ውስጥ "Punctual" ለሚለው ቃል ተመሳሳይ ትርጉም ያለው የትኛው ነው?',
-    options: [
-      'Flexible',
-      'Prompt / On-time',
-      'Precarious',
-      'Hesitant'
-    ],
-    correctIndex: 1,
-    explanation: '"Punctual" means arriving or happening at the arranged time. In airlines, punctual operations are critical to maintain flight schedules.',
-    amharicExplanation: '"Punctual" ማለት በሰዓቱ የሚገኝ ወይም በታቀደው ሰዓት ስራውን የሚያከናውን ማለት ነው።'
-  },
-  {
-    id: 'eng-3',
-    category: 'English',
+    id: 'cc-5',
+    category: 'Customer & Flight Operations',
     role: 'Cabin Crew',
-    question: 'Fill in the blank: "All cabin crew members must __________ strict safety standards during emergency procedures."',
-    amharicQuestion: 'ባዶ ቦታውን ይሙሉ: "All cabin crew members must __________ strict safety standards during emergency procedures."',
+    training_school: 'CABIN CREW TRAINING SCHOOL',
+    question: 'A passenger in seat 14B exhibits symptoms of severe choking and cannot cough or speak. What emergency first-aid protocol should you apply?',
+    amharicQuestion: 'በመቀመጫ 14B ላይ ያለ ተሳፋሪ ምግብ ታንቆ መናገር እና ማሳል ቢያቅተው ምን አይነት የመጀመሪያ ህክምና እርዳታ ይሰጣል?',
     options: [
-      'adhere to',
-      'comply withing',
-      'abide on',
-      'follow into'
+      'Deliver up to 5 back blows followed by 5 abdominal thrusts (Heimlich maneuver)',
+      'Give the passenger a glass of hot water to wash down the blockage',
+      'Have the passenger lie down flat and perform chest compressions immediately',
+      'Administer supplemental oxygen at 4 liters per minute'
+    ],
+    amharicOptions: [
+      '5 የጀርባ ምቶች በመስጠት እና የሆድ እምብርት ግፊት (Heimlich maneuver) በማድረግ የታነቀውን ማስወጣት',
+      'የታነቀውን እንዲያወርድ የሞቀ ውሃ መስጠት',
+      'ተኛ አድርጎ የደረት ግፊት (CPR) መጀመር',
+      'ኦክስጅን በ 4 ሊትር በደቂቃ መስጠት'
     ],
     correctIndex: 0,
-    explanation: 'The idiom "adhere to" means to follow or conform strictly to rules or guidelines.',
-    amharicExplanation: '"adhere to" ማለት ህጎችን እና መመሪያዎችን በጥብቅ መከተል ማለት ነው።'
+    explanation: 'For conscious choking victims with severe airway obstruction, alternating 5 firm back blows with 5 abdominal thrusts is standard protocol.',
+    amharicExplanation: 'ሰው ሳያውቅ ሳይስት ምግብ ሲያንቀው 5 የጀርባ ምት እና 5 የሆድ መጫን (Heimlich) ዘዴ መጠቀም አለም አቀፍ ህግ ነው።'
   },
   {
-    id: 'eng-4',
-    category: 'English',
-    role: 'Pilot / Cadet',
-    question: 'Identify the antonym of "Turbulent":',
-    amharicQuestion: 'የ "Turbulent" (የተናወጠ/የታወከ) ተቃራኒ ቃል የትኛው ነው?',
-    options: [
-      'Agitated',
-      'Tranquil / Calm',
-      'Chaotic',
-      'Rigid'
-    ],
-    correctIndex: 1,
-    explanation: '"Turbulent" describes rough, unstable conditions. "Tranquil" or "Calm" represents smooth, undisturbed conditions.',
-    amharicExplanation: '"Tranquil / Calm" ማለት ፀጥ ያለ እና የተረጋጋ የአየር ሁኔታ ማለት ነው።'
-  },
-  {
-    id: 'eng-5',
-    category: 'English',
-    role: 'Aircraft Maintenance (AMT)',
-    question: 'Which word correctly completes the maintenance log entry: "The maintenance engineer inspected the hydraulic lines and found no __________ leaks."',
-    amharicQuestion: 'የትኛው ቃል ዓረፍተ ነገሩን ያጠናቅቃል፡ "The maintenance engineer inspected the hydraulic lines and found no __________ leaks."',
-    options: [
-      'perceptible',
-      'percepting',
-      'perceptual',
-      'perceptively'
-    ],
-    correctIndex: 0,
-    explanation: '"Perceptible" is an adjective meaning noticeable or able to be seen/detected.',
-    amharicExplanation: '"Perceptible" ማለት በግልፅ የሚታይ ወይም የሚታወቅ ማለት ነው።'
-  },
-
-  // --- NUMERICAL REASONING (Pilots, AMT & Ops) ---
-  {
-    id: 'num-1',
-    category: 'Numerical Reasoning',
-    role: 'Pilot / Cadet',
-    question: 'A Boeing 787 Dreamliner burns approximately 5,400 kg of fuel per hour in cruise flight. How much fuel is burned during a 6.5-hour international flight?',
-    amharicQuestion: 'አንድ ቦይንግ 787 አውሮፕላን በሰአት 5,400 ኪ.ግ ነዳጅ ይጠቀማል። ለ 6.5 ሰአት በረራ ምን ያህል ነዳጅ ያስፈልጋል?',
-    options: [
-      '32,100 kg',
-      '35,100 kg',
-      '37,400 kg',
-      '34,800 kg'
-    ],
-    correctIndex: 1,
-    explanation: '5,400 kg/hr × 6.5 hrs = 35,100 kg.',
-    amharicExplanation: '5,400 ኪ.ግ × 6.5 ሰአት = 35,100 ኪ.ግ ነዳጅ።'
-  },
-  {
-    id: 'num-2',
-    category: 'Numerical Reasoning',
-    role: 'Ground Operations',
-    question: 'An aircraft departs the capital hub airport at 08:45 AM local time on a 4-hour flight. If the destination is 2 hours ahead in time zone, what local time does it land?',
-    amharicQuestion: 'አንድ አውሮፕላን ጠዋት 08:45 ላይ ተነስቶ ለ4 ሰአት ይበራል። ማረፊያው ከነበረበት ቦታ በ2 ሰአት የሚቀድም ከሆነ በቦታው ስንት ሰአት ይደርሳል?',
-    options: [
-      '12:45 PM',
-      '01:45 PM',
-      '02:45 PM',
-      '03:45 PM'
-    ],
-    correctIndex: 2,
-    explanation: 'Departure 08:45 + 4 hours duration = 12:45 PM (origin time). Adding 2 hours time zone shift = 02:45 PM destination local time.',
-    amharicExplanation: '08:45 + 4 ሰአት የበረራ ጊዜ = 12:45 ከሰአት። የ2 ሰአት የሰአት ቀጣና ልዩነት ሲደመርበት = 02:45 PM ይደርሳል።'
-  },
-  {
-    id: 'num-3',
-    category: 'Numerical Reasoning',
-    role: 'Aircraft Maintenance (AMT)',
-    question: 'An aircraft landing gear component requires torque specification of 150 Nm. If a wrench calibration is off by +8%, what torque reading should be applied on the torque tool?',
-    amharicQuestion: 'የአውሮፕላን እግር ብሎን 150 Nm ቶርክ ይፈልጋል። የቶርክ መለኪያው በ +8% የሚበልጥ ከሆነ በመሳሪያው ላይ ስንት መነበብ አለበት?',
-    options: [
-      '138.9 Nm',
-      '162.0 Nm',
-      '142.0 Nm',
-      '158.0 Nm'
-    ],
-    correctIndex: 1,
-    explanation: '150 Nm × 1.08 = 162.0 Nm.',
-    amharicExplanation: '150 × 1.08 = 162.0 Nm.'
-  },
-  {
-    id: 'num-4',
-    category: 'Numerical Reasoning',
-    role: 'Cabin Crew',
-    question: 'A flight carries 240 passengers. If 15% requested vegetarian meals, 25% requested chicken, and the remaining selected beef, how many passengers chose beef?',
-    amharicQuestion: 'በአንድ በረራ ላይ 240 ተሳፋሪዎች አሉ። 15% የቪጂቴሪያን፣ 25% የዶሮ ምግብ ቢመርጡ፤ ቀሪዎቹ የበሬ ምግብ የመረጡት ስንት ተሳፋሪዎች ናቸው?',
-    options: [
-      '120 passengers',
-      '144 passengers',
-      '96 passengers',
-      '108 passengers'
-    ],
-    correctIndex: 1,
-    explanation: 'Vegetarian (15%) + Chicken (25%) = 40%. Remaining for beef = 60%. 240 × 0.60 = 144 passengers.',
-    amharicExplanation: '40% ሌላ ከመረጡ ቀሪው 60% ነው። 240 × 0.60 = 144 ተሳፋሪዎች።'
-  },
-
-  // --- VERBAL REASONING ---
-  {
-    id: 'verb-1',
-    category: 'Verbal Reasoning',
-    role: 'Cabin Crew',
-    question: 'Read the statement: "In the event of cabin depressurization, flight attendants must immediately secure their own oxygen masks before assisting passengers." What logical inference is guaranteed?',
-    amharicQuestion: 'ምን ይረዳል: "የአየር ግፊት በካቢን ውስጥ ቢቀንስ አስተናጋጆች ለሌሎች ከመስጠታቸው በፊት የራሳቸውን የኦክስጅን ማስክ ማድረግ አለባቸው።"',
-    options: [
-      'Passengers are incapable of putting on their own oxygen masks.',
-      'Flight attendants cannot safely assist others if they become incapacitated by hypoxia.',
-      'Oxygen masks operate automatically only for crew members.',
-      'Depressurization only occurs during high altitude cruising flight.'
-    ],
-    correctIndex: 1,
-    explanation: 'Securing one\'s own mask first ensures the crew member remains conscious to help others effectively.',
-    amharicExplanation: 'አስተናጋጁ መጀመሪያ ማስክ የማያደርግ ከሆነ ራሱን ስቶ ሌሎችን መረዳት አይችልም።'
-  },
-  {
-    id: 'verb-2',
-    category: 'Verbal Reasoning',
-    role: 'Pilot / Cadet',
-    question: 'If all commercial pilots must undergo bi-annual simulator checkrides, and Captain Samuel completed a checkride 4 months ago, which statement MUST be true?',
-    amharicQuestion: 'ሁሉም የንግድ አውሮፕላን አብራሪዎች በየ6 ወሩ በሲሙሌተር መፈተን ካለባቸው እና ካፒቴን ሳሙኤል ከ4 ወር በፊት ከተፈተነ የትኛው እውነት ነው?',
-    options: [
-      'Captain Samuel is due for another checkride in 2 months.',
-      'Captain Samuel does not need to fly for the next 2 months.',
-      'Captain Samuel has failed his previous simulator checkride.',
-      'Captain Samuel is exempt from annual medical exams.'
-    ],
-    correctIndex: 0,
-    explanation: 'Bi-annual checkride means every 6 months. Having completed one 4 months ago leaves 2 months until the next checkride.',
-    amharicExplanation: 'በየ6 ወሩ ከሆነ እና 4 ወር ካለፈው የሚቀረው 2 ወር ብቻ ነው።'
-  },
-  {
-    id: 'verb-3',
-    category: 'Verbal Reasoning',
-    role: 'Aircraft Maintenance (AMT)',
-    question: 'Statement: "No maintenance release can be issued unless all Deferred Maintenance Items (DMI) comply with the Minimum Equipment List (MEL)." Which conclusion follows strictly?',
-    amharicQuestion: 'የትኛው መደምደሚያ ትክክል ነው: "ሁሉም የዘገዩ የጥገና ክፍሎች ከMEL ህግ ጋር ካልተስማሙ በስተቀር አውሮፕላኑ ለበረራ አይለቀቅም።"',
-    options: [
-      'An aircraft with unaddressed MEL non-compliant items cannot receive a maintenance release.',
-      'All maintenance items can be deferred indefinitely.',
-      'The MEL is determined solely by the lead line technician.',
-      'Maintenance releases are only required for international long-haul flights.'
-    ],
-    correctIndex: 0,
-    explanation: 'If MEL compliance is a strict condition for release, any non-compliance blocks the release.',
-    amharicExplanation: 'ከMEL ህግ ውጭ የሆነ ብልሽት ካለ አውሮፕላኑ መብረር አይችልም።'
-  },
-
-  // --- AVIATION KNOWLEDGE (Pilot, AMT, Cabin Crew & Ground) ---
-  {
-    id: 'gen-1',
-    category: 'General Knowledge',
-    role: 'Pilot / Cadet',
-    question: 'What does the standard aviation acronym "ICAO" stand for?',
-    amharicQuestion: 'የአቪዬሽን ምህፃረ ቃል "ICAO" ሙሉ ትርጉም ምንድን ነው?',
-    options: [
-      'International Civil Aviation Organization',
-      'International Commercial Aircraft Operation',
-      'Intercontinental Cabin Air Officer',
-      'Integrated Control Aviation Overview'
-    ],
-    correctIndex: 0,
-    explanation: 'ICAO stands for International Civil Aviation Organization, the UN specialized agency for global aviation safety and standards.',
-    amharicExplanation: 'ICAO ማለት International Civil Aviation Organization (ዓለም አቀፍ የሲቪል አቪዬሽን ድርጅት) ማለት ነው።'
-  },
-  {
-    id: 'gen-2',
+    id: 'cc-6',
     category: 'General Knowledge',
     role: 'Cabin Crew',
-    question: 'Which piece of emergency equipment on commercial aircraft is designed specifically to assist passengers in smoke-filled cabin evacuations?',
-    amharicQuestion: 'በጢስ የተሞላ አየር ለመተንፈስ እና ከካቢን ለማመልጥ የሚረዳው የደህንነት መሳሪያ የትኛው ነው?',
-    options: [
-      'Protective Breathing Equipment (PBE / Smoke Hood)',
-      'Crash Axe',
-      'Megaphone',
-      'ELT Emergency Locator Transmitter'
-    ],
-    correctIndex: 0,
-    explanation: 'PBE (Protective Breathing Equipment) or Smoke Hood provides breathable oxygen to crew members while operating in smoke or toxic fumes.',
-    amharicExplanation: 'PBE (Protective Breathing Equipment) አስተናጋጆች በጢስ ውስጥ ኦክስጅን አግኝተው ስራቸውን እንዲሰሩ ይረዳል።'
-  },
-  {
-    id: 'gen-3',
-    category: 'General Knowledge',
-    role: 'Aircraft Maintenance (AMT)',
-    question: 'In jet engine operation, what is the primary function of the turbine section located downstream of the combustion chamber?',
-    amharicQuestion: 'በጄት ሞተር ውስጥ ከኮምበስሽን ቻምበር በኋላ ያለው የተርባይን (Turbine) ዋነኛ ተግባር ምንድነው?',
-    options: [
-      'To extract energy from hot expanding gases to drive the compressor and fan shafts',
-      'To compress incoming cold atmospheric air before ignition',
-      'To store reserve hydraulic fluid for thrust reversers',
-      'To filter fuel contamination before injection'
-    ],
-    correctIndex: 0,
-    explanation: 'The turbine extracts thermal and kinetic energy from high-velocity combustion gases to drive the compressor, fan, and engine accessories.',
-    amharicExplanation: 'ተርባይን ከተቃጠለው ሙቅ አየር ጉልበት በመውሰድ ኮምፕረሰሩን እና ፋኑን ያሸከረክራል።'
-  },
-  {
-    id: 'gen-4',
-    category: 'General Knowledge',
-    role: 'Ground Operations',
-    question: 'What is the standard IATA code for Dangerous Goods Regulations governing air cargo transport?',
-    amharicQuestion: 'አደገኛ ቁሳቁሶችን በአየር ለመጓጓዝ የሚያገለግለው የIATA መመሪያ ምንድን ነው?',
-    options: [
-      'DGR (Dangerous Goods Regulations)',
-      'NOTAM (Notice to Airmen)',
-      'METAR (Meteorological Aerodrome Report)',
-      'ATC (Air Traffic Control)'
-    ],
-    correctIndex: 0,
-    explanation: 'IATA DGR (Dangerous Goods Regulations) is the global standard for shipping hazardous materials safely by air.',
-    amharicExplanation: 'DGR ማለት አደገኛ ቁሳቁሶችን በአውሮፕላን በጥንቃቄ የማጓጓዣ መመሪያ ነው።'
-  },
-  {
-    id: 'gen-5',
-    category: 'General Knowledge',
-    role: 'Pilot / Cadet',
-    question: 'What weather phenomenon causes a sudden, violent shift in wind speed and direction, posing critical hazard during takeoff and landing approaches?',
-    amharicQuestion: 'በማረፍ እና በመነሳት ወቅት ለአውሮፕላን በጣም አደገኛ የሆነው የንፋስ አቅጣጫ እና ፍጥነት ድንገተኛ መቀያየር ምንድን ነው?',
-    options: [
-      'Microburst / Wind Shear',
-      'Cirrus Cloud Formation',
-      'Thermal Inversion',
-      'Trade Wind Drift'
-    ],
-    correctIndex: 0,
-    explanation: 'Microbursts and low-level wind shear cause rapid loss of airspeed and lift, making them extremely dangerous during low-altitude maneuvers.',
-    amharicExplanation: 'Wind Shear / Microburst ድንገተኛ የንፋስ ሀይል እና አቅጣጫ መቀየር በመፍጠር አውሮፕላኑን ለአደጋ ይዳርጋል።'
-  },
-  // --- ETHIOPIAN AIRLINES SPECIFIC RECRUITMENT QUESTIONS ---
-  {
-    id: 'et-1',
-    category: 'General Knowledge',
-    role: 'Cabin Crew',
-    question: 'What is the main hub airport and IATA 3-letter code for Ethiopian Airlines?',
-    amharicQuestion: 'የኢትዮጵያ አየር መንገድ ዋና መነሻ ማዕከል (Hub) ኤርፖርት እና የ IATA ኮድ የትኛው ነው?',
-    options: [
-      'Addis Ababa Bole International Airport (ADD)',
-      'Nairobi Jomo Kenyatta Airport (NBO)',
-      'Cairo International Airport (CAI)',
-      'Johannesburg OR Tambo Airport (JNB)'
-    ],
-    correctIndex: 0,
-    explanation: 'Addis Ababa Bole International Airport (IATA: ADD) is the primary hub of Ethiopian Airlines, connecting over 130 international destinations.',
-    amharicExplanation: 'የኢትዮጵያ አየር መንገድ ዋና ማዕከል አዲስ አበባ ቦሌ ዓለም አቀፍ ኤርፖርት (ADD) ነው።'
-  },
-  {
-    id: 'et-2',
-    category: 'General Knowledge',
-    role: 'Cabin Crew',
+    training_school: 'CABIN CREW TRAINING SCHOOL',
     question: 'Which global airline alliance did Ethiopian Airlines officially join in December 2011?',
     amharicQuestion: 'የኢትዮጵያ አየር መንገድ በዲሴምበር 2011 የትኛውን ዓለም አቀፍ የአየር መንገድ ጥረት (Alliance) ተቀላቀለ?',
     options: [
@@ -319,10 +137,318 @@ export const EXAM_QUESTIONS: ExamQuestion[] = [
     explanation: 'Ethiopian Airlines officially became the 28th member of Star Alliance in December 2011.',
     amharicExplanation: 'የኢትዮጵያ አየር መንገድ በ2011 እ.ኤ.አ የስታር አሊያንስ (Star Alliance) አባል ሆኗል።'
   },
+
+  // =========================================================================
+  // 2. PILOT TRAINING SCHOOL
+  // Programs: Commercial Pilot (CPL/Cadet), Multi-Engine & Instrument, ATP, Basic Ground
+  // =========================================================================
   {
-    id: 'et-3',
+    id: 'plt-1',
+    category: 'Technical Aptitude',
+    role: 'Pilot / Cadet',
+    training_school: 'PILOT TRAINING SCHOOL',
+    question: 'According to Bernoulli’s Principle and aerofoil design, how is aerodynamic lift generated on an aircraft wing?',
+    amharicQuestion: 'በበርኑሊ መርህ (Bernoulli’s Principle) መሰረት በአውሮፕላን ክንፍ ላይ ወደ ላይ የሚያነሳ ሀይል (Lift) እንዴት ይፈጠራል?',
+    options: [
+      'Air moves faster over the curved upper surface, creating lower pressure above relative to beneath the wing',
+      'Air is compressed beneath the wing, creating higher vacuum on top',
+      'Engine thrust pushes air downwards exclusively through exhaust nozzles',
+      'Wing camber heats up the ambient air to reduce air density'
+    ],
+    amharicOptions: [
+      'አየር በክንፉ የላይኛው ክፍል በከፍተኛ ፍጥነት ሲያልፍ ዝቅተኛ የአየር ግፊት በመፍጠር ክንፉ ወደላይ እንዲነሳ ያደርጋል',
+      'አየር ከክንፉ ስር ተጨምቆ ወደላይ ይገፋል',
+      'የሞተሩ ሀይል አየሩን ወደ ታች በመግፋት ብቻ',
+      'የክንፉ ሙቀት አየሩን በማቅለል'
+    ],
+    correctIndex: 0,
+    explanation: 'Faster airflow over the curved upper surface of an aerofoil results in lower static pressure above the wing, generating net upward aerodynamic lift.',
+    amharicExplanation: 'አየር በክንፉ የላይኛው ክፍል ፈጥኖ ሲያልፍ የላይኛው ግፊት ይቀንሳል፤ የታችኛው ከፍተኛ ግፊት ክንፉን ወደ ላይ ያነሳዋል።'
+  },
+  {
+    id: 'plt-2',
+    category: 'Technical Aptitude',
+    role: 'Pilot / Cadet',
+    training_school: 'PILOT TRAINING SCHOOL',
+    question: 'A pilot is flying at True Airspeed (TAS) of 240 knots with a direct headwind of 35 knots. What is the calculated Ground Speed (GS)?',
+    amharicQuestion: 'አንድ አብራሪ በ 240 knots የአየር ፍጥነት (TAS) እየበረረ 35 knots የፊት ለፊት ንፋስ (Headwind) ቢገጥመው የመሬት ላይ ፍጥነቱ (Ground Speed) ስንት ይሆናል?',
+    options: [
+      '205 knots',
+      '275 knots',
+      '240 knots',
+      '195 knots'
+    ],
+    amharicOptions: [
+      '205 knots',
+      '275 knots',
+      '240 knots',
+      '195 knots'
+    ],
+    correctIndex: 0,
+    explanation: 'Ground Speed = True Airspeed - Headwind = 240 kts - 35 kts = 205 knots.',
+    amharicExplanation: 'የመሬት ፍጥነት = የአየር ፍጥነት - የፊት ንፋስ = 240 - 35 = 205 knots።'
+  },
+  {
+    id: 'plt-3',
+    category: 'Aviation Safety & Regulations',
+    role: 'Pilot / Cadet',
+    training_school: 'PILOT TRAINING SCHOOL',
+    question: 'What meteorological phenomenon presents the greatest sudden threat of severe airspeed loss and rapid descent during takeoff and landing?',
+    amharicQuestion: 'በመነሳት እና በማረፍ ወቅት ከፍተኛ የአየር ፍጥነት መቀነስ እና ድንገተኛ ቁልቁለት አደጋ የሚፈጥረው የአየር ሁኔታ የትኛው ነው?',
+    options: [
+      'Microburst / Low-Level Wind Shear',
+      'Cirrus Cloud Formation',
+      'Thermal Inversion at FL100',
+      'Moderate Sea Breeze Front'
+    ],
+    amharicOptions: [
+      'ማይክሮበርስት እና የንፋስ ሽግግር (Microburst / Low-Level Wind Shear)',
+      'የሲረስ ደመናዎች',
+      'የሙቀት ለውጥ (Thermal Inversion)',
+      'የባህር ንፋስ'
+    ],
+    correctIndex: 0,
+    explanation: 'Microbursts produce violent downward downdrafts that transition into rapid shifting tailwinds, causing catastrophic loss of lift near ground level.',
+    amharicExplanation: 'Wind Shear / Microburst በመሬት አቅራቢያ አደገኛ ቁልቁል ንፋስ በመፍጠር አውሮፕላን በአስቸኳይ ቁጥጥር ውጭ እንዲሆን ያደርጋል።'
+  },
+  {
+    id: 'plt-4',
+    category: 'Numerical Reasoning',
+    role: 'Pilot / Cadet',
+    training_school: 'PILOT TRAINING SCHOOL',
+    question: 'An aircraft climbs from 4,000 ft to a cruising altitude of 34,000 ft at an average climb rate of 1,500 feet per minute (fpm). How many minutes will the climb take?',
+    amharicQuestion: 'አንድ አውሮፕላን ከ 4,000 ጫማ ወደ 34,000 ጫማ ከፍታ በደቂቃ 1,500 ጫማ እየወጣ ቢሄድ ምን ያህል ደቂቃ ይወስድበታል?',
+    options: [
+      '20 minutes',
+      '15 minutes',
+      '25 minutes',
+      '30 minutes'
+    ],
+    correctIndex: 0,
+    explanation: 'Altitude to gain = 34,000 - 4,000 = 30,000 ft. Time = 30,000 / 1,500 = 20 minutes.',
+    amharicExplanation: 'የሚወጣው ከፍታ = 34,000 - 4,000 = 30,000 ጫማ። ጊዜ = 30,000 / 1,500 = 20 ደቂቃ።'
+  },
+  {
+    id: 'plt-5',
+    category: 'Technical Aptitude',
+    role: 'Pilot / Cadet',
+    training_school: 'PILOT TRAINING SCHOOL',
+    question: 'In an instrument approach system (ILS), what do the Localizer and Glideslope signals provide to the flight deck?',
+    amharicQuestion: 'በአውሮፕላን ማረፊያ መሳሪያ (ILS) ውስጥ ሎካላይዘር (Localizer) እና ግላይድስሎፕ (Glideslope) ምን መመሪያ ይሰጣሉ?',
+    options: [
+      'Localizer provides horizontal runway centerline guidance; Glideslope provides vertical descent slope guidance',
+      'Localizer measures wind velocity; Glideslope measures runway surface friction',
+      'Localizer handles communication; Glideslope handles transponder squawk codes',
+      'Localizer displays weather radar; Glideslope displays terrain maps'
+    ],
+    correctIndex: 0,
+    explanation: 'The ILS Localizer aligns the aircraft with the runway centerline (lateral), while the Glideslope provides precise vertical descent guidance (typically 3 degrees).',
+    amharicExplanation: 'Localizer ወደ ማኮብኮቢያው መሃል የሚያስተካክል ሲሆን፤ Glideslope ደግሞ ትክክለኛውን የማረፊያ ቁልቁለት አንግል ያሳያል።'
+  },
+
+  // =========================================================================
+  // 3. AIRCRAFT MAINTENANCE TECHNICIAN TRAINING SCHOOL (AMT)
+  // Programs: A/C Mechanic, Maintenance Technician, Powerplant, Structure, Avionics, Airframe
+  // =========================================================================
+  {
+    id: 'amt-1',
+    category: 'Technical Aptitude',
+    role: 'Aircraft Maintenance (AMT)',
+    training_school: 'AIRCRAFT MAINTENANCE TECHNICIAN TRAINING SCHOOL',
+    question: 'In a modern turbofan gas turbine engine, what is the primary function of the bypass air flowing through the outer fan duct?',
+    amharicQuestion: 'በዘመናዊ የቱርቦፋን ጄት ሞተር ውስጥ በውጪው ቱቦ (Bypass duct) የሚያልፈው አየር ዋና ተግባር ምንድነው?',
+    options: [
+      'To produce the majority of total engine thrust at subsonic speeds with high fuel efficiency and lower noise',
+      'To cool down the cockpit electronic display units exclusively',
+      'To prevent ice accumulation on the trailing edges of the flaps',
+      'To ignite the combustion fuel spray directly'
+    ],
+    amharicOptions: [
+      'በከፍተኛ የነዳጅ ቁጠባ እና ዝቅተኛ ድምጽ አብዛኛውን የሞተር ግፊት (Thrust) ማመንጨት',
+      'የኮክፒት መሳሪያዎችን ለማቀዝቀዝ ብቻ',
+      'በክንፍ ፍላፖች ላይ በረዶ እንዳይቀመጥ ማድረግ',
+      'የነዳጅ ማቃጠያውን ለማስነሳት'
+    ],
+    correctIndex: 0,
+    explanation: 'High-bypass turbofans accelerate a massive volume of cold air around the engine core, generating 75-85% of total thrust with optimal thermal efficiency.',
+    amharicExplanation: 'በቱርቦፋን ሞተር ውስጥ በኮር ዙሪያ የሚያልፈው አየር አብዛኛውን የመግፋት ሀይል (75-85%) በትንሽ ነዳጅ ያመነጫል።'
+  },
+  {
+    id: 'amt-2',
+    category: 'Technical Aptitude',
+    role: 'Aircraft Maintenance (AMT)',
+    training_school: 'AIRCRAFT MAINTENANCE TECHNICIAN TRAINING SCHOOL',
+    question: 'Which type of Non-Destructive Testing (NDT) is most suitable for detecting sub-surface fatigue cracks and corrosion in non-ferrous aluminum alloy aircraft skins?',
+    amharicQuestion: 'በአውሮፕላን አልሙኒየም አካል ላይ ውስጣዊ ስንጥቆችን እና ዝገትን ያለምንም ጉዳት ለመመርመር (NDT) የትኛው ዘዴ ይመረጣል?',
+    options: [
+      'Eddy Current Testing (ECT) / Ultrasonic Inspection',
+      'Visual Inspection with standard magnifying glass only',
+      'Acid Etch Chemical Burn Test',
+      'Magnetic Particle Inspection (MPI)'
+    ],
+    amharicOptions: [
+      'ኤዲ ከረንት እና አልትራሶኒክ ፍተሻ (Eddy Current / Ultrasonic Testing)',
+      'በአይን ብቻ መመልከት',
+      'በአሲድ የማቃጠል ሙከራ',
+      'የማግኔት ፍተሻ (Magnetic Particle - ለአልሙኒየም አይሰራም)'
+    ],
+    correctIndex: 0,
+    explanation: 'Eddy Current Testing utilizes electromagnetic induction to detect subsurface flaws in non-ferrous metals like aluminum alloys, while MPI only works on ferromagnetic metals.',
+    amharicExplanation: 'የአልሙኒየም ውስጣዊ ብልሽቶችን ለማወቅ Eddy Current እና Ultrasonic ምርመራዎች ዋና ዘዴዎች ናቸው።'
+  },
+  {
+    id: 'amt-3',
+    category: 'Technical Aptitude',
+    role: 'Aircraft Maintenance (AMT)',
+    training_school: 'AIRCRAFT MAINTENANCE TECHNICIAN TRAINING SCHOOL',
+    question: 'Why is phosphate-ester based hydraulic fluid (such as Skydrol) widely utilized in commercial transport aircraft hydraulic systems?',
+    amharicQuestion: 'በንግድ አውሮፕላን ሃይድሮሊክ ሲስተም ውስጥ ስካይድሮል (Skydrol) የተባለው ዘይት በስፋት ጥቅም ላይ የሚውለው ለምንድነው?',
+    options: [
+      'High fire resistance and thermal stability under extreme operational pressures and temperatures',
+      'Low cost and safe direct skin contact properties',
+      'Ability to act as an in-flight fuel additive',
+      'Water solubility for easy cabin washing'
+    ],
+    amharicOptions: [
+      'እሳትን በከፍተኛ ሁኔታ የመቋቋም አቅም እና በከፍተኛ ግፊት ውስጥ የመስራት ብቃት ስላለው',
+      'ርካሽ እና ለቆዳ ተስማሚ ስለሆነ',
+      'እንደ ነዳጅ ተጨማሪ ስለሚያገለግል',
+      'ከውሃ ጋር ስለሚቀላቀል'
+    ],
+    correctIndex: 0,
+    explanation: 'Phosphate ester synthetic hydraulic fluids (Skydrol) provide essential fire resistance under extreme hydraulic operating pressures (3,000 - 5,000 psi).',
+    amharicExplanation: 'ስካይድሮል እሳት የመቋቋም ብቃቱ ከፍተኛ ስለሆነ በከፍተኛ ግፊት ውስጥ የአውሮፕላን ደህንነትን ይጠብቃል።'
+  },
+  {
+    id: 'amt-4',
+    category: 'Technical Aptitude',
+    role: 'Aircraft Maintenance (AMT)',
+    training_school: 'AIRCRAFT MAINTENANCE TECHNICIAN TRAINING SCHOOL',
+    question: 'In aircraft electrical systems, what component converts three-phase 115V AC power generated by engine generators into 28V DC power for avionics?',
+    amharicQuestion: 'በአውሮፕላን ኤሌክትሪክ ሲስተም ውስጥ 115V AC የነበረውን ሀይል ወደ 28V DC የሚቀይረው መሳሪያ የትኛው ነው?',
+    options: [
+      'Transformer Rectifier Unit (TRU)',
+      'Static Inverter',
+      'Brushless Alternator',
+      'Auxiliary Power Unit (APU)'
+    ],
+    correctIndex: 0,
+    explanation: 'A Transformer Rectifier Unit (TRU) steps down 115V AC and rectifies it into standard 28V DC power used by aircraft instruments and battery chargers.',
+    amharicExplanation: 'Transformer Rectifier Unit (TRU) የ AC ኤሌክትሪክን ወደ DC ኤሌክትሪክ በመቀየር የአውሮፕላኑ መሳሪያዎች እንዲሰሩ ያደርጋል።'
+  },
+  {
+    id: 'amt-5',
+    category: 'Aviation Safety & Regulations',
+    role: 'Aircraft Maintenance (AMT)',
+    training_school: 'AIRCRAFT MAINTENANCE TECHNICIAN TRAINING SCHOOL',
+    question: 'What is the primary objective of an Aircraft Maintenance Minimum Equipment List (MEL)?',
+    amharicQuestion: 'የአውሮፕላን አነስተኛ መሳሪያዎች ዝርዝር (MEL) ዋና ዓላማ ምንድነው?',
+    options: [
+      'To specify which inoperative instruments or equipment allow an aircraft to be safely dispatched under strict conditions',
+      'To list the maximum baggage weight passengers can load on board',
+      'To list catering menu quantities for flight attendants',
+      'To define pilot flight duty hours per week'
+    ],
+    correctIndex: 0,
+    explanation: 'The MEL allows an aircraft to operate safely with specific inoperative items under defined operating limitations until maintenance can be completed.',
+    amharicExplanation: 'MEL አንድ አውሮፕላን አንዳንድ ያልሰሩ መሳሪያዎች እያሉ በደህንነት ገደብ ውስጥ በረራ እንዲያደርግ የሚፈቅድ ህጋዊ ሰነድ ነው።'
+  },
+
+  // =========================================================================
+  // 4. COMMERCIAL AND GROUND SERVICE TRAINING SCHOOL
+  // Programs: Passenger Handling, Ramp Ops, Flight Dispatch, Cargo Logistics, Ticketing
+  // =========================================================================
+  {
+    id: 'grd-1',
+    category: 'Customer & Flight Operations',
+    role: 'Ground Operations',
+    training_school: 'COMMERCIAL AND GROUND SERVICE TRAINING SCHOOL',
+    question: 'Under IATA Dangerous Goods Regulations (DGR), what hazard class encompasses Flammable Liquids (such as aviation fuels, alcohol solvents, and paints)?',
+    amharicQuestion: 'በ IATA አደገኛ እቃዎች ደንብ (DGR) መሰረት ተቀጣጣይ ፈሳሾች (እንደ ነዳጅ፣ ቀለም) የሚመደቡት በየትኛው Hazard Class ውስጥ ነው?',
+    options: [
+      'Class 3 - Flammable Liquids',
+      'Class 1 - Explosives',
+      'Class 7 - Radioactive Materials',
+      'Class 9 - Miscellaneous Dangerous Goods'
+    ],
+    amharicOptions: [
+      'ክፍል 3 - ተቀጣጣይ ፈሳሾች (Class 3 - Flammable Liquids)',
+      'ክፍል 1 - ፈንጂዎች',
+      'ክፍል 7 - ራዲዮአክቲቭ',
+      'ክፍል 9 - ልዩ አደገኛ እቃዎች'
+    ],
+    correctIndex: 0,
+    explanation: 'IATA DGR Class 3 specifically designates Flammable Liquids with flash points below specified safety thresholds.',
+    amharicExplanation: 'በ IATA ደንብ ክፍል 3 (Class 3) ተቀጣጣይ ፈሳሾችን የሚወክል ዓለም አቀፍ ምድብ ነው።'
+  },
+  {
+    id: 'grd-2',
+    category: 'Customer & Flight Operations',
+    role: 'Ground Operations',
+    training_school: 'COMMERCIAL AND GROUND SERVICE TRAINING SCHOOL',
+    question: 'In flight dispatch and weight & balance operations, what is the meaning of "Zero Fuel Weight" (ZFW)?',
+    amharicQuestion: 'በበረራ ስሌት እና ጭነት ሚዛን (Weight & Balance) ውስጥ "Zero Fuel Weight" (ZFW) ማለት ምን ማለት ነው?',
+    options: [
+      'The total weight of the aircraft loaded with crew, passengers, and cargo, but excluding all usable fuel on board',
+      'The empty weight of the aircraft without any passengers or cargo loaded',
+      'The maximum weight at which the aircraft is permitted to touch down on the runway',
+      'The remaining fuel weight after landing at the destination alternate airport'
+    ],
+    amharicOptions: [
+      'የአውሮፕላኑ፣ የተሳፋሪዎች እና የጭነት ድምር ክብደት (ነዳጅ ሳይጨመርበት)',
+      'ተሳፋሪ ወይም ጭነት የሌለው ባዶ አውሮፕላን ክብደት',
+      'አውሮፕላኑ መሬት እንዲያርፍ የተፈቀደለት ከፍተኛ ክብደት',
+      'ከበረራ በኋላ የቀረ ነዳጅ'
+    ],
+    correctIndex: 0,
+    explanation: 'Zero Fuel Weight (ZFW) is the total weight of the airplane including payload (passengers, baggage, cargo) and dry operating weight, but excluding usable fuel.',
+    amharicExplanation: 'ZFW ማለት አውሮፕላኑ ተሳፋሪ እና ጭነት ጭኖ ያለ ምንም ነዳጅ የሚኖረው አጠቃላይ ክብደት ነው።'
+  },
+  {
+    id: 'grd-3',
+    category: 'Customer & Flight Operations',
+    role: 'Ground Operations',
+    training_school: 'COMMERCIAL AND GROUND SERVICE TRAINING SCHOOL',
+    question: 'When marshalling an aircraft onto the parking stand, what does the signal of raising both wands vertically and crossing them above the head indicate?',
+    amharicQuestion: 'በመሬት ላይ አውሮፕላን ሲመራ (Marshalling) ሁለቱንም ምልክቶች ወደ ላይ ከፍ አድርጎ አመሳቅሎ ማሳየት ምንን ያመለክታል?',
+    options: [
+      'Emergency Stop / Immediate Halt',
+      'Proceed straight ahead at normal taxi speed',
+      'Turn sharply to the left parking gate',
+      'Release aircraft parking brakes'
+    ],
+    amharicOptions: [
+      'አስቸኳይ መቆም (Emergency Stop / Immediate Halt)',
+      'ወደ ፊት ቀጥ ብለህ ና',
+      'ወደ ግራ ታጠፍ',
+      'ፍሬን ፍታ'
+    ],
+    correctIndex: 0,
+    explanation: 'Crossing marshalling wands or arms above the head is the universal ICAO standard signal for Emergency Stop.',
+    amharicExplanation: 'ሁለት መሪ ምልክቶችን ከራስ በላይ ማመሳቀል አውሮፕላኑ በአስቸኳይ እንዲቆም የሚያዝ ዓለም አቀፍ ምልክት ነው።'
+  },
+  {
+    id: 'grd-4',
+    category: 'Customer & Flight Operations',
+    role: 'Ground Operations',
+    training_school: 'COMMERCIAL AND GROUND SERVICE TRAINING SCHOOL',
+    question: 'What is a Unit Load Device (ULD) in air cargo and baggage operations?',
+    amharicQuestion: 'በአየር ጭነት እና ሻንጣ አገልግሎት ውስጥ ULD (Unit Load Device) ማለት ምን ማለት ነው?',
+    options: [
+      'Standardized cargo containers or contoured pallets locked into the aircraft lower and main decks',
+      'A handheld barcode scanner used at passenger check-in counters',
+      'An automated conveyor belt on the baggage sorting carousel',
+      'A ground power cable connecting the terminal to the jet bridge'
+    ],
+    correctIndex: 0,
+    explanation: 'ULDs (containers like AKE/LD3 or pallets) allow bulk cargo and baggage to be assembled into standardized units for rapid aircraft loading and securing.',
+    amharicExplanation: 'ULD ማለት ሻንጣዎችና እቃዎች በአንድ ላይ ተጭነው በአውሮፕላን ሆድ ውስጥ የሚገቡ ደረጃቸውን የጠበቁ ሳጥኖች ወይም ፓሌቶች ናቸው።'
+  },
+  {
+    id: 'grd-5',
     category: 'Numerical Reasoning',
     role: 'Ground Operations',
+    training_school: 'COMMERCIAL AND GROUND SERVICE TRAINING SCHOOL',
     question: 'A passenger traveling on Ethiopian Airlines has 28 kg of luggage. If the free allowance is 23 kg and excess baggage fee is 350 ETB per excess kg, how much must the passenger pay?',
     amharicQuestion: 'አንድ ተሳፋሪ 28 ኪ.ግ ሻንጣ አለው። የተፈቀደው ነፃ 23 ኪ.ግ ከሆነ እና ለትርፍ ኪ.ግ 350 ETB ቢጠየቅ አጠቃላይ ስንት ይከፍላል?',
     options: [
@@ -334,21 +460,5 @@ export const EXAM_QUESTIONS: ExamQuestion[] = [
     correctIndex: 0,
     explanation: 'Excess weight = 28 kg - 23 kg = 5 kg. Total fee = 5 kg × 350 ETB = 1,750 ETB.',
     amharicExplanation: 'ትርፍ ኪሎ = 28 - 23 = 5 ኪ.ግ. ጠቅላላ ክፍያ = 5 × 350 = 1,750 ETB።'
-  },
-  {
-    id: 'et-4',
-    category: 'English',
-    role: 'Cabin Crew',
-    question: 'Select the sentence with the correct preposition: "Passengers are kindly requested to remain seated __________ the seatbelt sign is turned off."',
-    amharicQuestion: 'ትክክለኛውን ቃል ይምረጡ: "Passengers are kindly requested to remain seated __________ the seatbelt sign is turned off."',
-    options: [
-      'until',
-      'since',
-      'during',
-      'alongside'
-    ],
-    correctIndex: 0,
-    explanation: '"Until" indicates continuing in a state up to the specified time when the seatbelt sign is extinguished.',
-    amharicExplanation: '"until" (እስከሚጠፋ ድረስ) የሚለው ቃል ትክክለኛው ሰዋሰዋዊ አጠቃቀም ነው።'
   }
 ];
