@@ -50,8 +50,8 @@ export const VerifiedReadyCertificate: React.FC<VerifiedReadyCertificateProps> =
           {/* Top Jet Airliner Header Banner */}
           <div className="relative rounded-2xl p-6 text-white shadow-lg overflow-hidden border border-slate-800">
             <img
-              src="/src/assets/images/airliner_takeoff_1786528424590.jpg"
-              alt="Airliner Takeoff"
+              src="/src/assets/images/intl_academy_grad_1787160582785.jpg"
+              alt="Aviation Academy Graduation Ceremony"
               className="absolute inset-0 w-full h-full object-cover object-center"
             />
             <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-[1px]" />

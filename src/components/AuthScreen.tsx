@@ -1,31 +1,141 @@
-import React, { useState } from 'react';
-import { UserProfile, Language, TrainingSchool, TRAINING_SCHOOLS_DATA, AviationRole } from '../types';
-import { saveUserProfile, getStoredUserProfile, getSupabase } from '../services/supabase';
-import { Phone, Shield, ArrowRight, ArrowLeft, Lock, User, GraduationCap, BookOpen, Layers, Mail, CheckCircle2, Plane, Sparkles } from 'lucide-react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { 
+  UserProfile, 
+  Language, 
+  TrainingSchool, 
+  TRAINING_SCHOOLS_DATA, 
+  AviationRole, 
+  ALL_AVIATION_VACANCIES, 
+  AviationVacancyItem 
+} from '../types';
+import { 
+  saveUserProfile, 
+  getStoredUserProfile, 
+  testSupabaseConnection, 
+  registerCandidateInSupabase,
+  loginCandidateInSupabase,
+  PART_3_SUPABASE_SQL, 
+  getStoredConfig, 
+  saveConfig 
+} from '../services/supabase';
+import { 
+  Phone, 
+  Shield, 
+  ArrowRight, 
+  ArrowLeft, 
+  Lock, 
+  User, 
+  GraduationCap, 
+  BookOpen, 
+  Layers, 
+  Mail, 
+  CheckCircle2, 
+  Plane, 
+  Sparkles, 
+  Database, 
+  Copy, 
+  RefreshCw, 
+  X, 
+  AlertTriangle, 
+  Search,
+  Wrench,
+  Headphones,
+  Users,
+  Check
+} from 'lucide-react';
 import { TRANSLATION } from '../data/translations';
 
 interface AuthScreenProps {
   lang?: Language;
+  initialSchool?: TrainingSchool;
+  initialProgram?: string;
+  initialRole?: AviationRole;
+  initialPhone?: string;
   onAuthenticated: (profile: UserProfile) => void;
   onBack: () => void;
 }
 
-export const AuthScreen: React.FC<AuthScreenProps> = ({ lang = 'en', onAuthenticated, onBack }) => {
+export const AuthScreen: React.FC<AuthScreenProps> = ({ 
+  lang = 'en', 
+  initialSchool,
+  initialProgram,
+  initialRole,
+  initialPhone,
+  onAuthenticated, 
+  onBack 
+}) => {
   const t = TRANSLATION[lang];
   const [authMode, setAuthMode] = useState<'signup' | 'login'>('signup');
   
-  // Form State
-  const [fullName, setFullName] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('0911234567');
+  // Stored / existing candidate suggestion
+  const storedUser = useMemo(() => getStoredUserProfile(), []);
+
+  // Form State initialized smartly from props or storage
+  const [fullName, setFullName] = useState(storedUser?.full_name || '');
+  const [phoneNumber, setPhoneNumber] = useState(initialPhone || storedUser?.phone_number || '');
   const [password, setPassword] = useState('');
-  const [trainingSchool, setTrainingSchool] = useState<TrainingSchool>('CABIN CREW TRAINING SCHOOL');
-  const [trainingProgram, setTrainingProgram] = useState<string>('CABIN CREW TRAINEE (ET-SPONSORED)');
-  const [stage, setStage] = useState<string>('Written Assessment');
-  const [email, setEmail] = useState('');
   
+  // Smart Vacancy & School selection
+  const [trainingSchool, setTrainingSchool] = useState<TrainingSchool>(() => {
+    if (initialSchool && typeof initialSchool === 'string') return initialSchool;
+    if (storedUser?.training_school && typeof storedUser.training_school === 'string') {
+      return storedUser.training_school as TrainingSchool;
+    }
+    return 'CABIN CREW TRAINING SCHOOL';
+  });
+  const [trainingProgram, setTrainingProgram] = useState<string>(() => {
+    if (initialProgram && typeof initialProgram === 'string') return initialProgram;
+    if (storedUser?.training_program && typeof storedUser.training_program === 'string') {
+      return storedUser.training_program;
+    }
+    return 'CABIN CREW TRAINEE (AIRLINE-SPONSORED)';
+  });
+  const [stage, setStage] = useState<string>(storedUser?.stage || 'Written Assessment');
+  const [email, setEmail] = useState(storedUser?.email || '');
+  
+  // Vacancy Quick Search filter
+  const [vacancySearch, setVacancySearch] = useState('');
+  const [showVacancyDropdown, setShowVacancyDropdown] = useState(false);
+
+  // Status & Feedback
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
+  const [cloudStatus, setCloudStatus] = useState<{ connected: boolean; checked: boolean }>({ connected: true, checked: false });
+
+  // Auto-detected candidate from typing phone number
+  const [detectedCandidate, setDetectedCandidate] = useState<UserProfile | null>(null);
+
+  // Diagnostic / Supabase Setup Modal State
+  const [showDbModal, setShowDbModal] = useState(false);
+  const [dbConfig, setDbConfig] = useState(getStoredConfig());
+  const [testResult, setTestResult] = useState<string | null>(null);
+  const [testingDb, setTestingDb] = useState(false);
+  const [copiedSql, setCopiedSql] = useState(false);
+
+  // Check Supabase connectivity on mount
+  useEffect(() => {
+    testSupabaseConnection().then((res) => {
+      setCloudStatus({ connected: res.connected, checked: true });
+    }).catch(() => {
+      setCloudStatus({ connected: false, checked: true });
+    });
+  }, []);
+
+  // When initial props change, automatically adapt
+  useEffect(() => {
+    if (initialSchool && typeof initialSchool === 'string') setTrainingSchool(initialSchool);
+    if (initialProgram && typeof initialProgram === 'string') setTrainingProgram(initialProgram);
+  }, [initialSchool, initialProgram]);
+
+  // Smart Vacancy Selection: Auto-fills School, Program, and Role smoothly
+  const handleSelectVacancy = (vacancy: AviationVacancyItem) => {
+    setTrainingSchool(vacancy.schoolId);
+    setTrainingProgram(vacancy.id);
+    setShowVacancyDropdown(false);
+    setVacancySearch('');
+    setError(null);
+  };
 
   // Available programs for current selected school
   const currentSchoolData = TRAINING_SCHOOLS_DATA.find(s => s.id === trainingSchool) || TRAINING_SCHOOLS_DATA[0];
@@ -38,7 +148,18 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ lang = 'en', onAuthentic
     }
   };
 
+  const handleProgramChange = (programId: string) => {
+    setTrainingProgram(programId);
+    // Find if it belongs to another school and auto-switch
+    const matchingVacancy = ALL_AVIATION_VACANCIES.find(v => v.id === programId);
+    if (matchingVacancy && matchingVacancy.schoolId !== trainingSchool) {
+      setTrainingSchool(matchingVacancy.schoolId);
+    }
+  };
+
   const mapSchoolToRole = (school: TrainingSchool): AviationRole => {
+    const matching = ALL_AVIATION_VACANCIES.find(v => v.id === trainingProgram);
+    if (matching) return matching.role;
     switch (school) {
       case 'CABIN CREW TRAINING SCHOOL':
         return 'Cabin Crew';
@@ -53,6 +174,68 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ lang = 'en', onAuthentic
     }
   };
 
+  // Smart Live Phone check
+  const handlePhoneChange = (val: string) => {
+    setPhoneNumber(val);
+    const clean = val.replace(/\D/g, '');
+    if (storedUser && clean.length >= 9 && storedUser.phone_number.includes(clean)) {
+      setDetectedCandidate(storedUser);
+    } else {
+      setDetectedCandidate(null);
+    }
+  };
+
+  // 1-Click Auto-Fill Candidate Profile
+  const handleAutoFillStoredProfile = () => {
+    if (detectedCandidate) {
+      setFullName(detectedCandidate.full_name || '');
+      setPhoneNumber(detectedCandidate.phone_number);
+      if (detectedCandidate.training_school) {
+        setTrainingSchool(detectedCandidate.training_school as TrainingSchool);
+      }
+      if (detectedCandidate.training_program) {
+        setTrainingProgram(detectedCandidate.training_program);
+      }
+      if (detectedCandidate.email) {
+        setEmail(detectedCandidate.email);
+      }
+      setDetectedCandidate(null);
+    }
+  };
+
+  const handleRunDbTest = async () => {
+    setTestingDb(true);
+    setTestResult(null);
+    try {
+      const res = await testSupabaseConnection();
+      if (res.connected) {
+        setTestResult(`✅ Connected to Supabase Cloud! ${res.details}`);
+        setCloudStatus({ connected: true, checked: true });
+      } else {
+        setTestResult(`❌ Connection Failed: ${res.details}`);
+        setCloudStatus({ connected: false, checked: true });
+      }
+    } catch (e: any) {
+      setTestResult(`❌ Error: ${e?.message || e}`);
+      setCloudStatus({ connected: false, checked: true });
+    } finally {
+      setTestingDb(false);
+    }
+  };
+
+  const handleSaveDbConfig = () => {
+    saveConfig(dbConfig);
+    setTestResult('Configuration saved! Re-testing connection...');
+    handleRunDbTest();
+  };
+
+  const handleCopySql = () => {
+    navigator.clipboard.writeText(PART_3_SUPABASE_SQL);
+    setCopiedSql(true);
+    setTimeout(() => setCopiedSql(false), 2500);
+  };
+
+  // Smart Registration
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -76,77 +259,64 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ lang = 'en', onAuthentic
 
     setLoading(true);
 
-    const formattedPhone = cleanPhone.startsWith('+') 
-      ? cleanPhone 
-      : cleanPhone.startsWith('0') 
-        ? `+251 ${cleanPhone.slice(1)}` 
-        : `+251 ${cleanPhone}`;
+    try {
+      const role = mapSchoolToRole(trainingSchool);
+      const res = await registerCandidateInSupabase({
+        fullName: fullName.trim(),
+        phoneNumber: cleanPhone,
+        password: password.trim(),
+        email: email.trim() || undefined,
+        trainingSchool,
+        trainingProgram,
+        stage,
+        selectedRole: role,
+      });
 
-    const role = mapSchoolToRole(trainingSchool);
-    const generatedId = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `usr_${Date.now()}`;
-
-    // Create candidate profile
-    const newProfile: UserProfile = {
-      id: generatedId,
-      phone_number: formattedPhone,
-      password: password.trim(),
-      full_name: fullName.trim(),
-      training_school: trainingSchool,
-      training_program: trainingProgram,
-      department: trainingSchool,
-      field: trainingProgram,
-      stage: stage,
-      email: email.trim() || undefined,
-      selected_role: role,
-      is_paid: false,
-      paid_at: null,
-      free_exam_used: false,
-      created_at: new Date().toISOString(),
-    };
-
-    // Save locally and sync with Supabase
-    saveUserProfile(newProfile);
-
-    // Optional Supabase Auth or DB record insert
-    const sb = getSupabase();
-    if (sb) {
-      try {
-        sb.from('profiles').upsert({
-          id: newProfile.id,
-          phone_number: newProfile.phone_number,
-          full_name: newProfile.full_name,
-          training_school: newProfile.training_school,
-          training_program: newProfile.training_program,
-          department: newProfile.department,
-          field: newProfile.field,
-          stage: newProfile.stage,
-          email: newProfile.email || null,
-          selected_role: newProfile.selected_role,
-          is_paid: false,
-          created_at: newProfile.created_at,
-        }).then(({ error: sbErr }) => {
-          if (sbErr) console.log('Supabase sync note:', sbErr.message);
-        });
-      } catch (err) {
-        console.log('Local first profile saved');
+      if (res.success) {
+        setSuccessMsg(`Welcome, ${fullName.trim()}! Registered automatically for ${trainingProgram}.`);
+        setCloudStatus({ connected: true, checked: true });
+        setTimeout(() => {
+          setLoading(false);
+          onAuthenticated(res.profile);
+        }, 400);
+      } else {
+        setError(res.error || 'Failed to complete registration.');
+        setLoading(false);
       }
-    }
-
-    setSuccessMsg('Registration successful! Directing to your department preparation...');
-
-    setTimeout(() => {
+    } catch (err: any) {
+      console.error('Registration handler error:', err);
+      // Fallback local save
+      const role = mapSchoolToRole(trainingSchool);
+      const fallbackProfile: UserProfile = {
+        id: typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `usr_${Date.now()}`,
+        phone_number: cleanPhone.startsWith('+') ? cleanPhone : `+251 ${cleanPhone.replace(/^0/, '')}`,
+        password: password.trim(),
+        full_name: fullName.trim(),
+        training_school: trainingSchool,
+        training_program: trainingProgram,
+        department: trainingSchool,
+        field: trainingProgram,
+        stage,
+        email: email.trim() || undefined,
+        selected_role: role,
+        is_paid: false,
+        free_exam_used: false,
+        created_at: new Date().toISOString(),
+      };
+      saveUserProfile(fallbackProfile);
       setLoading(false);
-      onAuthenticated(newProfile);
-    }, 600);
+      onAuthenticated(fallbackProfile);
+    }
   };
 
+  // Smart Login
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
-    const cleanPhone = phoneNumber.trim().replace(/\s+/g, '');
-    if (!cleanPhone) {
-      setError('Please enter your phone number.');
+    const cleanInput = phoneNumber.trim().replace(/\s+/g, '');
+    if (!cleanInput) {
+      setError('Please enter your phone number or email.');
       return;
     }
 
@@ -157,46 +327,65 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ lang = 'en', onAuthentic
 
     setLoading(true);
 
-    const formattedPhone = cleanPhone.startsWith('+') 
-      ? cleanPhone 
-      : cleanPhone.startsWith('0') 
-        ? `+251 ${cleanPhone.slice(1)}` 
-        : `+251 ${cleanPhone}`;
-
-    // Check existing stored profile or create session
-    let existing = getStoredUserProfile();
-    if (!existing || (existing.phone_number !== formattedPhone && existing.phone_number !== cleanPhone)) {
-      // Create session for user
-      const role = mapSchoolToRole(trainingSchool);
-      existing = {
-        id: typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `usr_${Date.now()}`,
-        phone_number: formattedPhone,
+    try {
+      const res = await loginCandidateInSupabase({
+        phoneNumberOrEmail: cleanInput,
         password: password.trim(),
-        full_name: fullName.trim() || 'Candidate',
-        training_school: trainingSchool,
-        training_program: trainingProgram,
-        department: trainingSchool,
-        field: trainingProgram,
-        stage: stage,
-        selected_role: role,
-        is_paid: false,
-        paid_at: null,
-        free_exam_used: false,
-        created_at: new Date().toISOString(),
-      };
+        defaultSchool: trainingSchool,
+        defaultProgram: trainingProgram,
+      });
+
+      if (res.success) {
+        setTimeout(() => {
+          setLoading(false);
+          onAuthenticated(res.profile);
+        }, 300);
+      } else {
+        setError('Candidate profile not found or invalid credentials.');
+        setLoading(false);
+      }
+    } catch (err) {
+      console.warn('Login lookup exception:', err);
+      const existing = getStoredUserProfile();
+      if (existing) {
+        setLoading(false);
+        onAuthenticated(existing);
+      } else {
+        const role = mapSchoolToRole(trainingSchool);
+        const fallbackProfile: UserProfile = {
+          id: typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `usr_${Date.now()}`,
+          phone_number: cleanInput.startsWith('+') ? cleanInput : `+251 ${cleanInput.replace(/^0/, '')}`,
+          password: password.trim(),
+          full_name: fullName.trim() || 'Candidate',
+          training_school: trainingSchool,
+          training_program: trainingProgram,
+          department: trainingSchool,
+          field: trainingProgram,
+          stage,
+          selected_role: role,
+          is_paid: false,
+          free_exam_used: false,
+          created_at: new Date().toISOString(),
+        };
+        saveUserProfile(fallbackProfile);
+        setLoading(false);
+        onAuthenticated(fallbackProfile);
+      }
     }
-
-    saveUserProfile(existing);
-
-    setTimeout(() => {
-      setLoading(false);
-      onAuthenticated(existing!);
-    }, 500);
   };
 
+  // Filtered vacancies for quick search
+  const filteredVacancies = ALL_AVIATION_VACANCIES.filter(v => 
+    v.name.toLowerCase().includes(vacancySearch.toLowerCase()) ||
+    v.schoolName.toLowerCase().includes(vacancySearch.toLowerCase()) ||
+    (v.amharicName && v.amharicName.includes(vacancySearch))
+  );
+
+  const selectedVacancyObj = ALL_AVIATION_VACANCIES.find(v => v.id === trainingProgram);
+
   return (
-    <div className="min-h-[85vh] flex items-center justify-center px-4 py-8 bg-slate-50">
-      <div className="max-w-lg w-full bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden animate-fadeIn">
+    <div className="min-h-[85vh] flex items-center justify-center px-3 sm:px-4 py-6 sm:py-8 bg-slate-50 w-full max-w-full overflow-x-hidden">
+      <div className="max-w-xl w-full bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden animate-fadeIn">
         
         {/* Header with Aviation School Banner */}
         <div className="relative p-6 text-white text-center overflow-hidden bg-gradient-to-b from-[#0F2D59] via-[#0B2545] to-[#07192F]">
@@ -224,7 +413,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ lang = 'en', onAuthentic
 
             <div className="inline-flex items-center gap-1.5 bg-[#F2B134]/20 border border-[#F2B134]/40 px-3 py-0.5 rounded-full text-[#F2B134] text-[10px] font-black uppercase tracking-wider">
               <Sparkles className="w-3 h-3 fill-[#F2B134]" />
-              <span>ETHIOPIAN AVIATION ACADEMY PREP</span>
+              <span>COMMERCIAL AVIATION ACADEMY PREP</span>
             </div>
 
             <h2 className="text-xl font-black text-white tracking-tight">
@@ -232,8 +421,8 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ lang = 'en', onAuthentic
             </h2>
             <p className="text-xs text-slate-300 font-medium max-w-sm mx-auto">
               {authMode === 'signup'
-                ? 'Select your Training School & Course to receive customized exam questions and interview simulators.'
-                : 'Enter your phone number and password to continue your preparation.'}
+                ? 'Information is automatically synchronized with your specialized curriculum and exam simulator.'
+                : 'Enter your phone number and password to instantly restore your progress and tests.'}
             </p>
           </div>
         </div>
@@ -270,28 +459,52 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ lang = 'en', onAuthentic
         {/* Form Body */}
         <div className="p-6">
           {error && (
-            <div className="mb-4 p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-bold flex items-center gap-2">
+            <div className="mb-4 p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-bold flex items-center gap-2 animate-fadeIn">
               <span className="w-2 h-2 rounded-full bg-rose-500 shrink-0" />
               <span>{error}</span>
             </div>
           )}
 
           {successMsg && (
-            <div className="mb-4 p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center gap-2">
+            <div className="mb-4 p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center gap-2 animate-fadeIn">
               <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
               <span>{successMsg}</span>
             </div>
           )}
 
+          {/* Smart Candidate Auto-Detection Banner */}
+          {detectedCandidate && (
+            <div className="mb-4 p-3.5 rounded-2xl bg-blue-50 border border-blue-200 flex items-center justify-between gap-2 animate-fadeIn">
+              <div className="text-xs">
+                <p className="font-extrabold text-blue-900">
+                  ✨ Detected existing profile: <span className="underline">{detectedCandidate.full_name}</span>
+                </p>
+                <p className="text-[11px] text-blue-700 font-medium">
+                  {detectedCandidate.training_program}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={handleAutoFillStoredProfile}
+                className="bg-blue-600 hover:bg-blue-700 text-white text-[11px] font-black px-3 py-1.5 rounded-xl shadow shrink-0"
+              >
+                Auto-Fill
+              </button>
+            </div>
+          )}
+
           {authMode === 'signup' ? (
-            /* --- REGISTRATION FORM --- */
+            /* --- SMART REGISTRATION FORM --- */
             <form onSubmit={handleSignup} className="space-y-4">
               
               {/* Full Name */}
               <div>
-                <label className="block text-xs font-black text-slate-900 uppercase tracking-wider mb-1.5 flex items-center gap-1">
-                  <User className="w-3.5 h-3.5 text-blue-600" />
-                  <span>Full Name (Applicant Name) *</span>
+                <label className="block text-xs font-black text-slate-900 uppercase tracking-wider mb-1.5 flex items-center justify-between">
+                  <span className="flex items-center gap-1">
+                    <User className="w-3.5 h-3.5 text-blue-600" />
+                    <span>Full Name (Applicant Name) *</span>
+                  </span>
+                  <span className="text-[10px] text-slate-400 font-bold lowercase">auto-bound to test slip</span>
                 </label>
                 <input
                   type="text"
@@ -303,51 +516,117 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ lang = 'en', onAuthentic
                 />
               </div>
 
-              {/* Training School (Department) Dropdown */}
-              <div>
-                <label className="block text-xs font-black text-slate-900 uppercase tracking-wider mb-1.5 flex items-center gap-1">
-                  <GraduationCap className="w-3.5 h-3.5 text-[#0B2545]" />
-                  <span>Training School (Department) *</span>
-                </label>
-                <div className="relative">
+              {/* Smart Vacancy Quick Selector */}
+              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 space-y-2">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-black text-slate-900 uppercase tracking-wider flex items-center gap-1">
+                    <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                    <span>Select Vacancy / Specialty *</span>
+                  </label>
+                  <span className="text-[10px] bg-amber-100 text-amber-900 font-black px-2 py-0.5 rounded-full">
+                    {selectedVacancyObj?.badge || 'Smart Auto-Fill'}
+                  </span>
+                </div>
+
+                {/* Currently selected vacancy summary pill */}
+                <div className="bg-white border-2 border-blue-600 rounded-xl p-3 flex items-center justify-between shadow-sm">
+                  <div className="flex items-center gap-2.5 overflow-hidden">
+                    <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 font-bold">
+                      {selectedVacancyObj?.iconType === 'plane' && <Plane className="w-4 h-4" />}
+                      {selectedVacancyObj?.iconType === 'users' && <Users className="w-4 h-4" />}
+                      {selectedVacancyObj?.iconType === 'wrench' && <Wrench className="w-4 h-4" />}
+                      {selectedVacancyObj?.iconType === 'headphones' && <Headphones className="w-4 h-4" />}
+                    </div>
+                    <div className="truncate">
+                      <p className="text-xs font-extrabold text-slate-900 truncate">
+                        {typeof selectedVacancyObj?.name === 'string' ? selectedVacancyObj.name : (typeof trainingProgram === 'string' ? trainingProgram : '')}
+                      </p>
+                      <p className="text-[10px] text-blue-700 font-bold truncate">
+                        {typeof trainingSchool === 'string' ? trainingSchool : ''}
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setShowVacancyDropdown(!showVacancyDropdown)}
+                    className="text-[11px] font-black text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg shrink-0 transition-all"
+                  >
+                    {showVacancyDropdown ? 'Close' : 'Change Vacancy ▾'}
+                  </button>
+                </div>
+
+                {/* Dropdown / Vacancy Search List */}
+                {showVacancyDropdown && (
+                  <div className="mt-2 bg-white border border-slate-300 rounded-xl p-2.5 space-y-2 shadow-lg max-h-60 overflow-y-auto animate-fadeIn">
+                    <div className="relative">
+                      <Search className="w-3.5 h-3.5 absolute left-3 top-2.5 text-slate-400" />
+                      <input
+                        type="text"
+                        placeholder="Search all 15 vacancies (e.g. Pilot, AMT, Crew, Cargo)..."
+                        value={vacancySearch}
+                        onChange={(e) => setVacancySearch(e.target.value)}
+                        className="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg border border-slate-200 focus:outline-none focus:border-blue-500 font-medium"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      {filteredVacancies.map((v) => (
+                        <button
+                          key={v.id}
+                          type="button"
+                          onClick={() => handleSelectVacancy(v)}
+                          className={`w-full text-left p-2 rounded-lg flex items-center justify-between text-xs transition-all ${
+                            trainingProgram === v.id
+                              ? 'bg-blue-600 text-white font-bold'
+                              : 'hover:bg-slate-100 text-slate-800'
+                          }`}
+                        >
+                          <div className="truncate pr-2">
+                            <span className="block font-bold truncate">{v.name}</span>
+                            <span className={`block text-[10px] truncate ${trainingProgram === v.id ? 'text-blue-100' : 'text-slate-400'}`}>
+                              {v.schoolName}
+                            </span>
+                          </div>
+                          {trainingProgram === v.id && <Check className="w-4 h-4 shrink-0" />}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Training School (Department) & Program Selection (Bi-directional auto sync) */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {/* School */}
+                <div>
+                  <label className="block text-xs font-black text-slate-900 uppercase tracking-wider mb-1 flex items-center gap-1">
+                    <GraduationCap className="w-3.5 h-3.5 text-[#0B2545]" />
+                    <span>School (Dept) *</span>
+                  </label>
                   <select
                     value={trainingSchool}
                     onChange={(e) => handleSchoolChange(e.target.value as TrainingSchool)}
                     required
-                    className="w-full px-4 py-3 rounded-xl border-2 border-blue-600/60 bg-blue-50/40 focus:border-blue-700 focus:ring-2 focus:ring-blue-600/20 outline-none text-xs sm:text-sm text-slate-900 font-extrabold appearance-none cursor-pointer min-h-[48px]"
+                    className="w-full px-3 py-2.5 rounded-xl border border-slate-300 bg-white focus:border-blue-600 outline-none text-xs text-slate-900 font-bold min-h-[44px]"
                   >
                     {TRAINING_SCHOOLS_DATA.map((school) => (
-                      <option 
-                        key={school.id} 
-                        value={school.id} 
-                        disabled={school.disabled}
-                        className={school.disabled ? "text-slate-400 bg-slate-100 italic" : "font-bold text-slate-900 py-1"}
-                      >
-                        {school.name.toUpperCase()} {school.disabled ? '(CLOSED)' : ''}
+                      <option key={school.id} value={school.id} className="font-bold text-slate-900 py-1">
+                        {school.name}
                       </option>
                     ))}
                   </select>
-                  <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-slate-600">
-                    ▼
-                  </div>
                 </div>
-                <p className="text-[11px] text-slate-500 mt-1">
-                  Official Ethiopian Aviation Academy divisions.
-                </p>
-              </div>
 
-              {/* Training Programs (Course / Field of Study) Dropdown */}
-              <div>
-                <label className="block text-xs font-black text-slate-900 uppercase tracking-wider mb-1.5 flex items-center gap-1">
-                  <BookOpen className="w-3.5 h-3.5 text-amber-600" />
-                  <span>Training Program (Course / Field) *</span>
-                </label>
-                <div className="relative">
+                {/* Course */}
+                <div>
+                  <label className="block text-xs font-black text-slate-900 uppercase tracking-wider mb-1 flex items-center gap-1">
+                    <BookOpen className="w-3.5 h-3.5 text-amber-600" />
+                    <span>Course / Program *</span>
+                  </label>
                   <select
                     value={trainingProgram}
-                    onChange={(e) => setTrainingProgram(e.target.value)}
+                    onChange={(e) => handleProgramChange(e.target.value)}
                     required
-                    className="w-full px-4 py-3 rounded-xl border border-slate-300 bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 outline-none text-xs sm:text-sm text-slate-900 font-bold appearance-none cursor-pointer min-h-[48px]"
+                    className="w-full px-3 py-2.5 rounded-xl border border-slate-300 bg-white focus:border-blue-600 outline-none text-xs text-slate-900 font-bold min-h-[44px]"
                   >
                     {currentSchoolData.programs.map((prog) => (
                       <option key={prog} value={prog} className="font-medium text-slate-900 py-1">
@@ -355,13 +634,10 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ lang = 'en', onAuthentic
                       </option>
                     ))}
                   </select>
-                  <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-slate-600">
-                    ▼
-                  </div>
                 </div>
               </div>
 
-              {/* Application Stage */}
+              {/* Application Stage & Optional Email */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-black text-slate-900 uppercase tracking-wider mb-1.5 flex items-center gap-1">
@@ -380,7 +656,6 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ lang = 'en', onAuthentic
                   </select>
                 </div>
 
-                {/* Email Address (Optional) */}
                 <div>
                   <label className="block text-xs font-black text-slate-900 uppercase tracking-wider mb-1.5 flex items-center gap-1">
                     <Mail className="w-3.5 h-3.5 text-slate-500" />
@@ -407,7 +682,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ lang = 'en', onAuthentic
                     type="tel"
                     placeholder="0911234567"
                     value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    onChange={(e) => handlePhoneChange(e.target.value)}
                     required
                     className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-blue-600 outline-none text-sm text-slate-900 font-mono font-bold min-h-[44px]"
                   />
@@ -448,7 +723,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ lang = 'en', onAuthentic
 
             </form>
           ) : (
-            /* --- LOGIN FORM --- */
+            /* --- SMART LOGIN FORM --- */
             <form onSubmit={handleLogin} className="space-y-4">
               
               <div>
@@ -460,7 +735,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ lang = 'en', onAuthentic
                   type="tel"
                   placeholder="0911234567 or +251 9..."
                   value={phoneNumber}
-                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  onChange={(e) => handlePhoneChange(e.target.value)}
                   required
                   className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-blue-600 outline-none text-sm text-slate-900 font-mono font-bold min-h-[44px]"
                 />
@@ -499,14 +774,126 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ lang = 'en', onAuthentic
             </form>
           )}
 
-          <div className="mt-6 pt-4 border-t border-slate-100 text-center">
-            <p className="text-[11px] text-slate-400 font-medium">
-              Synchronized with Supabase Candidate Database. Instant access without SMS delays.
-            </p>
+          <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400 font-medium">
+            <span>Synchronized with Candidate Portal Database</span>
+            <button
+              type="button"
+              onClick={() => {
+                setShowDbModal(true);
+                handleRunDbTest();
+              }}
+              className="text-blue-600 hover:text-blue-800 font-bold flex items-center gap-1 hover:underline"
+            >
+              <Database className="w-3.5 h-3.5" />
+              <span>Database Settings</span>
+            </button>
           </div>
         </div>
 
       </div>
+
+      {/* Supabase Connection & Diagnostics Modal */}
+      {showDbModal && (
+        <div className="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 space-y-4 shadow-2xl border border-slate-200 my-8">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div className="flex items-center gap-2">
+                <Database className="w-5 h-5 text-blue-600" />
+                <h3 className="text-base font-black text-slate-900">Supabase Database Diagnostics</h3>
+              </div>
+              <button
+                onClick={() => setShowDbModal(false)}
+                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Connection Status Box */}
+            <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2 text-xs">
+              <div className="flex items-center justify-between">
+                <span className="font-bold text-slate-700">Connection Health</span>
+                <button
+                  onClick={handleRunDbTest}
+                  disabled={testingDb}
+                  className="px-2.5 py-1 bg-blue-600 text-white rounded-lg font-bold text-[11px] flex items-center gap-1 hover:bg-blue-700 disabled:opacity-50"
+                >
+                  <RefreshCw className={`w-3 h-3 ${testingDb ? 'animate-spin' : ''}`} />
+                  <span>Test Connection</span>
+                </button>
+              </div>
+
+              {testResult ? (
+                <p className="font-mono text-[11px] bg-white p-2.5 rounded-xl border border-slate-200 text-slate-800 break-all">
+                  {testResult}
+                </p>
+              ) : (
+                <p className="text-slate-500">Click "Test Connection" to verify your Supabase database.</p>
+              )}
+            </div>
+
+            {/* Database Configuration Fields */}
+            <div className="space-y-3 text-xs">
+              <div>
+                <label className="font-bold text-slate-700 block mb-1">Supabase Project URL</label>
+                <input
+                  type="text"
+                  value={dbConfig.url}
+                  onChange={(e) => setDbConfig({ ...dbConfig, url: e.target.value })}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-xl font-mono text-xs text-slate-800"
+                  placeholder="https://your-project.supabase.co"
+                />
+              </div>
+
+              <div>
+                <label className="font-bold text-slate-700 block mb-1">Supabase Anon Key</label>
+                <input
+                  type="password"
+                  value={dbConfig.anonKey}
+                  onChange={(e) => setDbConfig({ ...dbConfig, anonKey: e.target.value })}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-xl font-mono text-xs text-slate-800"
+                  placeholder="eyJhbGciOi..."
+                />
+              </div>
+
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={handleSaveDbConfig}
+                  className="flex-1 bg-slate-900 hover:bg-slate-800 text-white py-2.5 rounded-xl font-black text-xs"
+                >
+                  Save Configuration
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCopySql}
+                  className="px-4 py-2.5 bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100 rounded-xl font-black text-xs flex items-center gap-1.5"
+                >
+                  <Copy className="w-3.5 h-3.5" />
+                  <span>{copiedSql ? 'Copied SQL!' : 'Copy SQL Schema'}</span>
+                </button>
+              </div>
+            </div>
+
+            <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 text-[11px] text-amber-900 space-y-1">
+              <p className="font-bold flex items-center gap-1">
+                <AlertTriangle className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                <span>Supabase Setup Tip</span>
+              </p>
+              <p>
+                If your Supabase database was just created, copy the SQL schema script and run it in your <strong>Supabase SQL Editor</strong> to create all tables (profiles, payments, attempts) and RLS security policies.
+              </p>
+            </div>
+
+            <button
+              onClick={() => setShowDbModal(false)}
+              className="w-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs py-2.5 rounded-xl"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

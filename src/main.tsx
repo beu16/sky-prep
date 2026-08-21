@@ -1,7 +1,22 @@
 import {StrictMode} from 'react';
 import {createRoot} from 'react-dom/client';
 import App from './App.tsx';
+import { ErrorBoundary } from './components/ErrorBoundary.tsx';
 import './index.css';
+
+// Gracefully handle expected benign Vite HMR WebSocket disconnect messages in container preview
+if (typeof window !== 'undefined') {
+  window.addEventListener('unhandledrejection', (event) => {
+    const reasonMsg = event.reason?.message || (typeof event.reason === 'string' ? event.reason : '');
+    if (
+      reasonMsg.includes('WebSocket closed without opened') ||
+      reasonMsg.includes('failed to connect to websocket') ||
+      reasonMsg.includes('[vite]')
+    ) {
+      event.preventDefault();
+    }
+  });
+}
 
 // Register PWA Service Worker for app installability and offline support
 if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
@@ -29,7 +44,9 @@ if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    <ErrorBoundary>
+      <App />
+    </ErrorBoundary>
   </StrictMode>,
 );
 

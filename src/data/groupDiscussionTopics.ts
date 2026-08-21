@@ -1,7 +1,9 @@
 import { GroupDiscussionTopic } from '../types';
 
 export const GROUP_DISCUSSION_TOPICS: GroupDiscussionTopic[] = [
-  // --- CABIN CREW TRAINING SCHOOL ---
+  // =========================================================================
+  // 1. CABIN CREW TRAINING SCHOOL
+  // =========================================================================
   {
     id: 'gd-1',
     role: 'Cabin Crew',
@@ -32,7 +34,7 @@ export const GROUP_DISCUSSION_TOPICS: GroupDiscussionTopic[] = [
     ]
   },
   {
-    id: 'gd-5',
+    id: 'gd-cc-2',
     role: 'Cabin Crew',
     training_school: 'CABIN CREW TRAINING SCHOOL',
     title: 'Is College Degree Essential vs Soft Skills & Empathy for Cabin Crew?',
@@ -61,15 +63,17 @@ export const GROUP_DISCUSSION_TOPICS: GroupDiscussionTopic[] = [
     ]
   },
 
-  // --- PILOT TRAINING SCHOOL ---
+  // =========================================================================
+  // 2. PILOT TRAINING SCHOOL
+  // =========================================================================
   {
-    id: 'gd-2',
+    id: 'gd-plt-1',
     role: 'Pilot / Cadet',
     training_school: 'PILOT TRAINING SCHOOL',
     title: 'Adverse Weather vs Schedule Pressure Decision',
     amharicTitle: 'መጥፎ የአየር ሁኔታ እና የበረራ ሰዓት እጥረት ሲያጋጥም መወሰን',
     scenario: 'A severe squall line is approaching the departure airport. The flight deck receives pressure from ground ops to depart before storm closure. How should the team weigh safety vs delay costs?',
-    amharicScenario: 'በጣም አደገኛ ማုန်በል እና ዝናብ ወደ ኤርፖርቱ እየመጣ ነው። የበረራ ቡድኑ ከበረራ በፊት ደህንነትን እና የጊዜ መዘገየትን እንዴት ይመዝናል?',
+    amharicScenario: 'በጣም አደገኛ ማዕበል እና ዝናብ ወደ ኤርፖርቱ እየመጣ ነው። የበረራ ቡድኑ ከበረራ በፊት ደህንነትን እና የጊዜ መዘገየትን እንዴት ይመዝናል?',
     evaluatorCriteria: [
       'Unwavering commitment to flight safety standards',
       'Collaborative risk assessment and CRM',
@@ -91,95 +95,125 @@ export const GROUP_DISCUSSION_TOPICS: GroupDiscussionTopic[] = [
       '"Should we consult ATC for updated convective weather movements before engine start?"'
     ]
   },
-
-  // --- AIRCRAFT MAINTENANCE TECHNICIAN TRAINING SCHOOL ---
   {
-    id: 'gd-3',
+    id: 'gd-plt-2',
+    role: 'Pilot / Cadet',
+    training_school: 'PILOT TRAINING SCHOOL',
+    title: 'Automation Reliance vs Manual Flying Proficiency in Modern Cockpits',
+    amharicTitle: 'በዘመናዊ አውሮፕላኖች ውስጥ አውቶፓይለት ላይ ከመጠን በላይ መደገፍ የሚያስከትለው ተጽዕኖ',
+    scenario: 'With fly-by-wire and advanced flight management systems (FMS), should airlines mandate frequent manual flying practice, or rely on automation for higher fuel efficiency and consistency?',
+    amharicScenario: 'አውቶፓይለት አደጋን የሚቀንስ ቢሆንም የአብራሪዎችን የእጅ በረራ ችሎታ እንዳያዳክም እንዴት ማመጣጠን ይቻላል?',
+    evaluatorCriteria: [
+      'Insight into modern aviation flight deck human factors',
+      'Balancing technological benefits with manual airmanship skills',
+      'Constructive debate management'
+    ],
+    dos: [
+      'Advocate for regular simulator and visual meteorological condition (VMC) manual flying drills',
+      'Highlight automation as a situational awareness enhancer, not a pilot replacement',
+      'Summarize key group takeaways respectfully'
+    ],
+    donts: [
+      'Do not argue that automation is useless or that manual flying is obsolete',
+      'Do not talk over others during technical explanations'
+    ],
+    starterPhrases: [
+      '"Automation provides exceptional precision, but manual airmanship remains the ultimate safeguard in unexpected flight anomalies."',
+      '"How do we structure recurrent simulator training to keep core hand-flying skills sharp?"',
+      '"A layered approach that uses automation strategically while preserving manual competence is essential."'
+    ]
+  },
+
+  // =========================================================================
+  // 3. AIRCRAFT MAINTENANCE TECHNICIAN TRAINING SCHOOL (AMT)
+  // =========================================================================
+  {
+    id: 'gd-amt-1',
     role: 'Aircraft Maintenance (AMT)',
     training_school: 'AIRCRAFT MAINTENANCE TECHNICIAN TRAINING SCHOOL',
-    title: 'Deferred Maintenance vs On-Time Flight Release',
-    amharicTitle: 'የጥገና ጊዜ እና የጊዜ ጥበቃ ምርጫ',
-    scenario: 'An auxiliary power unit (APU) generator shows intermittent readings 15 minutes before scheduled departure. Ground power is available at destination. How do technicians resolve this?',
-    amharicScenario: 'ከመነሳት 15 ደቂቃ በፊት የአውሮፕላኑ ኤፒዩ (APU) ችግር አሳይቷል። በቦታው ሌላ የኤሌክትሪክ ምንጭ አለ። ቡድኑ እንዴት ይወስናል?',
+    title: 'Deferred Maintenance (MEL) vs On-Time Flight Release',
+    amharicTitle: 'በአውሮፕላን ጥገና ወቅት በጊዜ መነሳት እና የደህንነት ጥንቃቄን ማመጣጠን',
+    scenario: 'An auxiliary fuel booster pump has failed 20 minutes before a scheduled international flight departure. The dispatch rules allow MEL deferral with operational limits. Should the engineering team defer or hold the flight for replacement?',
+    amharicScenario: 'ከበረራ 20 ደቂቃ በፊት የነዳጅ ፓምፕ ብልሽት አጋጥሟል። በ MEL ህግ መሰረት አውሮፕላኑ መብረር ቢችልም አዲሱን ፓምፕ ቀይሮ በረራውን ማዘግየት ይሻላል ወይስ ወዲያው መልቀቅ?',
     evaluatorCriteria: [
-      'Strict adherence to Minimum Equipment List (MEL)',
-      'Analytical problem solving and airworthiness knowledge',
-      'Effective team consensus building'
+      'Understanding of Minimum Equipment List (MEL) airworthiness rules',
+      'Team collaborative risk evaluation',
+      'Balancing engineering safety with operational efficiency'
     ],
     dos: [
-      'Consult the MEL document to verify if APU is a required item for the route',
-      'Ensure proper documentation and sign-off if deferred per MEL procedure',
-      'Communicate clearly with flight crew and station dispatch'
+      'Cross-check exact MEL requirements including route distance and alternate airports',
+      'Communicate clearly with flight operations regarding maintenance estimates',
+      'Respect all technician inputs before finalizing maintenance release'
     ],
     donts: [
-      'Do not guess MEL requirements without reference',
-      'Never sign off an item under time pressure without required procedure',
-      'Do not dismiss flight crew safety questions'
+      'Never bypass Aircraft Maintenance Manual (AMM) sign-off protocols',
+      'Do not succumb to commercial pressure if safety margins are compromised',
+      'Do not argue aggressively with team members'
     ],
     starterPhrases: [
-      '"Let\'s verify the MEL guidelines for this specific route and equipment requirement."',
-      '"If MEL permits deferral with ground power at destination, we must document it thoroughly."',
-      '"Safety and airworthiness documentation must be 100% compliant before release."'
+      '"Let\'s review the specific MEL conditions to ensure all operational margins are fully satisfied."',
+      '"If the replacement can be achieved safely within a predictable window, that might eliminate downstream route disruptions."',
+      '"Safety and airworthiness integrity must always guide our engineering sign-off."'
+    ]
+  },
+  {
+    id: 'gd-amt-2',
+    role: 'Aircraft Maintenance (AMT)',
+    training_school: 'AIRCRAFT MAINTENANCE TECHNICIAN TRAINING SCHOOL',
+    title: 'Digital Paperless Maintenance vs Traditional Physical Aircraft Logbooks',
+    amharicTitle: 'ዲጂታል የአውሮፕላን ጥገና ምዝገባ እና የወረቀት ሰነዶች ጥቅምና ጉዳት',
+    scenario: 'Airlines worldwide are transitioning from physical paper logbooks to electronic logbooks (e-Logs) and tablet-based work cards. What are the advantages and risks for line maintenance technicians?',
+    amharicScenario: 'በአለም አቀፍ አየር መንገዶች የአውሮፕላን ጥገና ሰነዶችን ወደ ዲጂታል መቀየር ምን ጥቅምና ጥንቃቄዎች አሉት?',
+    evaluatorCriteria: [
+      'Knowledge of aviation documentation and compliance',
+      'Risk mitigation and cybersecurity awareness in maintenance',
+      'Clear, persuasive communication'
+    ],
+    dos: [
+      'Highlight real-time fleet synchronization, rapid parts traceability, and human error reduction',
+      'Propose offline backup redundancy protocols for power or network outages',
+      'Encourage all candidates in the group to contribute their perspective'
+    ],
+    donts: [
+      'Do not ignore regulatory compliance rules for electronic signatures',
+      'Do not dismiss traditional technicians who are adapting to digital tools'
+    ],
+    starterPhrases: [
+      '"Digital logbooks significantly reduce transcription errors and expedite MRO parts requisition."',
+      '"To prevent line maintenance halts during system downtime, robust offline synchronization is vital."',
+      '"Our consensus is that digital systems offer superior traceability when backed by fail-safe redundancies."'
     ]
   },
 
-  // --- COMMERCIAL AND GROUND SERVICE TRAINING SCHOOL ---
+  // =========================================================================
+  // 4. COMMERCIAL AND GROUND SERVICE TRAINING SCHOOL
+  // =========================================================================
   {
-    id: 'gd-4',
+    id: 'gd-grd-1',
     role: 'Ground Operations',
     training_school: 'COMMERCIAL AND GROUND SERVICE TRAINING SCHOOL',
-    title: 'Misplaced Priority Baggage during Rapid Connection',
-    amharicTitle: 'የጠፋ የተሳፋሪ ሻንጣ በቶሎ ማግኘት እና ማስተናገድ',
-    scenario: 'Thirty priority transfer bags missed their connecting flight due to late inbound arrival. Disembarking passengers are waiting at the carousel. How should ground teams handle the communication?',
-    amharicScenario: '30 የቅድሚያ ተሳፋሪዎች ሻንጣ በጊዜ እጥረት ምክንያት አልተጫነም። ተሳፋሪዎቹ ኤርፖርት እየጠበቁ ነው። ቡድኑ ሁኔታውን እንዴት ያስተናግዳል?',
+    title: 'Automated Self-Service Bag Drops vs Personalized Passenger Check-In',
+    amharicTitle: 'የራስ አገዝ የሻንጣ መመዝገቢያ ቴክኖሎጂ እና የደንበኞች ቀጥተኛ መስተንግዶ',
+    scenario: 'To cut terminal queue times by 50%, international airports are expanding biometric self-service kiosks. How should ground operations staff balance rapid automated processing with warm, personalized passenger hospitality?',
+    amharicScenario: 'የተሳፋሪዎችን ሰልፍ ለመቀነስ ዲጂታል ራስ አገዝ ማሽኖች ሲተከሉ ሞቅ ያለ እንግዳ ተቀባይነትን እና የደንበኞች እርካታን እንዴት ማጣመር ይቻላል?',
     evaluatorCriteria: [
-      'Proactive customer recovery strategies',
-      'Stress tolerance and conflict resolution',
-      'Organization and clear action planning'
+      'Customer service mindset',
+      'Operational efficiency and queue management',
+      'Teamwork and constructive communication'
     ],
     dos: [
-      'Establish a dedicated assistance desk before passengers reach the carousel',
-      'Provide immediate delivery tracking and initial amenity vouchers',
-      'Demonstrate genuine care and clear follow-up timelines'
+      'Propose floor ambassador cabin/ground staff who assist elderly or first-time passengers at kiosks',
+      'Emphasize that technology frees staff to provide higher quality attention to special-need passengers',
+      'Support peer suggestions with practical examples'
     ],
     donts: [
-      'Do not hide or avoid answering waiting passengers',
-      'Never blame baggage handlers or other departments publicly',
-      'Avoid making promises regarding delivery times that cannot be kept'
+      'Do not present technology and hospitality as mutually exclusive',
+      'Avoid monopolizing the conversation'
     ],
     starterPhrases: [
-      '"Let\'s set up a dedicated trace desk immediately so passengers don\'t wait in uncertainty."',
-      '"Providing proactive baggage tracking numbers and home delivery guarantees will rebuild confidence."',
-      '"We should assign dedicated agents to assist elderly and family travelers directly."'
-    ]
-  },
-  {
-    id: 'gd-6',
-    role: 'Ground Operations',
-    training_school: 'COMMERCIAL AND GROUND SERVICE TRAINING SCHOOL',
-    title: 'Technology & Automation vs Personal Human Touch in Passenger Check-in',
-    amharicTitle: 'የቴክኖሎጂ (Kiosk/Online) እና የሰው ልጅ መስተንግዶ በኤርፖርት',
-    scenario: 'Bole International Airport introduces 100% self-service check-in kiosks and automated bag drops. Some passengers feel alienated without human interaction. How should ground ops balance efficiency with hospitality?',
-    amharicScenario: 'በቦሌ ኤርፖርት የራስ-ገዝ ኪዮስክ መስተንግዶ ቢዘረጋ ተሳፋሪዎችን ከቴክኖሎጂው ጋር ለማላመድ እና አገልግሎቱን ለማሻሻል ቡድኑ ምን ይምረጣል?',
-    evaluatorCriteria: [
-      'Operational efficiency awareness',
-      'Passenger empathy & assistance planning',
-      'Team consensus building'
-    ],
-    dos: [
-      'Suggest deploying "Floor Ambassador" staff at kiosks to guide first-time or elderly users',
-      'Highlight how automation reduces queue times, allowing agents to focus on complex passenger needs',
-      'Maintain a polite and structured flow during the discussion'
-    ],
-    donts: [
-      'Never advocate completely removing human service agents',
-      'Avoid arguing over technical kiosk specifications',
-      'Do not talk over other candidates'
-    ],
-    starterPhrases: [
-      '"Self-service speeds up check-in, but having floor ambassadors ensures no passenger feels lost or overwhelmed."',
-      '"Automation should enhance customer experience, not replace warm Ethiopian hospitality."',
-      '"Let\'s summarize our group proposal: automated kiosks for fast transit, with dedicated human assistance for passengers needing extra care."'
+      '"Self-service technology improves airport throughput, while floor hosts ensure our signature hospitality is never lost."',
+      '"We can dedicate automated lanes for tech-savvy travelers while preserving staffed counters for families and assisted passengers."',
+      '"Let\'s ensure our ground team is trained to deliver proactive assistance at key touchpoints."'
     ]
   }
 ];

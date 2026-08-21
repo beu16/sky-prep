@@ -4,6 +4,7 @@ import { EXAM_QUESTIONS } from '../data/examQuestions';
 import { saveExamAttempt } from '../services/supabase';
 import { Clock, CheckCircle2, XCircle, ArrowRight, RotateCcw, AlertTriangle, Sparkles, BookOpen, GraduationCap, Briefcase } from 'lucide-react';
 import { TRANSLATION } from '../data/translations';
+import { AIVoiceButton, AIVoiceSpeedControl } from './AIVoicePlayer';
 
 interface ExamScreenProps {
   user: UserProfile;
@@ -36,6 +37,7 @@ export const ExamScreen: React.FC<ExamScreenProps> = ({
 
   const schoolName = user.training_school || user.department || 'CABIN CREW TRAINING SCHOOL';
   const programName = user.training_program || user.field || 'INITIAL CABIN CREW (FLIGHT ATTENDANT)';
+  const isCabinCrew = schoolName.toUpperCase().includes('CABIN CREW') || user.selected_role === 'Cabin Crew';
 
   // Check if free user already used 1 free exam
   const cannotTakeExam = !user.is_paid && user.free_exam_used;
@@ -48,6 +50,9 @@ export const ExamScreen: React.FC<ExamScreenProps> = ({
 
     // Filter questions first by user's training school if present
     let filtered = EXAM_QUESTIONS.filter(q => {
+      if (isCabinCrew) {
+        return q.role === 'Cabin Crew' || (q.training_school && q.training_school.includes('CABIN CREW'));
+      }
       if (q.training_school && q.training_school !== schoolName) {
         return false;
       }
@@ -58,21 +63,18 @@ export const ExamScreen: React.FC<ExamScreenProps> = ({
       filtered = filtered.filter(q => q.category === selectedCategory);
     }
 
-    // If filter is too restrictive, fallback to all questions for that category
+    // If filter has fewer questions, don't mix outside cabin crew if user is cabin crew
     if (filtered.length < 5) {
-      if (selectedCategory !== 'All') {
-        filtered = EXAM_QUESTIONS.filter(q => q.category === selectedCategory);
+      if (isCabinCrew) {
+        filtered = EXAM_QUESTIONS.filter(q => q.role === 'Cabin Crew');
       } else {
-        filtered = EXAM_QUESTIONS;
+        filtered = EXAM_QUESTIONS.filter(q => q.category === selectedCategory || q.training_school === schoolName);
       }
     }
 
     // Prepare up to 20 questions
-    let full20Questions = [...filtered];
-    while (full20Questions.length < 20 && EXAM_QUESTIONS.length > 0) {
-      full20Questions = [...full20Questions, ...EXAM_QUESTIONS].slice(0, 20);
-    }
-    const shuffled = full20Questions.slice(0, 20).sort(() => Math.random() - 0.5);
+    const pool = filtered.length > 0 ? filtered : EXAM_QUESTIONS.filter(q => isCabinCrew ? q.role === 'Cabin Crew' : true);
+    const shuffled = [...pool].sort(() => Math.random() - 0.5).slice(0, 20);
 
     setQuestions(shuffled);
     setCurrentIdx(0);
@@ -194,18 +196,31 @@ export const ExamScreen: React.FC<ExamScreenProps> = ({
 
         {/* Category Filter */}
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
-          <h2 className="text-sm font-black text-slate-900 uppercase tracking-wider">
-            {lang === 'en' ? 'Select Question Focus Area:' : 'የፈተና ዘርፍ ይምረጡ:'}
-          </h2>
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-black text-slate-900 uppercase tracking-wider">
+              {lang === 'en' ? 'Select Question Focus Area:' : 'የፈተና ዘርፍ ይምረጡ:'}
+            </h2>
+            {isCabinCrew && (
+              <span className="text-[11px] font-black text-blue-700 bg-blue-50 px-2.5 py-1 rounded-full border border-blue-200">
+                100% English • No Math
+              </span>
+            )}
+          </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {[
+            {(isCabinCrew ? [
+              { id: 'All', name: 'Cabin Crew All-in-One Comprehensive' },
+              { id: 'Situational Judgment (SJT)', name: '1. Situational Judgment (SJT)' },
+              { id: 'English Vocabulary & Synonyms', name: '2. Vocabulary & Synonyms' },
+              { id: 'Grammar & Sentence Correction', name: '3. Grammar & Sentence Correction' },
+              { id: 'Reading Comprehension', name: '4. Reading Comprehension' },
+            ] : [
               { id: 'All', name: `${schoolName} Comprehensive` },
-              { id: 'English', name: t.englishProficiency },
-              { id: 'Numerical Reasoning', name: t.numericalReasoning },
-              { id: 'Verbal Reasoning', name: t.verbalReasoning },
-              { id: 'General Knowledge', name: t.generalKnowledge },
-            ].map((cat) => (
+              { id: 'Technical Aptitude', name: 'Technical Aptitude' },
+              { id: 'Aviation Safety & Regulations', name: 'Aviation Safety & Regulations' },
+              { id: 'Numerical Reasoning', name: 'Numerical Reasoning' },
+              { id: 'English', name: 'English Proficiency' },
+            ]).map((cat) => (
               <button
                 key={cat.id}
                 onClick={() => setSelectedCategory(cat.id as any)}
@@ -293,9 +308,38 @@ export const ExamScreen: React.FC<ExamScreenProps> = ({
 
         {/* Question Card */}
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-6">
-          <h2 className="text-base sm:text-lg font-black text-slate-900 leading-snug">
-            {lang === 'am' && q.amharicQuestion ? q.amharicQuestion : q.question}
-          </h2>
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex-1 space-y-4">
+              {q.question.includes('[PASSAGE:') ? (
+                <div className="space-y-4">
+                  {/* Styled Passage Box */}
+                  <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 text-xs sm:text-sm text-slate-700 leading-relaxed font-normal whitespace-pre-line">
+                    <div className="text-[10px] font-black uppercase text-blue-700 tracking-wider mb-2 flex items-center gap-1.5">
+                      <Sparkles className="w-3.5 h-3.5 text-blue-600" />
+                      <span>Reading Comprehension Passage</span>
+                    </div>
+                    {q.question.split('QUESTION:')[0].replace('[PASSAGE: ', '').replace(']', '')}
+                  </div>
+
+                  {/* Inference Question Prompt */}
+                  <h2 className="text-base sm:text-lg font-black text-slate-900 leading-snug">
+                    {q.question.includes('QUESTION:') ? `Question: ${q.question.split('QUESTION:')[1].trim()}` : q.question}
+                  </h2>
+                </div>
+              ) : (
+                <h2 className="text-base sm:text-lg font-black text-slate-900 leading-snug">
+                  {lang === 'am' && q.amharicQuestion ? q.amharicQuestion : q.question}
+                </h2>
+              )}
+            </div>
+
+            <AIVoiceButton
+              id={`exam-q-${currentIdx}`}
+              textToRead={q.question}
+              variant="compact"
+              label="Listen"
+            />
+          </div>
 
           <div className="space-y-3">
             {(lang === 'am' && q.amharicOptions ? q.amharicOptions : q.options).map((opt, optIdx) => {
@@ -415,14 +459,22 @@ export const ExamScreen: React.FC<ExamScreenProps> = ({
           return (
             <div key={idx} className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-3">
               <div className="flex items-start justify-between gap-3">
-                <span className="text-xs font-black text-slate-900">
+                <span className="text-xs font-black text-slate-900 flex-1">
                   Q{idx + 1}. {lang === 'am' && q.amharicQuestion ? q.amharicQuestion : q.question}
                 </span>
-                {isCorrect ? (
-                  <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
-                ) : (
-                  <XCircle className="w-5 h-5 text-rose-500 shrink-0" />
-                )}
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <AIVoiceButton
+                    id={`sol-${idx}`}
+                    textToRead={`Question ${idx + 1}: ${q.question}. The correct answer is ${q.options[q.correctIndex]}. Explanation: ${q.explanation}`}
+                    variant="compact"
+                    label="Listen to Explanation"
+                  />
+                  {isCorrect ? (
+                    <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+                  ) : (
+                    <XCircle className="w-5 h-5 text-rose-500 shrink-0" />
+                  )}
+                </div>
               </div>
 
               <div className="bg-slate-50 p-3 rounded-xl text-xs space-y-1">

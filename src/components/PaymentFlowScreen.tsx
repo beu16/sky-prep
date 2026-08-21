@@ -67,11 +67,11 @@ export const PaymentFlowScreen: React.FC<PaymentFlowScreenProps> = ({
         {/* Content Body */}
         <div className="p-6 space-y-5">
           
-          {/* Supabase Registration Confirmation Card */}
+          {/* Registration Confirmation Card */}
           <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 space-y-2">
             <div className="flex items-center gap-2 text-emerald-800 font-extrabold text-xs">
               <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-              <span>{lang === 'en' ? 'Upgrade Interest Registered in Supabase' : 'ተፈታኙ በዳታቤዝ ተመዝግቧል'}</span>
+              <span>{lang === 'en' ? 'Candidate Registered' : 'ተፈታኙ ተመዝግቧል'}</span>
             </div>
 
             <div className="text-xs text-slate-700 bg-white/90 rounded-xl p-3.5 border border-emerald-100 space-y-1.5">
@@ -114,7 +114,7 @@ export const PaymentFlowScreen: React.FC<PaymentFlowScreenProps> = ({
               </h4>
               <p className="text-[11px] text-slate-600 mt-0.5">
                 {lang === 'en'
-                  ? 'Have questions about Ethiopian Airlines recruitment or training programs? Chat with our team:'
+                  ? 'Have questions about airline recruitment or training programs? Chat with our team:'
                   : 'ስለ አየር መንገድ ቅጥር እና ፈተናዎች ማንኛውም ጥያቄ ካለዎት በቴሌግራም ያግኙን፡'}
               </p>
             </div>

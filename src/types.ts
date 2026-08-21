@@ -5,7 +5,11 @@ export type ExamCategory =
   | 'General Knowledge' 
   | 'Technical Aptitude' 
   | 'Aviation Safety & Regulations' 
-  | 'Customer & Flight Operations';
+  | 'Customer & Flight Operations'
+  | 'Situational Judgment (SJT)'
+  | 'English Vocabulary & Synonyms'
+  | 'Grammar & Sentence Correction'
+  | 'Reading Comprehension';
 
 export type AviationRole = 'Cabin Crew' | 'Pilot / Cadet' | 'Aircraft Maintenance (AMT)' | 'Ground Operations' | 'All';
 
@@ -31,7 +35,7 @@ export const TRAINING_SCHOOLS_DATA: TrainingSchoolOption[] = [
     amharicName: 'የበረራ አስተናጋጅ ስልጠና ትምህርት ቤት',
     role: 'Cabin Crew',
     programs: [
-      'CABIN CREW TRAINEE (ET-SPONSORED)'
+      'CABIN CREW TRAINEE (AIRLINE-SPONSORED)'
     ]
   },
   {
@@ -40,7 +44,7 @@ export const TRAINING_SCHOOLS_DATA: TrainingSchoolOption[] = [
     amharicName: 'የአብራሪዎች ስልጠና ትምህርት ቤት',
     role: 'Pilot / Cadet',
     programs: [
-      'TRAINEE PILOT (ET-SPONSORED)'
+      'TRAINEE PILOT (AIRLINE-SPONSORED)'
     ]
   },
   {
@@ -60,10 +64,10 @@ export const TRAINING_SCHOOLS_DATA: TrainingSchoolOption[] = [
   },
   {
     id: 'COMMERCIAL AND GROUND SERVICE TRAINING SCHOOL',
-    name: 'Commercial and Ground Service Training School (Selection Disabled)',
-    amharicName: 'የንግድ እና የመሬት ላይ አገልግሎት ስልጠና ትምህርት ቤት (የተዘጋ)',
+    name: 'Commercial and Ground Service Training School',
+    amharicName: 'የንግድ እና የመሬት ላይ አገልግሎት ስልጠና ትምህርት ቤት',
     role: 'Ground Operations',
-    disabled: true,
+    disabled: false,
     programs: [
       'PASSENGER HANDLING & CUSTOMER SERVICE',
       'RAMP OPERATIONS & BAGGAGE HANDLING',
@@ -72,6 +76,170 @@ export const TRAINING_SCHOOLS_DATA: TrainingSchoolOption[] = [
       'TICKETING, RESERVATIONS & SALES',
       'AIRPORT SECURITY & GROUND SUPPORT'
     ]
+  }
+];
+
+export interface AviationVacancyItem {
+  id: string;
+  name: string;
+  amharicName?: string;
+  schoolId: TrainingSchool;
+  schoolName: string;
+  role: AviationRole;
+  badge: string;
+  iconType: 'plane' | 'users' | 'wrench' | 'headphones';
+}
+
+export const ALL_AVIATION_VACANCIES: AviationVacancyItem[] = [
+  {
+    id: 'CABIN CREW TRAINEE (AIRLINE-SPONSORED)',
+    name: 'Cabin Crew Trainee (Airline-Sponsored)',
+    amharicName: 'የበረራ አስተናጋጅ ተለማማጅ (በአየር መንገድ ወጪ)',
+    schoolId: 'CABIN CREW TRAINING SCHOOL',
+    schoolName: 'Cabin Crew Training School',
+    role: 'Cabin Crew',
+    badge: 'In-Flight Crew',
+    iconType: 'users',
+  },
+  {
+    id: 'TRAINEE PILOT (AIRLINE-SPONSORED)',
+    name: 'Trainee Pilot (Airline-Sponsored)',
+    amharicName: 'ተለማማጅ ፓይለት / አብራሪ (በአየር መንገድ ወጪ)',
+    schoolId: 'PILOT TRAINING SCHOOL',
+    schoolName: 'Pilot Training School',
+    role: 'Pilot / Cadet',
+    badge: 'Flight Deck',
+    iconType: 'plane',
+  },
+  {
+    id: 'A/C MECHANIC',
+    name: 'A/C Mechanic',
+    amharicName: 'የአውሮፕላን መካኒክ',
+    schoolId: 'AIRCRAFT MAINTENANCE TECHNICIAN TRAINING SCHOOL',
+    schoolName: 'Aircraft Maintenance Technician Training School',
+    role: 'Aircraft Maintenance (AMT)',
+    badge: 'AMT School',
+    iconType: 'wrench',
+  },
+  {
+    id: 'A/C MAINTENANCE TECHNICIAN',
+    name: 'A/C Maintenance Technician',
+    amharicName: 'የአውሮፕላን ጥገና ቴክኒሻን',
+    schoolId: 'AIRCRAFT MAINTENANCE TECHNICIAN TRAINING SCHOOL',
+    schoolName: 'Aircraft Maintenance Technician Training School',
+    role: 'Aircraft Maintenance (AMT)',
+    badge: 'AMT School',
+    iconType: 'wrench',
+  },
+  {
+    id: 'A/C POWERPLANT TECHNICIAN',
+    name: 'A/C Powerplant Technician',
+    amharicName: 'የአውሮፕላን ሞተር ቴክኒሻን',
+    schoolId: 'AIRCRAFT MAINTENANCE TECHNICIAN TRAINING SCHOOL',
+    schoolName: 'Aircraft Maintenance Technician Training School',
+    role: 'Aircraft Maintenance (AMT)',
+    badge: 'AMT School',
+    iconType: 'wrench',
+  },
+  {
+    id: 'A/C STRUCTURE TECHNICIAN',
+    name: 'A/C Structure Technician',
+    amharicName: 'የአውሮፕላን ስትራክቸር ቴክኒሻን',
+    schoolId: 'AIRCRAFT MAINTENANCE TECHNICIAN TRAINING SCHOOL',
+    schoolName: 'Aircraft Maintenance Technician Training School',
+    role: 'Aircraft Maintenance (AMT)',
+    badge: 'AMT School',
+    iconType: 'wrench',
+  },
+  {
+    id: 'A/C AVIONICS TECHNICIAN',
+    name: 'A/C Avionics Technician',
+    amharicName: 'የአውሮፕላን አቪዮኒክስ ቴክኒሻን',
+    schoolId: 'AIRCRAFT MAINTENANCE TECHNICIAN TRAINING SCHOOL',
+    schoolName: 'Aircraft Maintenance Technician Training School',
+    role: 'Aircraft Maintenance (AMT)',
+    badge: 'AMT School',
+    iconType: 'wrench',
+  },
+  {
+    id: 'A/C CABIN MAINTENANCE',
+    name: 'A/C Cabin Maintenance',
+    amharicName: 'የካቢን ጥገና ቴክኒሻን',
+    schoolId: 'AIRCRAFT MAINTENANCE TECHNICIAN TRAINING SCHOOL',
+    schoolName: 'Aircraft Maintenance Technician Training School',
+    role: 'Aircraft Maintenance (AMT)',
+    badge: 'AMT School',
+    iconType: 'wrench',
+  },
+  {
+    id: 'A/C AIRFRAME TECHNICIAN',
+    name: 'A/C Airframe Technician',
+    amharicName: 'የኤርፍሬም ቴክኒሻን',
+    schoolId: 'AIRCRAFT MAINTENANCE TECHNICIAN TRAINING SCHOOL',
+    schoolName: 'Aircraft Maintenance Technician Training School',
+    role: 'Aircraft Maintenance (AMT)',
+    badge: 'AMT School',
+    iconType: 'wrench',
+  },
+  {
+    id: 'PASSENGER HANDLING & CUSTOMER SERVICE',
+    name: 'Passenger Handling & Customer Service',
+    amharicName: 'የመንገደኞች አቀባበል እና የደንበኞች አገልግሎት',
+    schoolId: 'COMMERCIAL AND GROUND SERVICE TRAINING SCHOOL',
+    schoolName: 'Commercial and Ground Service Training School',
+    role: 'Ground Operations',
+    badge: 'Ground Services',
+    iconType: 'headphones',
+  },
+  {
+    id: 'RAMP OPERATIONS & BAGGAGE HANDLING',
+    name: 'Ramp Operations & Baggage Handling',
+    amharicName: 'የራምፕ ስራዎች እና የሻንጣ አያያዝ',
+    schoolId: 'COMMERCIAL AND GROUND SERVICE TRAINING SCHOOL',
+    schoolName: 'Commercial and Ground Service Training School',
+    role: 'Ground Operations',
+    badge: 'Ground Services',
+    iconType: 'headphones',
+  },
+  {
+    id: 'FLIGHT DISPATCH & FLIGHT OPERATIONS',
+    name: 'Flight Dispatch & Flight Operations',
+    amharicName: 'የበረራ መረጃ እና የበረራ ስራዎች',
+    schoolId: 'COMMERCIAL AND GROUND SERVICE TRAINING SCHOOL',
+    schoolName: 'Commercial and Ground Service Training School',
+    role: 'Ground Operations',
+    badge: 'Ground Services',
+    iconType: 'headphones',
+  },
+  {
+    id: 'CARGO OPERATIONS & LOGISTICS',
+    name: 'Cargo Operations & Logistics',
+    amharicName: 'የካርጎ ስራዎች እና ሎጅስቲክስ',
+    schoolId: 'COMMERCIAL AND GROUND SERVICE TRAINING SCHOOL',
+    schoolName: 'Commercial and Ground Service Training School',
+    role: 'Ground Operations',
+    badge: 'Ground Services',
+    iconType: 'headphones',
+  },
+  {
+    id: 'TICKETING, RESERVATIONS & SALES',
+    name: 'Ticketing, Reservations & Sales',
+    amharicName: 'ቲኬት፣ ቦታ ማስያዝ እና ሽያጭ',
+    schoolId: 'COMMERCIAL AND GROUND SERVICE TRAINING SCHOOL',
+    schoolName: 'Commercial and Ground Service Training School',
+    role: 'Ground Operations',
+    badge: 'Ground Services',
+    iconType: 'headphones',
+  },
+  {
+    id: 'AIRPORT SECURITY & GROUND SUPPORT',
+    name: 'Airport Security & Ground Support',
+    amharicName: 'የአውሮፕላን ማረፊያ ደህንነት እና የመሬት ድጋፍ',
+    schoolId: 'COMMERCIAL AND GROUND SERVICE TRAINING SCHOOL',
+    schoolName: 'Commercial and Ground Service Training School',
+    role: 'Ground Operations',
+    badge: 'Ground Services',
+    iconType: 'headphones',
   }
 ];
 

@@ -79,7 +79,7 @@ export const PaywallModal: React.FC<PaywallModalProps> = ({
               <div className="flex items-center gap-2 text-emerald-800 font-extrabold text-xs">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
                 <span>
-                  {lang === 'en' ? 'Candidate Registered in Supabase' : 'ተፈታኙ በዳታቤዝ ተመዝግቧል'}
+                  {lang === 'en' ? 'Candidate Registered' : 'ተፈታኙ ተመዝግቧል'}
                 </span>
               </div>
               {user && (
@@ -135,7 +135,7 @@ export const PaywallModal: React.FC<PaywallModalProps> = ({
             {/* Top Header with Cabin Crew Banner */}
             <div className="relative p-6 text-white text-center overflow-hidden border-b border-amber-400/30">
               <img
-                src="/src/assets/images/cabin_crew_service_1786443350670.jpg"
+                src="/src/assets/images/intl_cabin_crew_svc_1787160538797.jpg"
                 alt="Cabin Crew Service"
                 className="absolute inset-0 w-full h-full object-cover object-center"
               />
@@ -213,14 +213,14 @@ export const PaywallModal: React.FC<PaywallModalProps> = ({
                   <Sparkles className="w-5 h-5 text-slate-950 fill-slate-950" />
                   <span>
                     {isRegistering 
-                      ? 'Registering in Supabase...' 
+                      ? (lang === 'en' ? 'Registering Upgrade Interest...' : 'በመመዝገብ ላይ...') 
                       : (lang === 'en' ? 'Register Interest to Upgrade' : 'የማሻሻያ ፍላጎትዎን ይመዝግቡ')}
                   </span>
                 </button>
 
                 <p className="text-[11px] text-center text-slate-500 flex items-center justify-center gap-1 pt-1">
                   <Shield className="w-3.5 h-3.5 text-emerald-600" />
-                  <span>Your registration will be securely synced with Supabase.</span>
+                  <span>Your registration will be securely synced with the candidate server.</span>
                 </p>
               </div>
 

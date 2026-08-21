@@ -3,6 +3,7 @@ import { GROUP_DISCUSSION_TOPICS } from '../data/groupDiscussionTopics';
 import { Users, Search, Copy, ChevronDown, ChevronUp, Sparkles, CheckCircle, XCircle } from 'lucide-react';
 import { AviationRole, Language } from '../types';
 import { TRANSLATION } from '../data/translations';
+import { AIVoiceButton, AIVoiceSpeedControl } from './AIVoicePlayer';
 
 interface GroupDiscussionScreenProps {
   selectedRole?: AviationRole;
@@ -35,7 +36,7 @@ export const GroupDiscussionScreen: React.FC<GroupDiscussionScreenProps> = ({
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-6 space-y-6 pb-24 md:pb-12">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 pb-16">
       
       {/* Top Banner with High-Quality Aviation Assessment Photo */}
       <div className="relative text-white rounded-3xl p-6 shadow-xl border border-slate-800 overflow-hidden">
@@ -67,18 +68,24 @@ export const GroupDiscussionScreen: React.FC<GroupDiscussionScreenProps> = ({
         </div>
       </div>
 
-      {/* Search Bar */}
-      <div className="relative">
-        <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-          <Search className="w-4 h-4" />
+      {/* Search and Voice Controls */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="relative flex-1">
+          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+            <Search className="w-4 h-4" />
+          </div>
+          <input
+            type="text"
+            placeholder={t.searchPlaceholder}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-10 pr-4 py-3.5 rounded-2xl border border-slate-200 focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 outline-none text-sm text-slate-900 bg-white shadow-sm min-h-[44px]"
+          />
         </div>
-        <input
-          type="text"
-          placeholder={t.searchPlaceholder}
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full pl-10 pr-4 py-3.5 rounded-2xl border border-slate-200 focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 outline-none text-sm text-slate-900 bg-white shadow-sm min-h-[44px]"
-        />
+
+        <div className="shrink-0 self-end sm:self-auto">
+          <AIVoiceSpeedControl />
+        </div>
       </div>
 
       {/* Topics Accordion List */}
@@ -118,9 +125,17 @@ export const GroupDiscussionScreen: React.FC<GroupDiscussionScreenProps> = ({
                   </div>
                 </div>
 
-                <button className="text-slate-400 p-1">
-                  {isExpanded ? <ChevronUp className="w-5 h-5 text-blue-600" /> : <ChevronDown className="w-5 h-5" />}
-                </button>
+                <div className="flex items-center gap-2">
+                  <AIVoiceButton
+                    id={`gd-${topic.id}`}
+                    textToRead={`${topic.title}. Scenario: ${topic.scenario}`}
+                    variant="compact"
+                    label="Listen to Topic"
+                  />
+                  <button className="text-slate-400 p-1">
+                    {isExpanded ? <ChevronUp className="w-5 h-5 text-blue-600" /> : <ChevronDown className="w-5 h-5" />}
+                  </button>
+                </div>
               </div>
 
               {/* Expanded Details */}
@@ -128,10 +143,17 @@ export const GroupDiscussionScreen: React.FC<GroupDiscussionScreenProps> = ({
                 <div className="px-5 pb-6 pt-2 border-t border-slate-100 space-y-6 bg-slate-50/50">
                   
                   {/* Scenario */}
-                  <div className="bg-white p-4 rounded-xl border border-slate-200 space-y-1 shadow-sm">
-                    <span className="text-[10px] font-black uppercase tracking-wider text-slate-500">
-                      Scenario Breakdown
-                    </span>
+                  <div className="bg-white p-4 rounded-xl border border-slate-200 space-y-2 shadow-sm">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-black uppercase tracking-wider text-slate-500">
+                        Scenario Breakdown
+                      </span>
+                      <AIVoiceButton
+                        id={`gd-full-${topic.id}`}
+                        textToRead={`Topic: ${topic.title}. Scenario: ${topic.scenario}. Key starter phrase: ${topic.starterPhrases[0] || ''}`}
+                        label="Listen to Discussion Guide"
+                      />
+                    </div>
                     <p className="text-xs text-slate-800 leading-relaxed font-medium">
                       {topic.scenario}
                     </p>

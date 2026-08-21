@@ -4,6 +4,7 @@ import { INTERVIEW_QUESTIONS } from '../data/interviewQuestions';
 import { getAudioRecordings, saveAudioRecording, deleteAudioRecording } from '../services/supabase';
 import { Mic, Lock, Play, Square, Trash2, Sparkles, Volume2, Shield, ChevronRight, CheckCircle2, GraduationCap, Briefcase } from 'lucide-react';
 import { TRANSLATION } from '../data/translations';
+import { AIVoiceButton, AIVoiceSpeedControl } from './AIVoicePlayer';
 
 interface InterviewPrepScreenProps {
   user: UserProfile;
@@ -127,7 +128,7 @@ export const InterviewPrepScreen: React.FC<InterviewPrepScreenProps> = ({
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-6 space-y-6 pb-28 animate-fadeIn">
+    <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-5 sm:py-8 space-y-6 sm:space-y-8 pb-16 animate-fadeIn w-full max-w-full overflow-x-hidden">
       
       {/* Title Header with Real High-Quality Aviation Banner */}
       <div className="relative rounded-3xl p-6 text-white shadow-xl overflow-hidden border border-slate-800">
@@ -203,22 +204,28 @@ export const InterviewPrepScreen: React.FC<InterviewPrepScreenProps> = ({
         </button>
       </div>
 
-      {/* Category Filter Pills */}
+      {/* Category Filter Pills and Voice Controls */}
       {internalTab === 'questions' && (
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setActiveCategory(cat)}
-              className={`px-4 py-2 rounded-xl text-xs font-extrabold whitespace-nowrap transition-all border min-h-[44px] ${
-                activeCategory === cat
-                  ? 'bg-[#2E86FF] text-white border-[#2E86FF] shadow-md'
-                  : 'bg-white text-slate-700 border-slate-200 hover:border-slate-300'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none flex-1">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                className={`px-4 py-2 rounded-xl text-xs font-extrabold whitespace-nowrap transition-all border min-h-[44px] ${
+                  activeCategory === cat
+                    ? 'bg-[#2E86FF] text-white border-[#2E86FF] shadow-md'
+                    : 'bg-white text-slate-700 border-slate-200 hover:border-slate-300'
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+
+          <div className="shrink-0 self-end sm:self-auto">
+            <AIVoiceSpeedControl />
+          </div>
         </div>
       )}
 
@@ -262,7 +269,7 @@ export const InterviewPrepScreen: React.FC<InterviewPrepScreenProps> = ({
                         {q.category}
                       </span>
                       {!isPaid && q.isFreePreview && (
-                        <span className="text-[10px] font-black text-[#1FAA59] bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                        <span className="text-[10px] font-black text-sky-700 bg-sky-50 px-2 py-0.5 rounded-full border border-sky-200">
                           FREE PREVIEW
                         </span>
                       )}
@@ -273,7 +280,15 @@ export const InterviewPrepScreen: React.FC<InterviewPrepScreenProps> = ({
                     </h3>
                   </div>
 
-                  <div className="shrink-0">
+                  <div className="shrink-0 flex items-center gap-2">
+                    {!isLocked && (
+                      <AIVoiceButton
+                        id={`q-${q.id}`}
+                        textToRead={q.question}
+                        variant="compact"
+                        label="Listen to Question"
+                      />
+                    )}
                     {isLocked ? (
                       <div className="w-9 h-9 rounded-xl bg-[#F2B134]/20 text-[#0B2545] border border-[#F2B134]/50 flex items-center justify-center shadow-sm">
                         <Lock className="w-4 h-4 text-amber-700" />
@@ -306,12 +321,21 @@ export const InterviewPrepScreen: React.FC<InterviewPrepScreenProps> = ({
                 {isExpanded && !isLocked && (
                   <div className="px-5 pb-6 pt-2 border-t border-slate-100 space-y-5 bg-slate-50/40">
                     
-                    {/* STAR Grid */}
+                    {/* STAR Grid Header with AI Voice Narration */}
                     <div className="space-y-2">
-                      <h4 className="text-xs font-black text-[#0B2545] uppercase tracking-wider flex items-center gap-1.5">
-                        <Sparkles className="w-4 h-4 text-[#F2B134]" />
-                        <span>STAR Model Answer</span>
-                      </h4>
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <h4 className="text-xs font-black text-[#0B2545] uppercase tracking-wider flex items-center gap-1.5">
+                          <Sparkles className="w-4 h-4 text-[#F2B134]" />
+                          <span>STAR Model Answer</span>
+                        </h4>
+
+                        <AIVoiceButton
+                          id={`star-${q.id}`}
+                          textToRead={`Interview Question: ${q.question}. Situation: ${q.starFramework.situation}. Task: ${q.starFramework.task}. Action: ${q.starFramework.action}. Result: ${q.starFramework.result}.`}
+                          label="Listen to Full STAR Audio"
+                          className="self-start sm:self-auto"
+                        />
+                      </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm space-y-1">
@@ -359,7 +383,7 @@ export const InterviewPrepScreen: React.FC<InterviewPrepScreenProps> = ({
                         </span>
 
                         {rec && (
-                          <span className="text-[10px] font-extrabold text-[#1FAA59] bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                          <span className="text-[10px] font-extrabold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200">
                             Recorded ({rec.durationSeconds}s)
                           </span>
                         )}

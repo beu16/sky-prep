@@ -4,7 +4,8 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { UserProfile, ExamAttempt, AviationRole, Language } from './types';
+import { Home, BookOpen, MessageSquare, TrendingUp, User as UserIcon } from 'lucide-react';
+import { UserProfile, ExamAttempt, AviationRole, Language, TrainingSchool } from './types';
 import { getStoredUserProfile, saveUserProfile, getStoredExamAttempts } from './services/supabase';
 import { Header } from './components/Header';
 import { WelcomeScreen } from './components/WelcomeScreen';
@@ -20,8 +21,8 @@ import { PaywallModal } from './components/PaywallModal';
 import { PaymentFlowScreen } from './components/PaymentFlowScreen';
 import { AdminVerificationModal } from './components/AdminVerificationModal';
 import { VerifiedReadyCertificate } from './components/VerifiedReadyCertificate';
-import { SupabaseConfigModal } from './components/SupabaseConfigModal';
 import { ScreenProtectionGuard } from './components/ScreenProtectionGuard';
+import { Footer } from './components/Footer';
 
 export default function App() {
   const [user, setUser] = useState<UserProfile | null>(null);
@@ -31,13 +32,19 @@ export default function App() {
   const [selectedRole, setSelectedRole] = useState<AviationRole>('All');
   const [lang, setLang] = useState<Language>('en');
 
+  // Track preset from WelcomeScreen
+  const [authPreset, setAuthPreset] = useState<{
+    school?: TrainingSchool;
+    program?: string;
+    role?: AviationRole;
+  }>({});
+
   // GD Guide View Toggle inside Practice
   const [showGDGuide, setShowGDGuide] = useState(false);
 
   // Modals
   const [showPaywall, setShowPaywall] = useState(false);
   const [showAdmin, setShowAdmin] = useState(false);
-  const [showDbConfig, setShowDbConfig] = useState(false);
   const [showCertificate, setShowCertificate] = useState(false);
   const [showExamScreen, setShowExamScreen] = useState(false);
 
@@ -104,7 +111,7 @@ export default function App() {
 
   return (
     <ScreenProtectionGuard user={user}>
-      <div className="min-h-screen bg-[#F7F9FC] text-slate-900 flex flex-col font-sans selection:bg-blue-200">
+      <div className="min-h-screen max-w-full overflow-x-hidden bg-[#F7F9FC] text-slate-900 flex flex-col font-sans selection:bg-blue-200">
         
         {/* Header Bar */}
         <Header
@@ -124,24 +131,37 @@ export default function App() {
             setShowGDGuide(true);
           }}
           onOpenPaywall={() => setShowPaywall(true)}
-          onOpenDbConfig={() => setShowDbConfig(true)}
           onOpenAdmin={() => setShowAdmin(true)}
           onLogout={handleLogout}
         />
 
       {/* Main Content Area */}
-      <main className="flex-1">
+      <main className={`flex-1 w-full max-w-full overflow-x-hidden ${user && screen === 'main' ? 'pb-20 lg:pb-0' : ''}`}>
         {screen === 'welcome' && (
           <WelcomeScreen
             lang={lang}
             setLang={setLang}
-            onStart={() => setScreen('auth')}
+            onStart={(school, program, role) => {
+              if (typeof school === 'string') {
+                setAuthPreset({
+                  school,
+                  program: typeof program === 'string' ? program : undefined,
+                  role: typeof role === 'string' ? role : undefined,
+                });
+              } else {
+                setAuthPreset({});
+              }
+              setScreen('auth');
+            }}
           />
         )}
 
         {screen === 'auth' && (
           <AuthScreen
             lang={lang}
+            initialSchool={authPreset.school}
+            initialProgram={authPreset.program}
+            initialRole={authPreset.role}
             onAuthenticated={handleAuthenticated}
             onBack={() => setScreen('welcome')}
           />
@@ -250,6 +270,63 @@ export default function App() {
         )}
       </main>
 
+      {/* Modern Website Footer */}
+      <Footer
+        lang={lang}
+        onNavigate={(tab) => {
+          if (user) {
+            setActiveTab(tab);
+            setShowExamScreen(false);
+            setShowGDGuide(false);
+          } else {
+            setScreen('auth');
+          }
+        }}
+        onOpenGD={() => {
+          if (user) {
+            setActiveTab('practice');
+            setShowGDGuide(true);
+          } else {
+            setScreen('auth');
+          }
+        }}
+        onOpenPaywall={() => setShowPaywall(true)}
+      />
+
+      {/* Mobile Bottom Navigation Bar (Visible on mobile/tablet screens when logged in) */}
+      {user && screen === 'main' && (
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 z-30 bg-[#0B2545]/95 backdrop-blur-md border-t border-slate-800/90 py-1.5 px-2 flex justify-around items-center shadow-2xl">
+          {[
+            { id: 'home', label: lang === 'en' ? 'Home' : 'ዋና', icon: Home },
+            { id: 'practice', label: lang === 'en' ? 'Practice' : 'ልምምድ', icon: BookOpen },
+            { id: 'interview', label: lang === 'en' ? 'Interview' : 'ቃለ-መጠይቅ', icon: MessageSquare },
+            { id: 'progress', label: lang === 'en' ? 'Progress' : 'ውጤት', icon: TrendingUp },
+            { id: 'profile', label: lang === 'en' ? 'Profile' : 'መገለጫ', icon: UserIcon },
+          ].map((tab) => {
+            const Icon = tab.icon;
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => {
+                  setActiveTab(tab.id as any);
+                  setShowExamScreen(false);
+                  setShowGDGuide(false);
+                }}
+                className={`flex flex-col items-center justify-center py-1 px-2 rounded-xl transition-all ${
+                  isActive
+                    ? 'text-[#F2B134] font-black'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                <Icon className={`w-4 h-4 ${isActive ? 'stroke-[2.5px]' : 'stroke-2'}`} />
+                <span className="text-[10px] mt-0.5 whitespace-nowrap">{tab.label}</span>
+              </button>
+            );
+          })}
+        </div>
+      )}
+
       {/* Modals & Overlays */}
       {showPaywall && (
         <PaywallModal
@@ -269,10 +346,6 @@ export default function App() {
           onClose={() => setShowAdmin(false)}
           onStatusUpdated={refreshUser}
         />
-      )}
-
-      {showDbConfig && (
-        <SupabaseConfigModal onClose={() => setShowDbConfig(false)} />
       )}
 
       {showCertificate && user && (

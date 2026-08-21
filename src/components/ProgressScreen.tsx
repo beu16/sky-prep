@@ -54,7 +54,7 @@ export const ProgressScreen: React.FC<ProgressScreenProps> = ({
     }));
 
   return (
-    <div className="max-w-xl mx-auto px-4 py-6 space-y-6 pb-28">
+    <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-5 sm:py-8 space-y-6 sm:space-y-8 pb-16 w-full max-w-full overflow-x-hidden">
       
       {/* Title Header with Airport Terminal Banner */}
       <div className="relative rounded-3xl p-6 text-white shadow-xl overflow-hidden border border-slate-800">

@@ -32,10 +32,10 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
   };
 
   const schoolName = user.training_school || user.department || 'CABIN CREW TRAINING SCHOOL';
-  const programName = user.training_program || user.field || 'CABIN CREW TRAINEE (ET-SPONSORED)';
+  const programName = user.training_program || user.field || 'CABIN CREW TRAINEE (AIRLINE-SPONSORED)';
 
   return (
-    <div className="max-w-xl mx-auto px-4 py-6 space-y-6 pb-28 animate-fadeIn">
+    <div className="max-w-4xl mx-auto px-3 sm:px-6 lg:px-8 py-5 sm:py-8 space-y-6 sm:space-y-8 pb-16 animate-fadeIn w-full max-w-full overflow-x-hidden">
       
       {/* Title */}
       <h1 className="text-2xl font-black text-[#0B2545] tracking-tight">
@@ -142,7 +142,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
             <span>GLOBAL AVIATION CAREER PORTAL</span>
           </div>
           <h3 className="text-sm font-black text-white leading-tight">
-            Target Airline: Ethiopian Airlines & Star Alliance
+            Target Career: Commercial Airlines & Aviation Academies
           </h3>
           <p className="text-xs text-slate-200 font-medium leading-relaxed">
             Your candidate assessment record is calibrated against standard aviation academy benchmarks.
@@ -196,15 +196,15 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
           className="w-full p-4 flex items-center justify-between text-left hover:bg-slate-50 transition-colors group min-h-[52px]"
         >
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-emerald-50 text-[#1FAA59] flex items-center justify-center">
+            <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
               <Award className="w-5 h-5" />
             </div>
             <div className="flex items-center gap-2">
               <span className="text-xs font-extrabold text-[#0B2545]">
                 My Certificate / Verified Ready
               </span>
-              <span className="text-[9px] font-black bg-emerald-100 text-[#1FAA59] px-2 py-0.5 rounded-full">
-                New
+              <span className="text-[9px] font-black bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full">
+                Verified
               </span>
             </div>
           </div>
@@ -308,7 +308,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
             </div>
 
             <p className="text-xs text-slate-600 leading-relaxed">
-              If you have any questions regarding Ethiopian Airlines recruitment preparation, training schools, or payment verification, reach out to our official Telegram support desk:
+              If you have any questions regarding airline recruitment preparation, training schools, or payment verification, reach out to our official Telegram support desk:
             </p>
 
             {/* Direct Telegram Action Card */}
@@ -352,7 +352,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
             <p className="text-xs text-slate-600 leading-relaxed">
               <strong>Sky Prep — Get hired-ready.</strong>
               <br /><br />
-              Professional airline recruitment assessment prep suite for Ethiopian Airlines & international carriers.
+              Professional airline recruitment assessment prep suite for global commercial aviation carriers.
             </p>
             <button
               onClick={() => setShowAboutModal(false)}
