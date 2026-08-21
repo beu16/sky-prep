@@ -3,6 +3,7 @@ import { Shield, Plane, Users, Mic, Award, ArrowRight, CheckCircle2, Globe, Spar
 import { Language, TrainingSchool, AviationRole } from '../types';
 import { TRANSLATION } from '../data/translations';
 import { IMAGES } from '../assets/images';
+import { AviationImage } from './AviationImage';
 
 interface WelcomeScreenProps {
   lang: Language;
@@ -118,7 +119,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ lang, setLang, onS
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-[#0B2545] text-white py-16 lg:py-24 border-b border-slate-800">
         <div className="absolute inset-0">
-          <img
+          <AviationImage
             src={IMAGES.globalHero}
             alt="Commercial Aviation Fleet"
             className="w-full h-full object-cover object-center opacity-25"
@@ -295,14 +296,13 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ lang, setLang, onS
                   className="bg-white rounded-3xl overflow-hidden border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group cursor-pointer"
                 >
                   <div>
-                    <div className="relative h-44 w-full overflow-hidden bg-slate-900">
-                      <img
+                    <div className="relative h-44 w-full overflow-hidden bg-[#0B2545]">
+                      <AviationImage
                         src={tr.image}
                         alt={tr.title}
-                        referrerPolicy="no-referrer"
                         className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent pointer-events-none" />
                       <div className="absolute top-3 left-3 bg-[#0B2545]/90 backdrop-blur-sm border border-white/20 text-white text-[10px] font-black uppercase px-2.5 py-1 rounded-full flex items-center gap-1.5 shadow">
                         <Icon className="w-3 h-3 text-amber-400" />
                         <span>{tr.badge}</span>

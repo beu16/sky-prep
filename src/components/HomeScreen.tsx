@@ -3,6 +3,7 @@ import { UserProfile, ExamAttempt, AviationRole, Language, TRAINING_SCHOOLS_DATA
 import { TRANSLATION } from '../data/translations';
 import { Shield, Sparkles, BookOpen, Users, Mic, Award, Crown, ArrowRight, Play, CheckCircle2, Layers, ChevronRight, GraduationCap, Briefcase, Plane, BarChart3, Clock, CheckCircle, HelpCircle } from 'lucide-react';
 import { IMAGES } from '../assets/images';
+import { AviationImage } from './AviationImage';
 
 interface HomeScreenProps {
   user: UserProfile;
@@ -158,7 +159,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           
           {/* Department Assessment Banner */}
           <div className="relative rounded-3xl p-8 text-white shadow-xl overflow-hidden border border-slate-800">
-            <img
+            <AviationImage
               src={getBannerImage()}
               alt={schoolName}
               className="absolute inset-0 w-full h-full object-cover object-center"
@@ -457,14 +458,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             }}
             className="group relative bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl border border-slate-200 hover:border-blue-400 transition-all duration-300 cursor-pointer flex flex-col"
           >
-            <div className="relative h-48 w-full overflow-hidden">
-              <img
+            <div className="relative h-48 w-full overflow-hidden bg-[#0B2545]">
+              <AviationImage
                 src={IMAGES.cabinCrewSvc}
                 alt="Commercial Airline Cabin Crew Welcoming Passengers"
-                referrerPolicy="no-referrer"
                 className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/30 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/30 to-transparent pointer-events-none" />
               <div className="absolute top-3 left-3 bg-[#0B2545]/90 backdrop-blur-sm border border-white/20 text-white text-[10px] font-black uppercase px-2.5 py-1 rounded-full flex items-center gap-1 shadow">
                 <Users className="w-3 h-3 text-amber-400" />
                 <span>Cabin Crew Active</span>
@@ -493,14 +493,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             }}
             className="group relative bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl border border-slate-200 hover:border-sky-400 transition-all duration-300 cursor-pointer flex flex-col"
           >
-            <div className="relative h-48 w-full overflow-hidden">
-              <img
+            <div className="relative h-48 w-full overflow-hidden bg-[#0B2545]">
+              <AviationImage
                 src={IMAGES.pilotCockpit}
                 alt="Commercial Airline Pilot in Flight Deck Cockpit"
-                referrerPolicy="no-referrer"
                 className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/30 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/30 to-transparent pointer-events-none" />
               <div className="absolute top-3 left-3 bg-[#0B2545]/90 backdrop-blur-sm border border-white/20 text-white text-[10px] font-black uppercase px-2.5 py-1 rounded-full flex items-center gap-1 shadow">
                 <Plane className="w-3.5 h-3.5 text-sky-400" />
                 <span>Pilot in Command</span>
@@ -529,14 +528,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             }}
             className="group relative bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl border border-slate-200 hover:border-sky-400 transition-all duration-300 cursor-pointer flex flex-col"
           >
-            <div className="relative h-48 w-full overflow-hidden">
-              <img
+            <div className="relative h-48 w-full overflow-hidden bg-[#0B2545]">
+              <AviationImage
                 src={IMAGES.terminalWalk}
                 alt="Airline Crew Walking to Aircraft Concourse"
-                referrerPolicy="no-referrer"
                 className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/30 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/30 to-transparent pointer-events-none" />
               <div className="absolute top-3 left-3 bg-[#0B2545]/90 backdrop-blur-sm border border-white/20 text-white text-[10px] font-black uppercase px-2.5 py-1 rounded-full flex items-center gap-1 shadow">
                 <Briefcase className="w-3.5 h-3.5 text-sky-400" />
                 <span>Flight Departure</span>
@@ -565,14 +563,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             }}
             className="group relative bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl border border-slate-200 hover:border-amber-400 transition-all duration-300 cursor-pointer flex flex-col"
           >
-            <div className="relative h-48 w-full overflow-hidden">
-              <img
+            <div className="relative h-48 w-full overflow-hidden bg-[#0B2545]">
+              <AviationImage
                 src={IMAGES.academyGrad}
                 alt="Aviation Academy Wings Graduation Ceremony"
-                referrerPolicy="no-referrer"
                 className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/30 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/30 to-transparent pointer-events-none" />
               <div className="absolute top-3 left-3 bg-[#0B2545]/90 backdrop-blur-sm border border-white/20 text-white text-[10px] font-black uppercase px-2.5 py-1 rounded-full flex items-center gap-1 shadow">
                 <Award className="w-3.5 h-3.5 text-amber-400" />
                 <span>Graduation Day</span>

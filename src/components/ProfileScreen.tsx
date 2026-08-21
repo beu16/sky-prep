@@ -3,6 +3,7 @@ import { UserProfile, Language } from '../types';
 import { TRANSLATION } from '../data/translations';
 import { User, Shield, CreditCard, Award, HelpCircle, Info, LogOut, Settings, ChevronRight, Sparkles, CheckCircle2, Copy, GraduationCap, Briefcase, Send, ExternalLink } from 'lucide-react';
 import { IMAGES } from '../assets/images';
+import { AviationImage } from './AviationImage';
 
 interface ProfileScreenProps {
   user: UserProfile;
@@ -130,7 +131,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
 
       {/* Career Profile Banner */}
       <div className="relative rounded-3xl p-5 text-white shadow-lg overflow-hidden border border-slate-800">
-        <img
+        <AviationImage
           src={IMAGES.pilotCadet}
           alt="Aviation Career Profile"
           className="absolute inset-0 w-full h-full object-cover object-center"

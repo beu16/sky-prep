@@ -6,6 +6,7 @@ import { Mic, Lock, Play, Square, Trash2, Sparkles, Volume2, Shield, ChevronRigh
 import { TRANSLATION } from '../data/translations';
 import { AIVoiceButton, AIVoiceSpeedControl } from './AIVoicePlayer';
 import { IMAGES } from '../assets/images';
+import { AviationImage } from './AviationImage';
 
 interface InterviewPrepScreenProps {
   user: UserProfile;
@@ -133,7 +134,7 @@ export const InterviewPrepScreen: React.FC<InterviewPrepScreenProps> = ({
       
       {/* Title Header with Real High-Quality Aviation Banner */}
       <div className="relative rounded-3xl p-6 text-white shadow-xl overflow-hidden border border-slate-800">
-        <img
+        <AviationImage
           src={IMAGES.cabinCrewGeneral}
           alt="Aviation Assessment Panel"
           className="absolute inset-0 w-full h-full object-cover object-center"

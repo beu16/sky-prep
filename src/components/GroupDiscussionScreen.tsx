@@ -5,6 +5,7 @@ import { AviationRole, Language } from '../types';
 import { TRANSLATION } from '../data/translations';
 import { AIVoiceButton, AIVoiceSpeedControl } from './AIVoicePlayer';
 import { IMAGES } from '../assets/images';
+import { AviationImage } from './AviationImage';
 
 interface GroupDiscussionScreenProps {
   selectedRole?: AviationRole;
@@ -41,7 +42,7 @@ export const GroupDiscussionScreen: React.FC<GroupDiscussionScreenProps> = ({
       
       {/* Top Banner with High-Quality Aviation Assessment Photo */}
       <div className="relative text-white rounded-3xl p-6 shadow-xl border border-slate-800 overflow-hidden">
-        <img
+        <AviationImage
           src={IMAGES.groupDiscussionImg}
           alt="Aviation Group Discussion"
           className="absolute inset-0 w-full h-full object-cover object-center"

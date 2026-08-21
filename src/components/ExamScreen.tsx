@@ -6,6 +6,7 @@ import { Clock, CheckCircle2, XCircle, ArrowRight, RotateCcw, AlertTriangle, Spa
 import { TRANSLATION } from '../data/translations';
 import { AIVoiceButton, AIVoiceSpeedControl } from './AIVoicePlayer';
 import { IMAGES } from '../assets/images';
+import { AviationImage } from './AviationImage';
 
 interface ExamScreenProps {
   user: UserProfile;
@@ -154,7 +155,7 @@ export const ExamScreen: React.FC<ExamScreenProps> = ({
     return (
       <div className="max-w-3xl mx-auto px-4 py-8 space-y-6 pb-24 md:pb-12 animate-fadeIn">
         <div className="relative text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-slate-800 space-y-4 overflow-hidden">
-          <img
+          <AviationImage
             src={IMAGES.pilotsBriefing}
             alt="Airline Assessment Briefing"
             className="absolute inset-0 w-full h-full object-cover object-center"
