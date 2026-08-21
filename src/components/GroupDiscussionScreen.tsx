@@ -4,6 +4,7 @@ import { Users, Search, Copy, ChevronDown, ChevronUp, Sparkles, CheckCircle, XCi
 import { AviationRole, Language } from '../types';
 import { TRANSLATION } from '../data/translations';
 import { AIVoiceButton, AIVoiceSpeedControl } from './AIVoicePlayer';
+import { IMAGES } from '../assets/images';
 
 interface GroupDiscussionScreenProps {
   selectedRole?: AviationRole;
@@ -41,7 +42,7 @@ export const GroupDiscussionScreen: React.FC<GroupDiscussionScreenProps> = ({
       {/* Top Banner with High-Quality Aviation Assessment Photo */}
       <div className="relative text-white rounded-3xl p-6 shadow-xl border border-slate-800 overflow-hidden">
         <img
-          src="/src/assets/images/group_discussion_1786443106727.jpg"
+          src={IMAGES.groupDiscussionImg}
           alt="Aviation Group Discussion"
           className="absolute inset-0 w-full h-full object-cover object-center"
         />

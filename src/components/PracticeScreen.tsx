@@ -2,6 +2,7 @@ import React from 'react';
 import { UserProfile, ExamAttempt, ExamCategory, Language } from '../types';
 import { TRANSLATION } from '../data/translations';
 import { BookOpen, BarChart3, Brain, Plane, Clock, ArrowRight, Sparkles, ChevronRight, CheckCircle2, Shield } from 'lucide-react';
+import { IMAGES } from '../assets/images';
 
 interface PracticeScreenProps {
   user: UserProfile;
@@ -69,7 +70,7 @@ export const PracticeScreen: React.FC<PracticeScreenProps> = ({
       {/* Title Header with Flight Deck Banner */}
       <div className="relative rounded-3xl p-8 text-white shadow-xl overflow-hidden border border-slate-800">
         <img
-          src="/src/assets/images/flight_simulator_1786443425493.jpg"
+          src={IMAGES.flightSimulator}
           alt="Flight Simulator Training"
           className="absolute inset-0 w-full h-full object-cover object-center"
         />

@@ -5,6 +5,7 @@ import { saveExamAttempt } from '../services/supabase';
 import { Clock, CheckCircle2, XCircle, ArrowRight, RotateCcw, AlertTriangle, Sparkles, BookOpen, GraduationCap, Briefcase } from 'lucide-react';
 import { TRANSLATION } from '../data/translations';
 import { AIVoiceButton, AIVoiceSpeedControl } from './AIVoicePlayer';
+import { IMAGES } from '../assets/images';
 
 interface ExamScreenProps {
   user: UserProfile;
@@ -154,7 +155,7 @@ export const ExamScreen: React.FC<ExamScreenProps> = ({
       <div className="max-w-3xl mx-auto px-4 py-8 space-y-6 pb-24 md:pb-12 animate-fadeIn">
         <div className="relative text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-slate-800 space-y-4 overflow-hidden">
           <img
-            src="/src/assets/images/pilots_briefing_1786528412510.jpg"
+            src={IMAGES.pilotsBriefing}
             alt="Airline Assessment Briefing"
             className="absolute inset-0 w-full h-full object-cover object-center"
           />

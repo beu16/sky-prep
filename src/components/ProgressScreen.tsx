@@ -3,6 +3,7 @@ import { UserProfile, ExamAttempt, Language } from '../types';
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 import { Award, BarChart3, Calendar, Clock, ChevronRight, CheckCircle2, Sparkles, Trophy } from 'lucide-react';
 import { TRANSLATION } from '../data/translations';
+import { IMAGES } from '../assets/images';
 
 interface ProgressScreenProps {
   user: UserProfile;
@@ -59,7 +60,7 @@ export const ProgressScreen: React.FC<ProgressScreenProps> = ({
       {/* Title Header with Airport Terminal Banner */}
       <div className="relative rounded-3xl p-6 text-white shadow-xl overflow-hidden border border-slate-800">
         <img
-          src="/src/assets/images/airline_terminal_1786443402209.jpg"
+          src={IMAGES.airlineTerminal}
           alt="International Airport Departure Terminal"
           className="absolute inset-0 w-full h-full object-cover object-center"
         />

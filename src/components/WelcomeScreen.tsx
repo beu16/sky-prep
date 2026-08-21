@@ -2,6 +2,7 @@ import React from 'react';
 import { Shield, Plane, Users, Mic, Award, ArrowRight, CheckCircle2, Globe, Sparkles, BookOpen, Clock, BarChart3, CheckCircle, GraduationCap, Briefcase, Wrench, Headphones } from 'lucide-react';
 import { Language, TrainingSchool, AviationRole } from '../types';
 import { TRANSLATION } from '../data/translations';
+import { IMAGES } from '../assets/images';
 
 interface WelcomeScreenProps {
   lang: Language;
@@ -23,7 +24,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ lang, setLang, onS
       icon: Users,
       badge: 'Active On Duty',
       color: 'from-blue-600 to-indigo-700',
-      image: '/src/assets/images/intl_cabin_crew_svc_1787160538797.jpg',
+      image: IMAGES.cabinCrewSvc,
       highlight: 'Welcome Aboard In-Flight Service',
     },
     {
@@ -36,7 +37,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ lang, setLang, onS
       icon: Plane,
       badge: 'In Command',
       color: 'from-sky-600 to-blue-800',
-      image: '/src/assets/images/intl_pilot_cockpit_1787160561614.jpg',
+      image: IMAGES.pilotCockpit,
       highlight: 'Cruising at 38,000 Ft Flight Deck',
     },
     {
@@ -49,7 +50,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ lang, setLang, onS
       icon: Wrench,
       badge: 'Technical & Engineering',
       color: 'from-amber-600 to-orange-700',
-      image: '/src/assets/images/intl_academy_grad_1787160582785.jpg',
+      image: IMAGES.academyGrad,
       highlight: 'Aviation Engineering & Inspection',
     },
     {
@@ -62,7 +63,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ lang, setLang, onS
       icon: Headphones,
       badge: 'Flight Operations',
       color: 'from-blue-700 to-slate-800',
-      image: '/src/assets/images/intl_terminal_walk_1787160597599.jpg',
+      image: IMAGES.terminalWalk,
       highlight: 'International Airport Crew Operations',
     },
   ];
@@ -118,7 +119,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ lang, setLang, onS
       <section className="relative overflow-hidden bg-[#0B2545] text-white py-16 lg:py-24 border-b border-slate-800">
         <div className="absolute inset-0">
           <img
-            src="/src/assets/images/global_aviation_hero_1787159402032.jpg"
+            src={IMAGES.globalHero}
             alt="Commercial Aviation Fleet"
             className="w-full h-full object-cover object-center opacity-25"
           />

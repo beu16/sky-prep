@@ -1,6 +1,7 @@
 import React from 'react';
 import { UserProfile, Language } from '../types';
 import { Shield, Home, BookOpen, Mic, BarChart3, User, Users, HelpCircle, Info, LogOut, X, Sparkles } from 'lucide-react';
+import { IMAGES } from '../assets/images';
 
 interface SideDrawerProps {
   isOpen: boolean;
@@ -56,7 +57,7 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({
         <div>
           <div className="relative p-5 border-b border-slate-800 overflow-hidden">
             <img
-              src="/src/assets/images/cabin_crew_team_1786443414204.jpg"
+              src={IMAGES.cabinCrewTeam}
               alt="Cabin Crew Team"
               className="absolute inset-0 w-full h-full object-cover object-center"
             />

@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import confetti from 'canvas-confetti';
 import { UserProfile, ExamAttempt } from '../types';
 import { Shield, X, Share2, Download } from 'lucide-react';
+import { IMAGES } from '../assets/images';
 
 interface VerifiedReadyCertificateProps {
   user: UserProfile;
@@ -50,7 +51,7 @@ export const VerifiedReadyCertificate: React.FC<VerifiedReadyCertificateProps> =
           {/* Top Jet Airliner Header Banner */}
           <div className="relative rounded-2xl p-6 text-white shadow-lg overflow-hidden border border-slate-800">
             <img
-              src="/src/assets/images/intl_academy_grad_1787160582785.jpg"
+              src={IMAGES.academyGrad}
               alt="Aviation Academy Graduation Ceremony"
               className="absolute inset-0 w-full h-full object-cover object-center"
             />

@@ -2,6 +2,7 @@ import React from 'react';
 import { UserProfile, ExamAttempt, AviationRole, Language, TRAINING_SCHOOLS_DATA } from '../types';
 import { TRANSLATION } from '../data/translations';
 import { Shield, Sparkles, BookOpen, Users, Mic, Award, Crown, ArrowRight, Play, CheckCircle2, Layers, ChevronRight, GraduationCap, Briefcase, Plane, BarChart3, Clock, CheckCircle, HelpCircle } from 'lucide-react';
+import { IMAGES } from '../assets/images';
 
 interface HomeScreenProps {
   user: UserProfile;
@@ -47,15 +48,15 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   // Get matching image for department banner
   const getBannerImage = () => {
     if (schoolName.includes('PILOT')) {
-      return '/src/assets/images/intl_pilot_cockpit_1787160561614.jpg';
+      return IMAGES.pilotCockpit;
     }
     if (schoolName.includes('MAINTENANCE') || schoolName.includes('AMT') || schoolName.includes('MECHANIC')) {
-      return '/src/assets/images/intl_academy_grad_1787160582785.jpg';
+      return IMAGES.academyGrad;
     }
     if (schoolName.includes('COMMERCIAL') || schoolName.includes('GROUND')) {
-      return '/src/assets/images/intl_terminal_walk_1787160597599.jpg';
+      return IMAGES.terminalWalk;
     }
-    return '/src/assets/images/intl_cabin_crew_svc_1787160538797.jpg';
+    return IMAGES.cabinCrewSvc;
   };
 
   const recentAttempts = [...attempts]
@@ -458,7 +459,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           >
             <div className="relative h-48 w-full overflow-hidden">
               <img
-                src="/src/assets/images/intl_cabin_crew_svc_1787160538797.jpg"
+                src={IMAGES.cabinCrewSvc}
                 alt="Commercial Airline Cabin Crew Welcoming Passengers"
                 referrerPolicy="no-referrer"
                 className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
@@ -494,7 +495,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           >
             <div className="relative h-48 w-full overflow-hidden">
               <img
-                src="/src/assets/images/intl_pilot_cockpit_1787160561614.jpg"
+                src={IMAGES.pilotCockpit}
                 alt="Commercial Airline Pilot in Flight Deck Cockpit"
                 referrerPolicy="no-referrer"
                 className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
@@ -530,7 +531,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           >
             <div className="relative h-48 w-full overflow-hidden">
               <img
-                src="/src/assets/images/intl_terminal_walk_1787160597599.jpg"
+                src={IMAGES.terminalWalk}
                 alt="Airline Crew Walking to Aircraft Concourse"
                 referrerPolicy="no-referrer"
                 className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
@@ -566,7 +567,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           >
             <div className="relative h-48 w-full overflow-hidden">
               <img
-                src="/src/assets/images/intl_academy_grad_1787160582785.jpg"
+                src={IMAGES.academyGrad}
                 alt="Aviation Academy Wings Graduation Ceremony"
                 referrerPolicy="no-referrer"
                 className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"

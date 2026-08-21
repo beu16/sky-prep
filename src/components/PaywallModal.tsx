@@ -2,6 +2,7 @@ import React from 'react';
 import { Sparkles, CheckCircle2, Shield, X, Users, Smartphone, ArrowRight, Check } from 'lucide-react';
 import { UserProfile, Language } from '../types';
 import { TRANSLATION } from '../data/translations';
+import { IMAGES } from '../assets/images';
 
 interface PaywallModalProps {
   user?: UserProfile | null;
@@ -40,7 +41,7 @@ export const PaywallModal: React.FC<PaywallModalProps> = ({
         {/* Top Header with Cabin Crew Banner */}
         <div className="relative p-6 text-white text-center overflow-hidden border-b border-amber-400/30">
           <img
-            src="/src/assets/images/intl_cabin_crew_svc_1787160538797.jpg"
+            src={IMAGES.cabinCrewSvc}
             alt="Cabin Crew Service"
             className="absolute inset-0 w-full h-full object-cover object-center"
           />

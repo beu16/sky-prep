@@ -18,6 +18,7 @@ import {
   getStoredConfig, 
   saveConfig 
 } from '../services/supabase';
+import { IMAGES } from '../assets/images';
 import { 
   Phone, 
   Shield, 
@@ -390,7 +391,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
         {/* Header with Aviation School Banner */}
         <div className="relative p-6 text-white text-center overflow-hidden bg-gradient-to-b from-[#0F2D59] via-[#0B2545] to-[#07192F]">
           <img
-            src="/src/assets/images/cockpit_approach_1786528410294.jpg"
+            src={IMAGES.pilotCockpit}
             alt="Aviation School Banner"
             className="absolute inset-0 w-full h-full object-cover object-center opacity-30 mix-blend-overlay"
           />
