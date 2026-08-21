@@ -175,6 +175,12 @@ export default function App() {
             onBack={() => setScreen('main')}
             onOpenAdmin={() => setShowAdmin(true)}
             onUserUpdated={(updated) => setUser(updated)}
+            onNavigateToTab={(tab) => {
+              setActiveTab(tab);
+              setScreen('main');
+              setShowExamScreen(false);
+              setShowGDGuide(false);
+            }}
           />
         )}
 
