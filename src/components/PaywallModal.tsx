@@ -1,141 +1,237 @@
-import React from 'react';
-import { Sparkles, CheckCircle2, Shield, X, Users, Smartphone, ArrowRight, Check } from 'lucide-react';
-import { UserProfile, Language } from '../types';
+import React, { useState } from 'react';
+import { UserProfile, Language, TelebirrTransaction } from '../types';
 import { TRANSLATION } from '../data/translations';
-import { IMAGES } from '../assets/images';
-import { AviationImage } from './AviationImage';
+import { saveTransaction, verifyTelebirrTransactionLocal } from '../services/supabase';
+import { 
+  X, 
+  Sparkles, 
+  ShieldCheck, 
+  Smartphone, 
+  Copy, 
+  CheckCircle2, 
+  Crown,
+  AlertCircle
+} from 'lucide-react';
+import confetti from 'canvas-confetti';
 
 interface PaywallModalProps {
-  user?: UserProfile | null;
-  lang?: Language;
-  onUserUpdated?: (updatedUser: UserProfile) => void;
-  onProceedToPayment?: () => void;
+  isOpen: boolean;
+  user: UserProfile | null;
+  lang: Language;
   onClose: () => void;
+  onSuccess: (updatedUser: UserProfile) => void;
 }
 
 export const PaywallModal: React.FC<PaywallModalProps> = ({
+  isOpen,
   user,
-  lang = 'en',
-  onProceedToPayment,
+  lang,
   onClose,
+  onSuccess
 }) => {
   const t = TRANSLATION[lang];
+  const [copied, setCopied] = useState(false);
+  const [txId, setTxId] = useState('');
+  const [userName, setUserName] = useState(user?.name || '');
+  const [userPhone, setUserPhone] = useState(user?.phone || '');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [isSuccess, setIsSuccess] = useState(false);
 
-  const handleUpgradeClick = () => {
-    if (onProceedToPayment) {
-      onProceedToPayment();
+  if (!isOpen) return null;
+
+  const handleCopyPhone = () => {
+    navigator.clipboard.writeText('0920017478');
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleSubmitTransaction = (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrorMessage('');
+
+    if (!txId.trim()) {
+      setErrorMessage('Please enter your Telebirr Transaction ID.');
+      return;
     }
+
+    const verification = verifyTelebirrTransactionLocal(txId);
+    if (!verification.success) {
+      setErrorMessage(verification.message);
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    setTimeout(() => {
+      const tx: TelebirrTransaction = {
+        id: 'tx_' + Date.now(),
+        userId: user?.id || 'usr_' + Date.now(),
+        userName: userName || 'Aviation Candidate',
+        userPhone: userPhone || '09xxxxxxxx',
+        transactionId: txId.trim().toUpperCase(),
+        amount: 99,
+        receiverPhone: '0920017478',
+        receiverName: 'Biniyam Haile',
+        status: 'approved',
+        submittedAt: new Date().toISOString(),
+        verifiedAt: new Date().toISOString()
+      };
+
+      saveTransaction(tx);
+
+      const updatedUser: UserProfile = {
+        ...(user || {
+          id: tx.userId,
+          name: tx.userName,
+          phone: tx.userPhone,
+          role: 'cabin_crew',
+          school: 'cabin_crew',
+          targetAirline: 'Ethiopian Airlines',
+          candidateNumber: 'ET-CAD-' + Math.floor(1000 + Math.random() * 9000),
+          completedExams: 0,
+          averageScore: 0,
+          streakDays: 1,
+          lastActive: new Date().toISOString()
+        }),
+        isPremier: true,
+        premierExpiresAt: '2099-12-31'
+      };
+
+      setIsSubmitting(false);
+      setIsSuccess(true);
+      confetti({ particleCount: 120, spread: 80, origin: { y: 0.5 } });
+
+      setTimeout(() => {
+        onSuccess(updatedUser);
+        onClose();
+      }, 1800);
+    }, 800);
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-      <div className="max-w-md w-full bg-white rounded-3xl shadow-2xl border border-amber-400/40 overflow-hidden relative my-8 animate-in fade-in zoom-in-95 duration-200">
-        
-        {/* Close Button */}
-        <button
-          onClick={onClose}
-          className="absolute right-4 top-4 z-20 p-2 text-white/80 hover:text-white bg-black/30 hover:bg-black/50 rounded-full transition-all"
-        >
-          <X className="w-5 h-5" />
-        </button>
-
-        {/* Top Header with Cabin Crew Banner */}
-        <div className="relative p-6 text-white text-center overflow-hidden border-b border-amber-400/30">
-          <AviationImage
-            src={IMAGES.cabinCrewSvc}
-            alt="Cabin Crew Service"
-            className="absolute inset-0 w-full h-full object-cover object-center"
-          />
-          <div className="absolute inset-0 bg-slate-950/85 backdrop-blur-[1px]" />
-
-          <div className="relative z-10">
-            <div className="inline-flex items-center gap-1.5 bg-amber-500/30 text-amber-300 font-black text-xs px-3.5 py-1 rounded-full border border-amber-500/40 mb-3">
-              <Sparkles className="w-3.5 h-3.5 fill-amber-300" />
-              <span>SKY PREP PREMIER UNLIMITED PASS</span>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fadeIn">
+      <div className="relative w-full max-w-lg bg-[#07192F] border border-slate-700/80 rounded-3xl overflow-hidden shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto">
+        {/* Header */}
+        <div className="bg-gradient-to-r from-amber-500 to-amber-600 p-6 text-slate-950 flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <Crown className="w-6 h-6 fill-current" />
+            <div>
+              <h2 className="text-lg font-black tracking-tight">{t.premierPlan}</h2>
+              <p className="text-xs font-bold opacity-90">{t.telebirrPrice}</p>
             </div>
-
-            <h2 className="text-2xl font-black text-white tracking-tight">
-              "{lang === 'en' ? 'Invest in your aviation career.' : 'ለአቪዬሽን ስኬትዎ አሁኑኑ ይዘጋጁ።'}"
-            </h2>
-            <p className="text-xs text-slate-200 mt-1 max-w-xs mx-auto leading-relaxed font-medium">
-              {t.oneTimePay}
-            </p>
           </div>
+          <button
+            onClick={onClose}
+            type="button"
+            className="p-1.5 rounded-full bg-slate-950/10 hover:bg-slate-950/20 text-slate-950 transition"
+          >
+            <X className="w-5 h-5" />
+          </button>
         </div>
 
-        {/* Content Body */}
-        <div className="p-6 space-y-5">
-          
-          {/* Comparison Table */}
-          <div className="bg-slate-50 rounded-2xl p-4 border border-slate-200 space-y-3">
-            <div className="grid grid-cols-3 text-xs font-black uppercase text-slate-900 border-b border-slate-200 pb-2">
-              <span>Feature</span>
-              <span className="text-center text-slate-400">Free</span>
-              <span className="text-right text-amber-600 font-extrabold">Premier Pass</span>
+        {/* Modal Body */}
+        <div className="p-6 pt-0 space-y-6">
+          {isSuccess ? (
+            <div className="text-center py-8 space-y-3">
+              <div className="w-16 h-16 rounded-full bg-emerald-500/20 border border-emerald-500 text-emerald-400 mx-auto flex items-center justify-center">
+                <CheckCircle2 className="w-8 h-8" />
+              </div>
+              <h3 className="text-xl font-black text-white">Premier Pass Activated!</h3>
+              <p className="text-xs text-slate-300">
+                Full access to all exams, STAR audio answers, and verified certification unlocked.
+              </p>
             </div>
+          ) : (
+            <>
+              {/* Payment Instructions Card */}
+              <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
+                <div className="flex items-center justify-between text-xs font-bold text-slate-300">
+                  <span>Telebirr Recipient:</span>
+                  <span className="text-amber-400 font-extrabold">{t.accountHolder}</span>
+                </div>
 
-            {[
-              { name: 'Practice Exams', free: '1 Attempt', paid: 'Unlimited Retakes' },
-              { name: 'Group Discussion', free: '15 Topics', paid: '15 Topics' },
-              { name: 'Interview Bank', free: '3 Questions', paid: 'Full 25 Questions' },
-              { name: 'STAR Models', free: 'Limited', paid: 'All 25 Outlines' },
-              { name: 'Self-Record & Voice', free: '✕', paid: '✓ Unlimited Voice' },
-              { name: 'Score Analytics', free: '✕', paid: '✓ Full History' },
-            ].map((row, idx) => (
-              <div key={idx} className="grid grid-cols-3 text-xs items-center py-1 border-b border-slate-100 last:border-0">
-                <span className="font-semibold text-slate-900">{row.name}</span>
-                <span className="text-center text-slate-500 font-medium">{row.free}</span>
-                <span className="text-right font-bold text-emerald-700 flex items-center justify-end gap-1">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-amber-500 shrink-0" /> {row.paid}
-                </span>
+                <div className="flex items-center justify-between bg-slate-950 p-3 rounded-xl border border-slate-800">
+                  <div className="font-mono text-sm font-black text-white tracking-wider">
+                    {t.accountNumber}
+                  </div>
+                  <button
+                    onClick={handleCopyPhone}
+                    type="button"
+                    className="flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-300 hover:bg-amber-500/20 transition"
+                  >
+                    <Copy className="w-3.5 h-3.5" />
+                    <span>{copied ? 'Copied!' : 'Copy'}</span>
+                  </button>
+                </div>
+
+                <p className="text-[11px] text-slate-400 leading-relaxed">
+                  Send exactly <strong>99 ETB</strong> via Telebirr to <strong>0920017478</strong>, then enter the Transaction ID (e.g. <em>TB849204...</em>) below for instant automated activation.
+                </p>
               </div>
-            ))}
-          </div>
 
-          {/* Telebirr Payment Note */}
-          <div className="bg-blue-50 border border-blue-200 rounded-2xl p-3.5 flex items-center justify-between text-xs text-slate-900">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-[#2E86FF] text-white flex items-center justify-center font-bold shrink-0">
-                <Smartphone className="w-4 h-4" />
-              </div>
-              <div>
-                <span className="font-bold text-slate-900 block">Accepted: Telebirr Only</span>
-                <p className="text-[11px] text-slate-600">Send to <strong>0920017478</strong> (Biniyam Haile)</p>
-              </div>
-            </div>
-            <span className="font-black text-xs text-blue-900 bg-blue-100 px-2 py-1 rounded-lg">
-              99 ETB
-            </span>
-          </div>
+              {/* Verification Form */}
+              <form onSubmit={handleSubmitTransaction} className="space-y-4">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-300 block">
+                    Telebirr Transaction ID *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={txId}
+                    onChange={(e) => setTxId(e.target.value)}
+                    placeholder="e.g., TB12345678"
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white uppercase font-mono focus:outline-none focus:border-amber-400"
+                  />
+                </div>
 
-          {/* Price Box */}
-          <div className="text-center bg-amber-50 border border-amber-200 rounded-2xl p-3.5">
-            <span className="text-[10px] font-bold uppercase text-amber-900 tracking-wider block">One-Time Lifetime Access</span>
-            <div className="text-2xl font-black text-slate-900 mt-0.5">99 ETB</div>
-            <p className="text-[10px] text-amber-800 mt-0.5">Pay once with Telebirr, keep lifetime access forever.</p>
-          </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-slate-300 block">
+                      Candidate Name
+                    </label>
+                    <input
+                      type="text"
+                      value={userName}
+                      onChange={(e) => setUserName(e.target.value)}
+                      placeholder="Your Full Name"
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-slate-300 block">
+                      Phone Number
+                    </label>
+                    <input
+                      type="text"
+                      value={userPhone}
+                      onChange={(e) => setUserPhone(e.target.value)}
+                      placeholder="09xxxxxxxx"
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400"
+                    />
+                  </div>
+                </div>
 
-          {/* Primary Unlock / Proceed Button */}
-          <div className="space-y-2">
-            <button
-              onClick={handleUpgradeClick}
-              className="w-full bg-[#F2B134] hover:bg-amber-500 text-slate-950 font-black text-sm py-4 px-6 rounded-2xl shadow-xl gold-glow transition-all flex items-center justify-center gap-2 active:scale-95 min-h-[48px]"
-            >
-              <Sparkles className="w-5 h-5 text-slate-950 fill-slate-950" />
-              <span>
-                {lang === 'en' ? 'Pay with Telebirr & Verify (99 ETB)' : 'በቴሌብር ይክፈሉና ፕሪሚየምን ያረጋግጡ (99 ብር)'}
-              </span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
+                {errorMessage && (
+                  <div className="p-3 rounded-xl bg-rose-950/50 border border-rose-500/40 text-rose-300 text-xs flex items-center gap-2">
+                    <AlertCircle className="w-4 h-4 shrink-0" />
+                    <span>{errorMessage}</span>
+                  </div>
+                )}
 
-            <p className="text-[11px] text-center text-slate-500 flex items-center justify-center gap-1 pt-1">
-              <Shield className="w-3.5 h-3.5 text-emerald-600" />
-              <span>Instant automated verification via Ethio Telecom gateway.</span>
-            </p>
-          </div>
-
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full py-3.5 rounded-2xl bg-amber-500 hover:bg-amber-400 disabled:opacity-50 text-slate-950 font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg transition active:scale-98"
+                >
+                  <ShieldCheck className="w-4 h-4" />
+                  <span>{isSubmitting ? 'Verifying Transaction...' : t.verifyPayment}</span>
+                </button>
+              </form>
+            </>
+          )}
         </div>
-
       </div>
     </div>
   );

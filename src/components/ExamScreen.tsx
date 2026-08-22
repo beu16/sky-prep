@@ -1,504 +1,365 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { UserProfile, ExamCategory, ExamQuestion, ExamAttempt, AviationRole, Language } from '../types';
+import React, { useState, useEffect } from 'react';
+import { UserProfile, Language, ExamQuestion, ExamAttempt } from '../types';
 import { EXAM_QUESTIONS } from '../data/examQuestions';
-import { saveExamAttempt } from '../services/supabase';
-import { Clock, CheckCircle2, XCircle, ArrowRight, RotateCcw, AlertTriangle, Sparkles, BookOpen, GraduationCap, Briefcase } from 'lucide-react';
 import { TRANSLATION } from '../data/translations';
-import { AIVoiceButton, AIVoiceSpeedControl } from './AIVoicePlayer';
-import { IMAGES } from '../assets/images';
-import { AviationImage } from './AviationImage';
+import { AIVoiceButton } from './AIVoicePlayer';
+import { 
+  Clock, 
+  CheckCircle2, 
+  XCircle, 
+  ArrowRight, 
+  ArrowLeft, 
+  RotateCcw, 
+  Award, 
+  AlertTriangle,
+  Sparkles,
+  Volume2
+} from 'lucide-react';
+import confetti from 'canvas-confetti';
 
 interface ExamScreenProps {
   user: UserProfile;
-  selectedRole?: AviationRole;
-  lang?: Language;
-  onAttemptSaved: (attempt: ExamAttempt) => void;
-  onOpenPaywall: () => void;
-  onBackToHome: () => void;
+  lang: Language;
+  onFinishExam: (attempt: ExamAttempt) => void;
+  onExit: () => void;
 }
 
 export const ExamScreen: React.FC<ExamScreenProps> = ({
   user,
-  selectedRole = 'All',
-  lang = 'en',
-  onAttemptSaved,
-  onOpenPaywall,
-  onBackToHome,
+  lang,
+  onFinishExam,
+  onExit
 }) => {
   const t = TRANSLATION[lang];
-  const [selectedCategory, setSelectedCategory] = useState<ExamCategory | 'All'>('All');
-  const [examState, setExamState] = useState<'setup' | 'active' | 'results'>('setup');
-  const [questions, setQuestions] = useState<ExamQuestion[]>([]);
-  const [currentIdx, setCurrentIdx] = useState(0);
-  const [userAnswers, setUserAnswers] = useState<Record<number, number>>({});
-  const [timeLeft, setTimeLeft] = useState(900); // 15 minutes = 900 seconds
-  const [startTime, setStartTime] = useState<number>(0);
-  const [timeTaken, setTimeTaken] = useState<number>(0);
 
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  // Filter questions for the user's selected school
+  const questions = EXAM_QUESTIONS.filter(q => q.school === user.school);
+  const activeQuestions = questions.length > 0 ? questions : EXAM_QUESTIONS;
 
-  const schoolName = user.training_school || user.department || 'CABIN CREW TRAINING SCHOOL';
-  const programName = user.training_program || user.field || 'INITIAL CABIN CREW (FLIGHT ATTENDANT)';
-  const isCabinCrew = schoolName.toUpperCase().includes('CABIN CREW') || user.selected_role === 'Cabin Crew';
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [selectedAnswers, setSelectedAnswers] = useState<Record<number, number>>({});
+  const [timeLeft, setTimeLeft] = useState<number>(activeQuestions.length * 60); // 1 min per question
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [attemptResult, setAttemptResult] = useState<ExamAttempt | null>(null);
 
-  // Check if free user already used 1 free exam
-  const cannotTakeExam = !user.is_paid && user.free_exam_used;
-
-  const handleStartExam = () => {
-    if (cannotTakeExam) {
-      onOpenPaywall();
+  // Timer countdown
+  useEffect(() => {
+    if (isSubmitted) return;
+    if (timeLeft <= 0) {
+      handleSubmit();
       return;
     }
+    const timer = setInterval(() => {
+      setTimeLeft(prev => prev - 1);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [timeLeft, isSubmitted]);
 
-    // Filter questions first by user's training school if present
-    let filtered = EXAM_QUESTIONS.filter(q => {
-      if (isCabinCrew) {
-        return q.role === 'Cabin Crew' || (q.training_school && q.training_school.includes('CABIN CREW'));
-      }
-      if (q.training_school && q.training_school !== schoolName) {
-        return false;
-      }
-      return true;
-    });
+  const currentQ = activeQuestions[currentIndex];
 
-    if (selectedCategory !== 'All') {
-      filtered = filtered.filter(q => q.category === selectedCategory);
-    }
-
-    // If filter has fewer questions, don't mix outside cabin crew if user is cabin crew
-    if (filtered.length < 5) {
-      if (isCabinCrew) {
-        filtered = EXAM_QUESTIONS.filter(q => q.role === 'Cabin Crew');
-      } else {
-        filtered = EXAM_QUESTIONS.filter(q => q.category === selectedCategory || q.training_school === schoolName);
-      }
-    }
-
-    // Prepare up to 20 questions
-    const pool = filtered.length > 0 ? filtered : EXAM_QUESTIONS.filter(q => isCabinCrew ? q.role === 'Cabin Crew' : true);
-    const shuffled = [...pool].sort(() => Math.random() - 0.5).slice(0, 20);
-
-    setQuestions(shuffled);
-    setCurrentIdx(0);
-    setUserAnswers({});
-    setTimeLeft(900);
-    setStartTime(Date.now());
-    setExamState('active');
+  const handleSelectOption = (optIndex: number) => {
+    if (isSubmitted) return;
+    setSelectedAnswers(prev => ({
+      ...prev,
+      [currentIndex]: optIndex
+    }));
   };
 
-  // Timer Countdown Effect
-  useEffect(() => {
-    if (examState === 'active') {
-      timerRef.current = setInterval(() => {
-        setTimeLeft((prev) => {
-          if (prev <= 1) {
-            clearInterval(timerRef.current!);
-            finishExam();
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-    } else {
-      if (timerRef.current) clearInterval(timerRef.current);
-    }
-
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
-  }, [examState]);
-
-  const handleSelectOption = (optIdx: number) => {
-    setUserAnswers(prev => ({ ...prev, [currentIdx]: optIdx }));
-  };
-
-  const finishExam = () => {
-    if (timerRef.current) clearInterval(timerRef.current);
-
-    const duration = Math.round((Date.now() - startTime) / 1000);
-    setTimeTaken(duration);
-
-    // Calculate score
+  const handleSubmit = () => {
     let score = 0;
-    questions.forEach((q, idx) => {
-      if (userAnswers[idx] === q.correctIndex) {
-        score += 1;
+    const categoryBreakdown: Record<string, { correct: number; total: number }> = {};
+
+    activeQuestions.forEach((q, idx) => {
+      const selected = selectedAnswers[idx];
+      const isCorrect = selected === q.correctAnswer;
+      if (isCorrect) score += 1;
+
+      if (!categoryBreakdown[q.category]) {
+        categoryBreakdown[q.category] = { correct: 0, total: 0 };
+      }
+      categoryBreakdown[q.category].total += 1;
+      if (isCorrect) {
+        categoryBreakdown[q.category].correct += 1;
       }
     });
 
-    const categoryToSave: ExamCategory = selectedCategory === 'All' ? 'English' : selectedCategory;
+    const percentage = Math.round((score / activeQuestions.length) * 100);
+    const passed = percentage >= 80;
 
-    const newAttempt: ExamAttempt = {
-      id: `attempt_${Date.now()}`,
-      user_id: user.id,
-      category: categoryToSave,
-      role: (user.selected_role || selectedRole || 'Cabin Crew') as AviationRole,
+    const attempt: ExamAttempt = {
+      id: 'att_' + Date.now(),
+      userId: user.id,
+      school: user.school,
       score,
-      total_questions: questions.length,
-      time_taken_seconds: duration,
-      completed_at: new Date().toISOString(),
+      totalQuestions: activeQuestions.length,
+      percentage,
+      passed,
+      timeSpentSeconds: activeQuestions.length * 60 - timeLeft,
+      date: new Date().toISOString(),
+      categoryBreakdown
     };
 
-    saveExamAttempt(newAttempt);
-    onAttemptSaved(newAttempt);
-    setExamState('results');
+    setAttemptResult(attempt);
+    setIsSubmitted(true);
+    onFinishExam(attempt);
+
+    if (passed) {
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
+    }
   };
 
   const formatTime = (secs: number) => {
     const m = Math.floor(secs / 60);
     const s = secs % 60;
-    return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    return `${m}:${s < 10 ? '0' : ''}${s}`;
   };
 
-  // --- RENDER SETUP ---
-  if (examState === 'setup') {
+  if (isSubmitted && attemptResult) {
     return (
-      <div className="max-w-3xl mx-auto px-4 py-8 space-y-6 pb-24 md:pb-12 animate-fadeIn">
-        <div className="relative text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-slate-800 space-y-4 overflow-hidden">
-          <AviationImage
-            src={IMAGES.pilotsBriefing}
-            alt="Airline Assessment Briefing"
-            className="absolute inset-0 w-full h-full object-cover object-center"
-          />
-          <div className="absolute inset-0 bg-slate-950/85 backdrop-blur-[1px]" />
-
-          <div className="relative z-10 space-y-4">
-            <div className="inline-flex items-center gap-1.5 bg-blue-500/30 text-blue-300 text-xs font-black px-3.5 py-1 rounded-full border border-blue-400/40 uppercase tracking-wider">
-              <BookOpen className="w-3.5 h-3.5" />
-              <span>OFFICIAL AIRLINE EXAM SIMULATOR</span>
-            </div>
-
-            <div className="space-y-1">
-              <h1 className="text-2xl sm:text-3xl font-black text-white">
-                {schoolName}
-              </h1>
-              <p className="text-amber-400 font-extrabold text-xs sm:text-sm">
-                Target Field: {programName}
-              </p>
-            </div>
-
-            <p className="text-xs sm:text-sm text-slate-200 leading-relaxed font-medium">
-              {lang === 'en'
-                ? '20 Multiple Choice Questions • 15 Minutes Time Limit • Department-calibrated scoring & explanations.'
-                : '20 ጥያቄዎች • 15 ደቂቃ • የፈተና ውጤት እና ዝርዝር ማብራሪያ።'}
-            </p>
-
-            <div className="pt-2 border-t border-slate-700/80 grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-slate-200">
-              <div className="flex items-center gap-2">
-                <Clock className="w-4 h-4 text-amber-400" />
-                <span>15 Minutes Countdown Timer</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-emerald-400" />
-                <span>{user.is_paid ? 'Unlimited Practice Attempts' : '1 Free Practice Attempt'}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Category Filter */}
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-sm font-black text-slate-900 uppercase tracking-wider">
-              {lang === 'en' ? 'Select Question Focus Area:' : 'የፈተና ዘርፍ ይምረጡ:'}
-            </h2>
-            {isCabinCrew && (
-              <span className="text-[11px] font-black text-blue-700 bg-blue-50 px-2.5 py-1 rounded-full border border-blue-200">
-                100% English • No Math
-              </span>
-            )}
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {(isCabinCrew ? [
-              { id: 'All', name: 'Cabin Crew All-in-One Comprehensive' },
-              { id: 'Situational Judgment (SJT)', name: '1. Situational Judgment (SJT)' },
-              { id: 'English Vocabulary & Synonyms', name: '2. Vocabulary & Synonyms' },
-              { id: 'Grammar & Sentence Correction', name: '3. Grammar & Sentence Correction' },
-              { id: 'Reading Comprehension', name: '4. Reading Comprehension' },
-            ] : [
-              { id: 'All', name: `${schoolName} Comprehensive` },
-              { id: 'Technical Aptitude', name: 'Technical Aptitude' },
-              { id: 'Aviation Safety & Regulations', name: 'Aviation Safety & Regulations' },
-              { id: 'Numerical Reasoning', name: 'Numerical Reasoning' },
-              { id: 'English', name: 'English Proficiency' },
-            ]).map((cat) => (
-              <button
-                key={cat.id}
-                onClick={() => setSelectedCategory(cat.id as any)}
-                className={`p-4 rounded-xl border text-left font-extrabold text-xs transition-all flex items-center justify-between min-h-[48px] ${
-                  selectedCategory === cat.id
-                    ? 'bg-blue-600 text-white border-blue-600 shadow'
-                    : 'bg-slate-50 text-slate-800 border-slate-200 hover:border-slate-300'
-                }`}
-              >
-                <span className="truncate pr-2">{cat.name}</span>
-                {selectedCategory === cat.id && <CheckCircle2 className="w-4 h-4 text-white shrink-0" />}
-              </button>
-            ))}
-          </div>
-
-          <div className="pt-4 space-y-3">
-            {cannotTakeExam ? (
-              <div className="bg-amber-50 border border-amber-200 p-4 rounded-xl text-xs text-amber-900 space-y-2">
-                <p className="font-bold">
-                  {lang === 'en' ? 'Free Practice Attempt Used.' : 'ነጻ ሙከራዎን ጨርሰዋል።'}
-                </p>
-                <button
-                  onClick={onOpenPaywall}
-                  className="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs py-3 px-4 rounded-xl gold-glow shadow"
-                >
-                  {t.unlockFullAccess}
-                </button>
-              </div>
+      <div className="max-w-3xl mx-auto px-4 py-8 space-y-8 animate-fadeIn">
+        {/* Score Header */}
+        <div className={`p-8 rounded-3xl text-center space-y-4 border ${
+          attemptResult.passed
+            ? 'bg-emerald-950/40 border-emerald-500/40 text-emerald-100'
+            : 'bg-rose-950/40 border-rose-500/40 text-rose-100'
+        }`}>
+          <div className="w-16 h-16 rounded-full mx-auto flex items-center justify-center bg-slate-900 border border-white/10 shadow-xl">
+            {attemptResult.passed ? (
+              <Award className="w-8 h-8 text-amber-400" />
             ) : (
-              <button
-                onClick={handleStartExam}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-black text-sm py-4 px-6 rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2 active:scale-95 min-h-[48px]"
-              >
-                <span>Start {schoolName.split(' ')[0]} Exam</span>
-                <ArrowRight className="w-5 h-5" />
-              </button>
+              <AlertTriangle className="w-8 h-8 text-rose-400" />
             )}
+          </div>
+
+          <h2 className="text-2xl sm:text-3xl font-black">
+            {attemptResult.passed ? t.congratulations : 'Assessment Completed'}
+          </h2>
+
+          <div className="text-5xl sm:text-6xl font-black tracking-tight text-white">
+            {attemptResult.percentage}%
+          </div>
+
+          <p className="text-sm max-w-md mx-auto text-slate-300">
+            {attemptResult.passed ? t.examPassed : t.examFailed}
+          </p>
+
+          <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+            <button
+              onClick={() => {
+                setIsSubmitted(false);
+                setSelectedAnswers({});
+                setCurrentIndex(0);
+                setTimeLeft(activeQuestions.length * 60);
+              }}
+              type="button"
+              className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs uppercase flex items-center gap-1.5 transition"
+            >
+              <RotateCcw className="w-4 h-4" />
+              <span>{t.tryAgain}</span>
+            </button>
 
             <button
-              onClick={onBackToHome}
-              className="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs py-3 rounded-xl transition-all"
+              onClick={onExit}
+              type="button"
+              className="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-white font-bold text-xs transition"
             >
-              Return to Dashboard
+              Exit to Dashboard
             </button>
           </div>
         </div>
-      </div>
-    );
-  }
 
-  // --- RENDER ACTIVE EXAM ---
-  if (examState === 'active' && questions.length > 0) {
-    const q = questions[currentIdx];
-    const isAnswered = userAnswers[currentIdx] !== undefined;
+        {/* Detailed Question Review */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-black text-white">
+            {t.reviewAnswers}
+          </h3>
 
-    return (
-      <div className="max-w-3xl mx-auto px-4 py-6 space-y-6 pb-24 md:pb-12 animate-fadeIn">
-        
-        {/* Exam Header Status Bar */}
-        <div className="bg-slate-900 text-white rounded-2xl p-4 shadow-lg border border-slate-800 flex items-center justify-between">
-          <div>
-            <span className="text-[10px] font-black uppercase text-amber-400 tracking-wider block">
-              {q.training_school || schoolName} • {q.category}
-            </span>
-            <span className="text-xs font-extrabold text-white">
-              {t.question} {currentIdx + 1} {t.of} {questions.length}
-            </span>
-          </div>
-
-          <div className="bg-slate-800 px-3 py-1.5 rounded-xl border border-slate-700 flex items-center gap-2">
-            <Clock className="w-4 h-4 text-amber-400" />
-            <span className="font-mono text-xs font-bold text-amber-300">
-              {formatTime(timeLeft)}
-            </span>
-          </div>
-        </div>
-
-        {/* Progress Bar */}
-        <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
-          <div
-            className="bg-blue-600 h-full transition-all duration-300"
-            style={{ width: `${((currentIdx + 1) / questions.length) * 100}%` }}
-          />
-        </div>
-
-        {/* Question Card */}
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-6">
-          <div className="flex items-start justify-between gap-4">
-            <div className="flex-1 space-y-4">
-              {q.question.includes('[PASSAGE:') ? (
-                <div className="space-y-4">
-                  {/* Styled Passage Box */}
-                  <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 text-xs sm:text-sm text-slate-700 leading-relaxed font-normal whitespace-pre-line">
-                    <div className="text-[10px] font-black uppercase text-blue-700 tracking-wider mb-2 flex items-center gap-1.5">
-                      <Sparkles className="w-3.5 h-3.5 text-blue-600" />
-                      <span>Reading Comprehension Passage</span>
-                    </div>
-                    {q.question.split('QUESTION:')[0].replace('[PASSAGE: ', '').replace(']', '')}
-                  </div>
-
-                  {/* Inference Question Prompt */}
-                  <h2 className="text-base sm:text-lg font-black text-slate-900 leading-snug">
-                    {q.question.includes('QUESTION:') ? `Question: ${q.question.split('QUESTION:')[1].trim()}` : q.question}
-                  </h2>
-                </div>
-              ) : (
-                <h2 className="text-base sm:text-lg font-black text-slate-900 leading-snug">
-                  {lang === 'am' && q.amharicQuestion ? q.amharicQuestion : q.question}
-                </h2>
-              )}
-            </div>
-
-            <AIVoiceButton
-              id={`exam-q-${currentIdx}`}
-              textToRead={q.question}
-              variant="compact"
-              label="Listen"
-            />
-          </div>
-
-          <div className="space-y-3">
-            {(lang === 'am' && q.amharicOptions ? q.amharicOptions : q.options).map((opt, optIdx) => {
-              const isSelected = userAnswers[currentIdx] === optIdx;
+          <div className="space-y-4">
+            {activeQuestions.map((q, idx) => {
+              const selected = selectedAnswers[idx];
+              const isCorrect = selected === q.correctAnswer;
+              const qText = q.question[lang] || q.question.en;
+              const options = q.options[lang] || q.options.en;
+              const explanation = q.explanation[lang] || q.explanation.en;
 
               return (
-                <button
-                  key={optIdx}
-                  onClick={() => handleSelectOption(optIdx)}
-                  className={`w-full p-4 rounded-xl border text-left text-xs font-extrabold transition-all flex items-center gap-3 min-h-[48px] ${
-                    isSelected
-                      ? 'bg-blue-600 text-white border-blue-600 shadow'
-                      : 'bg-slate-50 text-slate-800 border-slate-200 hover:border-slate-300'
+                <div
+                  key={q.id}
+                  className={`p-5 rounded-2xl border space-y-3 ${
+                    isCorrect
+                      ? 'bg-slate-900/60 border-emerald-500/30'
+                      : 'bg-slate-900/60 border-rose-500/30'
                   }`}
                 >
-                  <div className={`w-6 h-6 rounded-full border flex items-center justify-center shrink-0 font-bold text-[11px] ${
-                    isSelected ? 'border-white bg-white text-blue-600' : 'border-slate-300 text-slate-500'
-                  }`}>
-                    {String.fromCharCode(65 + optIdx)}
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-center gap-2">
+                      <span className="w-6 h-6 rounded-full bg-slate-800 text-slate-300 text-xs font-black flex items-center justify-center">
+                        {idx + 1}
+                      </span>
+                      <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-slate-800 text-slate-400">
+                        {q.category.replace('_', ' ')}
+                      </span>
+                    </div>
+                    {isCorrect ? (
+                      <span className="text-xs font-bold text-emerald-400 flex items-center gap-1">
+                        <CheckCircle2 className="w-4 h-4" /> Correct
+                      </span>
+                    ) : (
+                      <span className="text-xs font-bold text-rose-400 flex items-center gap-1">
+                        <XCircle className="w-4 h-4" /> Incorrect
+                      </span>
+                    )}
                   </div>
-                  <span className="leading-snug">{opt}</span>
-                </button>
+
+                  <p className="text-sm font-semibold text-white leading-relaxed">
+                    {qText}
+                  </p>
+
+                  <div className="space-y-1.5 pt-1">
+                    {options.map((opt, optIdx) => {
+                      const isThisSelected = selected === optIdx;
+                      const isThisCorrect = optIdx === q.correctAnswer;
+
+                      return (
+                        <div
+                          key={optIdx}
+                          className={`p-2.5 rounded-xl text-xs flex items-center justify-between ${
+                            isThisCorrect
+                              ? 'bg-emerald-950/60 text-emerald-200 border border-emerald-500/50 font-bold'
+                              : isThisSelected
+                              ? 'bg-rose-950/60 text-rose-200 border border-rose-500/50 line-through'
+                              : 'bg-slate-950/40 text-slate-400'
+                          }`}
+                        >
+                          <span>{opt}</span>
+                          {isThisCorrect && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />}
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  <div className="p-3 rounded-xl bg-slate-950/60 border border-slate-800 text-xs text-slate-300 leading-relaxed">
+                    <strong className="text-amber-400">Rationale: </strong>
+                    {explanation}
+                  </div>
+                </div>
               );
             })}
           </div>
-
-          {/* Navigation Controls */}
-          <div className="pt-4 border-t border-slate-100 flex items-center justify-between gap-3">
-            <button
-              onClick={() => setCurrentIdx(prev => Math.max(0, prev - 1))}
-              disabled={currentIdx === 0}
-              className="px-4 py-2.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 disabled:opacity-40 min-h-[44px]"
-            >
-              {t.prevQuestion}
-            </button>
-
-            {currentIdx < questions.length - 1 ? (
-              <button
-                onClick={() => setCurrentIdx(prev => prev + 1)}
-                className="px-5 py-2.5 rounded-xl text-xs font-black bg-blue-600 hover:bg-blue-700 text-white shadow min-h-[44px]"
-              >
-                {t.nextQuestion}
-              </button>
-            ) : (
-              <button
-                onClick={finishExam}
-                className="px-5 py-2.5 rounded-xl text-xs font-black bg-emerald-600 hover:bg-emerald-700 text-white shadow min-h-[44px]"
-              >
-                {t.submitExam}
-              </button>
-            )}
-          </div>
         </div>
-
       </div>
     );
   }
 
-  // --- RENDER RESULTS ---
-  const total = questions.length;
-  let correctCount = 0;
-  questions.forEach((q, idx) => {
-    if (userAnswers[idx] === q.correctIndex) correctCount += 1;
-  });
-  const percentage = Math.round((correctCount / total) * 100);
-  const isPassed = percentage >= 70;
+  // Active Exam View
+  const qText = currentQ.question[lang] || currentQ.question.en;
+  const options = currentQ.options[lang] || currentQ.options.en;
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8 space-y-6 pb-24 md:pb-12 animate-fadeIn">
-      
-      {/* Score Summary Box */}
-      <div className={`rounded-3xl p-6 sm:p-8 text-white shadow-xl text-center space-y-4 ${
-        isPassed ? 'bg-gradient-to-br from-emerald-900 via-slate-900 to-slate-900 border border-emerald-500/40' : 'bg-slate-900 border border-slate-800'
-      }`}>
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-white/10 text-slate-200">
-          <span>{schoolName} Scorecard</span>
+    <div className="max-w-3xl mx-auto px-4 py-8 space-y-6">
+      {/* Top Header Bar with Timer & Progress */}
+      <div className="flex items-center justify-between gap-4 bg-slate-900/90 p-4 rounded-2xl border border-slate-800">
+        <div>
+          <span className="text-xs text-slate-400 font-bold">
+            Question {currentIndex + 1} of {activeQuestions.length}
+          </span>
+          <div className="w-32 sm:w-48 bg-slate-800 h-2 rounded-full mt-1.5 overflow-hidden">
+            <div
+              className="bg-amber-500 h-full rounded-full transition-all duration-300"
+              style={{ width: `${((currentIndex + 1) / activeQuestions.length) * 100}%` }}
+            />
+          </div>
         </div>
 
-        <h1 className="text-4xl sm:text-5xl font-black tracking-tight">
-          {percentage}%
-        </h1>
-
-        <p className={`text-base font-extrabold uppercase tracking-widest ${isPassed ? 'text-emerald-400' : 'text-amber-400'}`}>
-          {isPassed ? t.passed : t.failed} ({correctCount} / {total} Correct)
-        </p>
-
-        <p className="text-xs text-slate-300">
-          {t.timeSpent}: {formatTime(timeTaken)}
-        </p>
-
-        <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
-          <button
-            onClick={handleStartExam}
-            className="w-full sm:w-auto bg-blue-600 hover:bg-blue-500 text-white font-black text-xs py-3 px-6 rounded-xl shadow active:scale-95"
-          >
-            {t.retakeExam}
-          </button>
-          <button
-            onClick={onBackToHome}
-            className="w-full sm:w-auto bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs py-3 px-6 rounded-xl border border-slate-700"
-          >
-            Return to Dashboard
-          </button>
+        {/* Live Timer */}
+        <div className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl font-mono text-sm font-bold border ${
+          timeLeft < 60
+            ? 'bg-rose-950/60 border-rose-500 text-rose-300 animate-pulse'
+            : 'bg-slate-950 border-slate-700 text-amber-300'
+        }`}>
+          <Clock className="w-4 h-4" />
+          <span>{formatTime(timeLeft)}</span>
         </div>
       </div>
 
-      {/* Question Explanations List */}
-      <div className="space-y-4">
-        <h2 className="text-sm font-black text-slate-900 uppercase tracking-wider">
-          {t.explanation} & Solutions
-        </h2>
+      {/* Question Card */}
+      <div className="bg-slate-900/90 rounded-3xl p-6 sm:p-8 border border-slate-800 shadow-xl space-y-6">
+        <div className="flex items-center justify-between gap-3">
+          <span className="text-[11px] font-black uppercase tracking-wider px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20">
+            {currentQ.category.replace('_', ' ')}
+          </span>
+          <AIVoiceButton text={currentQ.audioText || qText} label="Listen Question" />
+        </div>
 
-        {questions.map((q, idx) => {
-          const userChoice = userAnswers[idx];
-          const isCorrect = userChoice === q.correctIndex;
+        <h3 className="text-base sm:text-lg font-bold text-white leading-relaxed">
+          {qText}
+        </h3>
 
-          return (
-            <div key={idx} className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-3">
-              <div className="flex items-start justify-between gap-3">
-                <span className="text-xs font-black text-slate-900 flex-1">
-                  Q{idx + 1}. {lang === 'am' && q.amharicQuestion ? q.amharicQuestion : q.question}
-                </span>
-                <div className="flex items-center gap-1.5 shrink-0">
-                  <AIVoiceButton
-                    id={`sol-${idx}`}
-                    textToRead={`Question ${idx + 1}: ${q.question}. The correct answer is ${q.options[q.correctIndex]}. Explanation: ${q.explanation}`}
-                    variant="compact"
-                    label="Listen to Explanation"
-                  />
-                  {isCorrect ? (
-                    <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
-                  ) : (
-                    <XCircle className="w-5 h-5 text-rose-500 shrink-0" />
-                  )}
+        {/* Options List */}
+        <div className="space-y-3">
+          {options.map((opt, optIdx) => {
+            const isSelected = selectedAnswers[currentIndex] === optIdx;
+            return (
+              <button
+                key={optIdx}
+                onClick={() => handleSelectOption(optIdx)}
+                type="button"
+                className={`w-full p-4 rounded-2xl text-left text-xs sm:text-sm font-medium transition-all duration-200 border flex items-center justify-between gap-3 ${
+                  isSelected
+                    ? 'bg-amber-500/15 border-amber-500 text-white font-bold shadow-md shadow-amber-500/10'
+                    : 'bg-slate-950/60 border-slate-800 text-slate-300 hover:border-slate-700 hover:bg-slate-950'
+                }`}
+              >
+                <span>{opt}</span>
+                <div className={`w-5 h-5 rounded-full border flex items-center justify-center shrink-0 ${
+                  isSelected
+                    ? 'border-amber-400 bg-amber-400 text-slate-950'
+                    : 'border-slate-700 bg-slate-900'
+                }`}>
+                  {isSelected && <CheckCircle2 className="w-3.5 h-3.5 fill-current" />}
                 </div>
-              </div>
+              </button>
+            );
+          })}
+        </div>
 
-              <div className="bg-slate-50 p-3 rounded-xl text-xs space-y-1">
-                <div className="text-slate-700">
-                  <span className="font-bold">Your answer: </span>
-                  {userChoice !== undefined ? (lang === 'am' && q.amharicOptions ? q.amharicOptions[userChoice] : q.options[userChoice]) : 'Unanswered'}
-                </div>
-                <div className="text-emerald-700 font-bold">
-                  <span>Correct answer: </span>
-                  {lang === 'am' && q.amharicOptions ? q.amharicOptions[q.correctIndex] : q.options[q.correctIndex]}
-                </div>
-              </div>
+        {/* Navigation Row */}
+        <div className="flex items-center justify-between pt-4 border-t border-slate-800">
+          <button
+            onClick={() => setCurrentIndex(prev => Math.max(0, prev - 1))}
+            disabled={currentIndex === 0}
+            type="button"
+            className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 disabled:opacity-40 text-xs font-bold text-slate-300 flex items-center gap-1.5 transition"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span>{t.previousQuestion}</span>
+          </button>
 
-              <p className="text-xs text-slate-600 leading-relaxed pt-1 border-t border-slate-100">
-                <span className="font-bold text-slate-900">Explanation: </span>
-                {lang === 'am' && q.amharicExplanation ? q.amharicExplanation : q.explanation}
-              </p>
-            </div>
-          );
-        })}
+          {currentIndex === activeQuestions.length - 1 ? (
+            <button
+              onClick={handleSubmit}
+              type="button"
+              className="px-6 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-lg transition"
+            >
+              <span>{t.submitExam}</span>
+              <CheckCircle2 className="w-4 h-4" />
+            </button>
+          ) : (
+            <button
+              onClick={() => setCurrentIndex(prev => Math.min(activeQuestions.length - 1, prev + 1))}
+              type="button"
+              className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center gap-1.5 transition"
+            >
+              <span>{t.nextQuestion}</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          )}
+        </div>
       </div>
-
     </div>
   );
 };

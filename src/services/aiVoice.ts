@@ -1,188 +1,62 @@
-// AI Voice Engine: Provides ultra-smooth, lifelike audio narration
-// Calibrated specifically for airline interview coaches, examiners, and candidates.
-
-export interface VoicePlaybackState {
-  isPlaying: boolean;
-  isPaused: boolean;
-  currentText: string;
-  activeId: string | null;
-  rate: number;
-}
-
-class AIVoiceEngine {
+// Browser-native TTS synthesis service with realistic speech controls
+class AIVoiceService {
   private synth: SpeechSynthesis | null = null;
   private currentUtterance: SpeechSynthesisUtterance | null = null;
-  private preferredVoice: SpeechSynthesisVoice | null = null;
-  private listeners: Set<(state: VoicePlaybackState) => void> = new Set();
-  private state: VoicePlaybackState = {
-    isPlaying: false,
-    isPaused: false,
-    currentText: '',
-    activeId: null,
-    rate: 0.95, // Optimized speed for aviation clarity and executive cadence
-  };
+  private isSpeakingState = false;
 
   constructor() {
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       this.synth = window.speechSynthesis;
-      this.initVoices();
-      if (this.synth.onvoiceschanged !== undefined) {
-        this.synth.onvoiceschanged = () => this.initVoices();
-      }
     }
   }
 
-  private initVoices() {
-    if (!this.synth) return;
-    const voices = this.synth.getVoices();
-    if (!voices || voices.length === 0) return;
-
-    // Search for ultra-realistic / natural neural voices in order of priority:
-    const prioritizedVoicePatterns = [
-      /natural/i,
-      /google us english/i,
-      /google uk english female/i,
-      /samantha/i,
-      /daniel/i,
-      /karen/i,
-      /moira/i,
-      /zira/i,
-      /en-us/i,
-      /en-gb/i,
-    ];
-
-    for (const pattern of prioritizedVoicePatterns) {
-      const match = voices.find(v => pattern.test(v.name) || pattern.test(v.voiceURI));
-      if (match) {
-        this.preferredVoice = match;
-        break;
-      }
+  public speak(text: string, options?: { rate?: number; pitch?: number; onEnd?: () => void; onError?: () => void }) {
+    if (!this.synth) {
+      options?.onError?.();
+      return;
     }
 
-    if (!this.preferredVoice) {
-      // Fallback to any English voice
-      this.preferredVoice = voices.find(v => v.lang.startsWith('en')) || voices[0] || null;
-    }
-  }
-
-  public getVoices(): SpeechSynthesisVoice[] {
-    if (!this.synth) return [];
-    return this.synth.getVoices();
-  }
-
-  public setVoice(voice: SpeechSynthesisVoice) {
-    this.preferredVoice = voice;
-  }
-
-  public setRate(rate: number) {
-    this.state.rate = Math.max(0.7, Math.min(1.3, rate));
-    this.notify();
-  }
-
-  public subscribe(listener: (state: VoicePlaybackState) => void): () => void {
-    this.listeners.add(listener);
-    listener(this.state);
-    return () => {
-      this.listeners.delete(listener);
-    };
-  }
-
-  private notify() {
-    this.listeners.forEach(listener => listener({ ...this.state }));
-  }
-
-  public speak(id: string, text: string, onEnd?: () => void) {
-    if (!this.synth) return;
-
-    // Stop current speech
     this.stop();
 
-    // Clean text for speech clarity
-    const cleanedText = text
-      .replace(/[*_#`]/g, '')
-      .replace(/S\s*-\s*Situation:/gi, 'Situation. ')
-      .replace(/T\s*-\s*Task:/gi, 'Task. ')
-      .replace(/A\s*-\s*Action:/gi, 'Action. ')
-      .replace(/R\s*-\s*Result:/gi, 'Result. ')
-      .replace(/\s+/g, ' ')
-      .trim();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = options?.rate || 1.0;
+    utterance.pitch = options?.pitch || 1.0;
+    utterance.lang = 'en-US';
 
-    if (!cleanedText) return;
-
-    const utterance = new SpeechSynthesisUtterance(cleanedText);
-    if (!this.preferredVoice) {
-      this.initVoices();
+    const voices = this.synth.getVoices();
+    const englishVoice = voices.find(v => v.lang.startsWith('en') && (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Samantha') || v.name.includes('David')));
+    if (englishVoice) {
+      utterance.voice = englishVoice;
     }
-    if (this.preferredVoice) {
-      utterance.voice = this.preferredVoice;
-    }
-
-    // Natural airline examiner cadence
-    utterance.rate = this.state.rate;
-    utterance.pitch = 1.0;
-    utterance.volume = 1.0;
 
     utterance.onstart = () => {
-      this.state.isPlaying = true;
-      this.state.isPaused = false;
-      this.state.currentText = cleanedText;
-      this.state.activeId = id;
-      this.notify();
+      this.isSpeakingState = true;
     };
 
     utterance.onend = () => {
-      this.state.isPlaying = false;
-      this.state.isPaused = false;
-      this.state.currentText = '';
-      this.state.activeId = null;
-      this.notify();
-      if (onEnd) onEnd();
+      this.isSpeakingState = false;
+      options?.onEnd?.();
     };
 
-    utterance.onerror = (e) => {
-      console.warn('Speech synthesis error or cancelled:', e);
-      this.state.isPlaying = false;
-      this.state.isPaused = false;
-      this.state.currentText = '';
-      this.state.activeId = null;
-      this.notify();
+    utterance.onerror = () => {
+      this.isSpeakingState = false;
+      options?.onError?.();
     };
 
     this.currentUtterance = utterance;
     this.synth.speak(utterance);
   }
 
-  public pause() {
-    if (this.synth && this.state.isPlaying && !this.state.isPaused) {
-      this.synth.pause();
-      this.state.isPaused = true;
-      this.notify();
-    }
-  }
-
-  public resume() {
-    if (this.synth && this.state.isPlaying && this.state.isPaused) {
-      this.synth.resume();
-      this.state.isPaused = false;
-      this.notify();
-    }
-  }
-
   public stop() {
     if (this.synth) {
       this.synth.cancel();
-      this.state.isPlaying = false;
-      this.state.isPaused = false;
-      this.state.currentText = '';
-      this.state.activeId = null;
-      this.notify();
+      this.isSpeakingState = false;
     }
   }
 
-  public isSpeaking(id?: string): boolean {
-    if (!id) return this.state.isPlaying;
-    return this.state.isPlaying && this.state.activeId === id;
+  public isSpeaking(): boolean {
+    return this.isSpeakingState;
   }
 }
 
-export const aiVoice = new AIVoiceEngine();
+export const aiVoiceService = new AIVoiceService();

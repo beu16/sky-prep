@@ -1,218 +1,183 @@
-export type Language = 'en' | 'am';
+import { Language } from '../types';
 
-export interface TranslationDictionary {
-  appName: string;
-  appSubtitle: string;
+export const TRANSLATION: Record<Language, {
   tagline: string;
-  welcomeTitle: string;
-  welcomeSubtitle: string;
-  getStarted: string;
-  quickDemo: string;
-  unlockFullAccess: string;
-  unlimitedAccess: string;
-  dashboard: string;
-  writtenExams: string;
-  groupDiscussion: string;
-  interviewPrep: string;
-  progressAnalytics: string;
-  selectRole: string;
-  allRoles: string;
+  subtitle: string;
+  startPrep: string;
+  exploreSchools: string;
   cabinCrew: string;
-  pilotCadet: string;
-  amtMaintenance: string;
-  groundOps: string;
-  englishProficiency: string;
-  numericalReasoning: string;
-  verbalReasoning: string;
-  generalKnowledge: string;
-  startExam: string;
-  resumeExam: string;
-  freePractice: string;
-  unlimitedRetakes: string;
-  passed: string;
-  failed: string;
-  question: string;
-  of: string;
+  cabinCrewDesc: string;
+  pilotAcademy: string;
+  pilotAcademyDesc: string;
+  amtTitle: string;
+  amtDesc: string;
+  commercialTitle: string;
+  commercialDesc: string;
+  practiceHub: string;
+  mockExam: string;
+  starInterview: string;
+  groupDiscussion: string;
+  candidateProfile: string;
+  premierPlan: string;
+  unlockFullAccess: string;
+  telebirrPrice: string;
+  payWithTelebirr: string;
+  accountHolder: string;
+  accountNumber: string;
+  verifyPayment: string;
+  status: string;
+  congratulations: string;
+  examPassed: string;
+  examFailed: string;
+  tryAgain: string;
+  reviewAnswers: string;
   nextQuestion: string;
-  prevQuestion: string;
+  previousQuestion: string;
   submitExam: string;
-  examResults: string;
-  score: string;
-  timeSpent: string;
-  explanation: string;
-  retakeExam: string;
-  starFramework: string;
-  recordVoice: string;
-  stopRecord: string;
-  reRecord: string;
-  playVoice: string;
-  deleteVoice: string;
-  recorded: string;
-  paymentHeader: string;
-  paymentSubtitle: string;
-  telebirrNumber: string;
-  copyNumber: string;
-  copied: string;
-  uploadReceipt: string;
-  transactionId: string;
-  submitPayment: string;
-  verifyingPayment: string;
-  verifiedReady: string;
-  certificateClaim: string;
-  adminPanel: string;
-  dbSettings: string;
-  logout: string;
-  freePreview: string;
-  premiumOnly: string;
-  lifetimeAccess: string;
-  oneTimePay: string;
-  searchPlaceholder: string;
-  dos: string;
-  donts: string;
-  starterPhrases: string;
-}
-
-export const TRANSLATION: Record<Language, TranslationDictionary> = {
+  timeLeft: string;
+}> = {
   en: {
-    appName: "Sky Prep",
-    appSubtitle: "Aviation Professional Prep",
-    tagline: "Master Airline Exams, GD Scenarios & Technical Interviews",
-    welcomeTitle: "Prepare for Your Aviation Career",
-    welcomeSubtitle: "Comprehensive preparation suite for Cabin Crew, Pilots, Maintenance Engineers (AMT), and Ground Operations.",
-    getStarted: "Get Started Now",
-    quickDemo: "Try Quick Demo",
-    unlockFullAccess: "Unlock Premier Access — 99 ETB",
-    unlimitedAccess: "Unlimited Access & Practice Retakes",
-    dashboard: "Dashboard",
-    writtenExams: "Written Exams",
-    groupDiscussion: "Group Discussion",
-    interviewPrep: "Interview Prep",
-    progressAnalytics: "Progress & Scores",
-    selectRole: "Filter Career Stream:",
-    allRoles: "All Aviation Roles",
-    cabinCrew: "Cabin Crew / Flight Attendant",
-    pilotCadet: "Pilot / Flight Cadet",
-    amtMaintenance: "Aircraft Maintenance (AMT)",
-    groundOps: "Ground Ops & Customer Service",
-    englishProficiency: "English Proficiency",
-    numericalReasoning: "Numerical Reasoning",
-    verbalReasoning: "Verbal Reasoning",
-    generalKnowledge: "Aviation Knowledge",
-    startExam: "Start Exam",
-    resumeExam: "Resume Exam",
-    freePractice: "Free Practice Attempt",
-    unlimitedRetakes: "Unlimited Retakes",
-    passed: "PASS",
-    failed: "PRACTICE NEEDED",
-    question: "Question",
-    of: "of",
-    nextQuestion: "Next Question",
-    prevQuestion: "Previous",
-    submitExam: "Submit & Grade Exam",
-    examResults: "Exam Assessment Results",
-    score: "Score",
-    timeSpent: "Time Spent",
-    explanation: "Detailed Explanation & Correct Answer",
-    retakeExam: "Retake Practice Exam",
-    starFramework: "STAR Model Answer",
-    recordVoice: "Record Voice Answer",
-    stopRecord: "Stop Recording",
-    reRecord: "Re-record",
-    playVoice: "Listen to Voice",
-    deleteVoice: "Delete",
-    recorded: "Audio Saved",
-    paymentHeader: "Telebirr Payment Checkout",
-    paymentSubtitle: "Send 99 ETB to complete lifetime unlock.",
-    telebirrNumber: "Merchant Account Number",
-    copyNumber: "Copy Number",
-    copied: "Copied!",
-    uploadReceipt: "Upload Telebirr Receipt Screenshot",
-    transactionId: "Telebirr Transaction ID",
-    submitPayment: "Submit Receipt for Fast Verification",
-    verifyingPayment: "Verifying Telebirr Payment...",
-    verifiedReady: "Verified Ready Certificate",
-    certificateClaim: "Claim Milestone Certificate",
-    adminPanel: "Admin Panel",
-    dbSettings: "DB Settings",
-    logout: "Log Out",
-    freePreview: "FREE PREVIEW",
-    premiumOnly: "PREMIER UNLIMITED",
-    lifetimeAccess: "One-Time Payment • Lifetime Unlimited Access",
-    oneTimePay: "Pay 99 ETB once, retain lifetime retakes and voice recording access.",
-    searchPlaceholder: "Search questions, scenarios, or aviation terms...",
-    dos: "Essential Dos",
-    donts: "Critical Don'ts",
-    starterPhrases: "Recommended Professional Phrases",
+    tagline: 'Standardized Airline Assessment & Interview Mastery',
+    subtitle: 'Comprehensive training suite for Cabin Crew, Pilot Cadets, Aircraft Maintenance Technicians, and Commercial Ground Operations.',
+    startPrep: 'Start Candidate Prep',
+    exploreSchools: 'Aviation Career Tracks',
+    cabinCrew: 'Cabin Crew Training School',
+    cabinCrewDesc: 'Customer service excellence, in-flight safety protocols, emergency equipment, and grooming standards.',
+    pilotAcademy: 'Commercial Pilot Academy',
+    pilotAcademyDesc: 'Aerodynamics, navigation, instrument interpretation, numerical aptitude, and situational judgment.',
+    amtTitle: 'Aircraft Maintenance Technician (AMT)',
+    amtDesc: 'Airframe structures, powerplant turbines, avionics navigation systems, and technical maintenance procedures.',
+    commercialTitle: 'Commercial & Ground Services',
+    commercialDesc: 'Passenger handling, check-in operations, cargo logistics, flight dispatch, and ramp safety.',
+    practiceHub: 'Practice Exam Hub',
+    mockExam: 'Timed Official Mock Exam',
+    starInterview: 'STAR Behavioral Interview Prep',
+    groupDiscussion: 'Group Discussion Mastery',
+    candidateProfile: 'Candidate Profile & Progress',
+    premierPlan: 'Premier Candidate Lifetime Pass',
+    unlockFullAccess: 'Unlock 100% of questions, audio explanations, and certified readiness badge.',
+    telebirrPrice: '99 ETB (One-time payment)',
+    payWithTelebirr: 'Instant Telebirr Verification',
+    accountHolder: 'Biniyam Haile',
+    accountNumber: '0920017478',
+    verifyPayment: 'Verify Telebirr Transaction',
+    status: 'Status',
+    congratulations: 'Congratulations! Verified Exam Passed',
+    examPassed: 'You scored above 80%. You have demonstrated solid command of assessment standards.',
+    examFailed: 'Score below passing threshold (80%). Review the explanations and retry the mock exam.',
+    tryAgain: 'Retake Assessment',
+    reviewAnswers: 'Review Detailed Explanations',
+    nextQuestion: 'Next Question',
+    previousQuestion: 'Previous',
+    submitExam: 'Submit Final Assessment',
+    timeLeft: 'Time Remaining'
   },
   am: {
-    appName: "ስካይ ፕሬፕ (Sky Prep)",
-    appSubtitle: "የአቪዬሽን ፈተና ዝግጅት",
-    tagline: "የአየር መንገድ የጽሁፍ ፈተና፣ የቡድን ውይይት እና ቃለ-መጠይቅ ዝግጅት",
-    welcomeTitle: "ለአቪዬሽን ሙያዎ በብቃት ይዘጋጁ",
-    welcomeSubtitle: "ለካቢን ክሩ (አስተናጋጅ)፣ ፓይለት፣ አውሮፕላን ጠጋኝ (AMT) እና የምድር አገልግሎት የተዘጋጀ ሙሉ የፈተና መለማመጃ።",
-    getStarted: "አሁኑኑ ይጀምሩ",
-    quickDemo: "በነጻ ይሞክሩ",
-    unlockFullAccess: "ሙሉ አክሰስ ይክፈቱ — 99 ብር",
-    unlimitedAccess: "ያልተገደበ የመለማመድ እና የመፈተን እድል",
-    dashboard: "ዳሽቦርድ",
-    writtenExams: "የጽሁፍ ፈተናዎች",
-    groupDiscussion: "የቡድን ውይይት (GD)",
-    interviewPrep: "የቃለ-መጠይቅ ዝግጅት",
-    progressAnalytics: "ውጤት እና እድገት",
-    selectRole: "የሙያ ዘርፍ ይምረጡ:",
-    allRoles: "ሁሉም ሙያዎች",
-    cabinCrew: "ካቢን ክሩ (የአየር አስተናጋጅ)",
-    pilotCadet: "ፓይለት / ካዴት",
-    amtMaintenance: "አውሮፕላን ጥገና (AMT)",
-    groundOps: "የምድር አገልግሎት (Ground Ops)",
-    englishProficiency: "እንግሊዝኛ ቋንቋ ችሎታ",
-    numericalReasoning: "ሂሳባዊ እና ቁጥራዊ አስተሳሰብ",
-    verbalReasoning: "ቃላታዊ ምክንያታዊነት",
-    generalKnowledge: "የአቪዬሽን አጠቃላይ እውቀት",
-    startExam: "ፈተና ጀምር",
-    resumeExam: "ፈተና ቀጥል",
-    freePractice: "ነጻ ሙከራ",
-    unlimitedRetakes: "ያልተገደበ ድጋሚ ሙከራ",
-    passed: "አልፈዋል (PASS)",
-    failed: "ተጨማሪ ልምምድ ያስፈልጋል",
-    question: "ጥያቄ",
-    of: "ከ",
-    nextQuestion: "ቀጣይ ጥያቄ",
-    prevQuestion: "ወደ ኋላ",
-    submitExam: "ፈተናውን አስገባ",
-    examResults: "የፈተና ውጤት",
-    score: "ውጤት",
-    timeSpent: "የፈጀው ጊዜ",
-    explanation: "ዝርዝር ማብራሪያ እና ትክክለኛ መልስ",
-    retakeExam: "ፈተናውን ድጋሚ ተፈተን",
-    starFramework: "STAR የቃለ-መጠይቅ አመለሳሰል",
-    recordVoice: "ድምፅዎን ይቅረፁ",
-    stopRecord: "ቅረፃ አቁም",
-    reRecord: "ድጋሚ ቅረፅ",
-    playVoice: "ድምፅ ያዳምጡ",
-    deleteVoice: "ሰርዝ",
-    recorded: "ድምፅ ተቀርጿል",
-    paymentHeader: "በቴሌብር ክፍያ መፈጸሚያ",
-    paymentSubtitle: "99 ብር በመላክ ሙሉ አገልግሎቱን ይክፈቱ።",
-    telebirrNumber: "የንግድ አካውንት ቁጥር",
-    copyNumber: "ቁጥሩን ኮፒ አድርግ",
-    copied: "ኮፒ ተደርጓል!",
-    uploadReceipt: "የቴሌብር ደረሰኝ ፎቶ ይላኩ",
-    transactionId: "የቴሌብር ትራንዛክሽን አይዲ (TxID)",
-    submitPayment: "ደረሰኝ አስገባ",
-    verifyingPayment: "ክፍያ እየተረጋገጠ ነው...",
-    verifiedReady: "የብቃት ማረጋገጫ ሰርተፊኬት",
-    certificateClaim: "ሰርተፊኬቱን ይውሰዱ",
-    adminPanel: "አድሚን ፓነል",
-    dbSettings: "ዳታቤዝ መቼት",
-    logout: "ውጣ (Log Out)",
-    freePreview: "ነጻ ሙከራ",
-    premiumOnly: "ፕሪሚየም ያልተገደበ",
-    lifetimeAccess: "አንድ ጊዜ ተክፍሎ ለዘላለም የሚያገለግል",
-    oneTimePay: "አንድ ጊዜ 99 ብር በመክፈል ድጋሚ የመፈተን እና የድምፅ ልምምድ ያግኙ።",
-    searchPlaceholder: "ጥያቄዎችን ወይም ቃላትን ይፈልጉ...",
-    dos: "መደረግ ያለባቸው (Dos)",
-    donts: "መደረግ የሌለባቸው (Don'ts)",
-    starterPhrases: "የሚመከሩ ፕሮፌሽናል አባባሎች",
+    tagline: 'የአየር መንገድ የቅጥር ፈተና እና የቃለ-መጠይቅ ማሰልጠኛ',
+    subtitle: 'ለበረራ አስተናጋጅ፣ ለፓይለት፣ ለአውሮፕላን ጥገና (AMT) እና ለኤርፖርት አገልግሎት የተዘጋጀ የተሟላ የዝግጅት መድረክ።',
+    startPrep: 'ስልጠናውን ጀምር',
+    exploreSchools: 'የአቪዬሽን ሙያ መስኮች',
+    cabinCrew: 'የበረራ አስተናጋጅ ማሰልጠኛ',
+    cabinCrewDesc: 'የደንበኞች አገልግሎት፣ የበረራ ውስጥ ደህንነት፣ የአደጋ ጊዜ መሳሪያዎች እና የግል ገጽታ መስፈርቶች።',
+    pilotAcademy: 'የንግድ አውሮፕላን ፓይለት አካዳሚ',
+    pilotAcademyDesc: 'ኤሮዳይናሚክስ፣ አሰሳ፣ የኮክፒት መሳሪያዎች፣ የሂሳብ ዝንባሌ እና የበረራ ውሳኔ ሰጪነት።',
+    amtTitle: 'የአውሮፕላን ቴክኒሻን ጥገና (AMT)',
+    amtDesc: 'የአውሮፕላን አካል፣ ቱርቦ ኢንጅን፣ አቪዮኒክስ ሲስተሞች እና የቴክኒክ ጥገና ሂደቶች።',
+    commercialTitle: 'የኤርፖርት እና የንግድ አገልግሎቶች',
+    commercialDesc: 'የመንገደኞች አያያዝ፣ የቲኬት ቼክ-ኢን፣ የካርጎ ሎጂስቲክስ እና የራምፕ ደህንነት።',
+    practiceHub: 'የልምምድ ፈተናዎች',
+    mockExam: 'የተሟላ የጊዜ ፈተና',
+    starInterview: 'የSTAR የቃለ መጠይቅ ስልጠና',
+    groupDiscussion: 'የቡድን ውይይት ዝግጅት',
+    candidateProfile: 'የእጩ ፕሮፋይል እና ውጤት',
+    premierPlan: 'የፕሪሚየር ሙሉ ፍቃድ',
+    unlockFullAccess: 'ሁሉንም ፈተናዎች፣ የድምፅ ማብራሪያዎችን እና የማለፊያ ምስክር ወረቀት ያግኙ።',
+    telebirrPrice: '99 ብር (የአንድ ጊዜ ክፍያ)',
+    payWithTelebirr: 'በቴሌብር ይክፈሉ',
+    accountHolder: 'ቢንያም ኃይሌ (Biniyam Haile)',
+    accountNumber: '0920017478',
+    verifyPayment: 'የቴሌብር ቁጥር አረጋግጥ',
+    status: 'ሁኔታ',
+    congratulations: 'እንኳን ደስ አለዎት! ፈተናውን አልፈዋል',
+    examPassed: 'ከ 80% በላይ ውጤት አስመዝግበዋል። ለአየር መንገድ ፈተና በሚገባ ዝግጁ ሆነዋል።',
+    examFailed: 'ውጤትዎ ከማለፊያ ነጥብ በታች ነው። ማብራሪያዎችን አንብበው እንደገና ይሞክሩ።',
+    tryAgain: 'እንደገና ፈተን',
+    reviewAnswers: 'መልሶችን ከማብራሪያ ጋር እይ',
+    nextQuestion: 'ቀጣይ ጥያቄ',
+    previousQuestion: 'ወደ ኋላ',
+    submitExam: 'ፈተናውን ጨርስ',
+    timeLeft: 'የቀረ ሰዓት'
+  },
+  or: {
+    tagline: 'Qophii Qormaata fi Gaaffii fi Deebii Daandii Qilleensaa',
+    subtitle: 'Hojjattoota keessummeessaa xiyyaaraa, paayileetii, suphaa xiyyaaraa fi tajaajila buufata xiyyaaraatiif kan qophaa’e.',
+    startPrep: 'Qophii Jalqabi',
+    exploreSchools: 'Kallattiiwwan Hojii Aviyeeshinii',
+    cabinCrew: 'Manni Barumsa Hojjattoota Keessummeessituu',
+    cabinCrewDesc: 'Tajaajila maamilaa, eegumsa nageenya xiyyaaraa, meeshaalee balaa fi qulqullina dhuunfaa.',
+    pilotAcademy: 'Akkaadaamii Paayileetii',
+    pilotAcademyDesc: 'Eeroodaayinaamiksii, daandii xiyyaaraa, meeshaalee kokpiitii fi murtee ariifachiisaa.',
+    amtTitle: 'Tekinishiyaana Suphaa Xiyyaaraa (AMT)',
+    amtDesc: 'Qaama xiyyaaraa, motora, sirna elektirooniksii fi adeemsa suphaa.',
+    commercialTitle: 'Tajaajila Buufata Xiyyaaraa',
+    commercialDesc: 'Simannaa imaltootaa, tikeettii, loojistiksii kaargoo fi nageenya lafaa.',
+    practiceHub: 'Qormaata Shaakalaa',
+    mockExam: 'Qormaata Yeroo Eeggate',
+    starInterview: 'Qophii Gaaffii fi Deebii STAR',
+    groupDiscussion: 'Mariyannaa Garee',
+    candidateProfile: 'Piroofayilii fi Adeemsa',
+    premierPlan: 'Eeyyama Guutuu Piriimiyerii',
+    unlockFullAccess: 'Gaaffilee hunda, ibsa sagalee fi waraqaa ragaa argadhaa.',
+    telebirrPrice: 'Qarshii 99 (Kaffaltii yeroo tokkoo)',
+    payWithTelebirr: 'Telebirriin Kaffalaa',
+    accountHolder: 'Biniyam Haile',
+    accountNumber: '0920017478',
+    verifyPayment: 'Kaffaltii Mirkaneessi',
+    status: 'Haala',
+    congratulations: 'Baga Gammaddan! Qormaata Dabaraniittu',
+    examPassed: 'Qabxii 80% ol galmeessitaniittu. Qormaataaf qophii ta’uu keessan mirkaneessitanii jirtu.',
+    examFailed: 'Qabxiin keessan gadi aanaadha. Ibsa dubbisaatii irra deebi\'aa shaakalaa.',
+    tryAgain: 'Irra Deebi\'ii Yaali',
+    reviewAnswers: 'Deebiiwwan Ilaali',
+    nextQuestion: 'Gaaffii Itti Aanu',
+    previousQuestion: 'Duraa',
+    submitExam: 'Qormaata Xumuri',
+    timeLeft: 'Yeroo Hafe'
+  },
+  ti: {
+    tagline: 'ናይ ነፈርቲ ፈተናን ቃለ-መሕትትን ምድላው ኣካዳሚ',
+    subtitle: 'ንኣተኣናገድቲ በረራ፣ ፓይለታት፣ ቴክኒሻናት ጽገና ነፋሪትን ናይ መዕርፎ ነፈርቲ ኣገልግሎትን ዝተዳለወ።',
+    startPrep: 'ምድላው ጀምር',
+    exploreSchools: 'ናይ ኣቪየሽን ሞያታት',
+    cabinCrew: 'ናይ በረራ ኣተኣናገድቲ ቤት ትምህርቲ',
+    cabinCrewDesc: 'ናይ ዓማዊል ኣገልግሎት፣ ድሕንነት በረራ፣ መሳርሒታት ሓደጋን ስነ-ስርዓትን።',
+    pilotAcademy: 'ናይ ንግዲ ፓይለት ኣካዳሚ',
+    pilotAcademyDesc: 'ኤሮዳይናሚክስ፣ ናቪጌሽን፣ ናይ ኮክፒት መሳርሒታትን ናይ ውሳነ ብቕዓትን።',
+    amtTitle: 'ናይ ነፋሪት ጽገና ቴክኒሻን (AMT)',
+    amtDesc: 'ኣካል ነፋሪት፣ ሞተር፣ ኣቪዮኒክስ ሲስተማትን ናይ ቴክኒክ ጽገና መስርሓትን።',
+    commercialTitle: 'ናይ መዕርፎ ነፈርቲ ኣገልግሎት',
+    commercialDesc: 'ምቕባል ተጓዓዝቲ፣ ቸክ-ኢን፣ ካርጎ ሎጂስቲክስን ድሕንነት ራምፕን።',
+    practiceHub: 'ናይ ልምምድ ፈተናታት',
+    mockExam: 'ብግዜ ዝተቐየደ ፈተና',
+    starInterview: 'ናይ STAR ቃለ-መሕትት ምድላው',
+    groupDiscussion: 'ናይ ጉጅለ ምይይጥ',
+    candidateProfile: 'ናይ ሕጹይ ፕሮፋይል',
+    premierPlan: 'ናይ ፕሪሚየር ፍቓድ',
+    unlockFullAccess: 'ኩሎም ሕቶታት፣ ናይ ድምጺ መብርህን ምስክር ወረቐትን ርኸቡ።',
+    telebirrPrice: '99 ቅርሺ (ሓደ ግዜ ዝኽፈል)',
+    payWithTelebirr: 'ብቴሌብር ክፈሉ',
+    accountHolder: 'ቢንያም ኃይሌ (Biniyam Haile)',
+    accountNumber: '0920017478',
+    verifyPayment: 'ክፍሊት ኣረጋግጽ',
+    status: 'ኩነታት',
+    congratulations: 'እንቋዕ ሓጎሰኩም! ሓሊፍኩም ኣለኹም',
+    examPassed: 'ካብ 80% ንላዕሊ ኣመዝጊብኩም ኣለኹም። ንፈተና ብቑዕ ምዃንኩም ኣረጋጊጽኩም ኣለኹም።',
+    examFailed: 'ውጽኢትኩም ትሕቲ መሕለፊ ነጥቢ እዩ። መብርሂታት ኣንቢብኩም ደጊምኩም ፈትኑ።',
+    tryAgain: 'ደጊምካ ፈትን',
+    reviewAnswers: 'መልስታት ርአ',
+    nextQuestion: 'ቀጻሊ ሕቶ',
+    previousQuestion: 'ንድሕሪት',
+    submitExam: 'ፈተና ወድእ',
+    timeLeft: 'ዝተረፈ ግዜ'
   }
 };

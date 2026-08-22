@@ -1,30 +1,27 @@
-import React, { Component, ReactNode, ErrorInfo } from 'react';
-import { Shield, RefreshCw } from 'lucide-react';
+import React, { Component, ErrorInfo, ReactNode } from 'react';
+import { AlertTriangle, RotateCcw } from 'lucide-react';
 
-interface ErrorBoundaryProps {
+interface Props {
   children: ReactNode;
 }
 
-interface ErrorBoundaryState {
+interface State {
   hasError: boolean;
   error: Error | null;
 }
 
-export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
-  constructor(props: ErrorBoundaryProps) {
-    super(props);
-    this.state = {
-      hasError: false,
-      error: null,
-    };
-  }
+export class ErrorBoundary extends Component<Props, State> {
+  public state: State = {
+    hasError: false,
+    error: null
+  };
 
-  public static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+  public static getDerivedStateFromError(error: Error): State {
     return { hasError: true, error };
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('SkyPrep Application Caught Render Error:', error, errorInfo);
+    console.error('ErrorBoundary caught error:', error, errorInfo);
   }
 
   private handleReset = () => {
@@ -32,56 +29,25 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     window.location.reload();
   };
 
-  private handleClearCacheAndReset = () => {
-    try {
-      sessionStorage.clear();
-    } catch (_) {}
-    this.setState({ hasError: false, error: null });
-    window.location.reload();
-  };
-
-  public render(): ReactNode {
+  public render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen bg-slate-900 text-white flex items-center justify-center p-4">
-          <div className="max-w-md w-full bg-slate-800 rounded-3xl p-6 sm:p-8 border border-slate-700 shadow-2xl text-center space-y-5 animate-fadeIn">
-            <div className="w-16 h-16 bg-amber-500/10 border border-amber-500/30 rounded-2xl mx-auto flex items-center justify-center">
-              <Shield className="w-8 h-8 text-[#F2B134]" />
+        <div className="min-h-screen bg-slate-950 text-white flex items-center justify-center p-4">
+          <div className="max-w-md w-full p-8 rounded-3xl bg-slate-900 border border-slate-800 text-center space-y-4 shadow-2xl">
+            <div className="w-12 h-12 rounded-full bg-amber-500/20 text-amber-400 mx-auto flex items-center justify-center">
+              <AlertTriangle className="w-6 h-6" />
             </div>
-
-            <div className="space-y-2">
-              <h2 className="text-xl font-black text-white tracking-tight">
-                SkyPrep Safety Recovery
-              </h2>
-              <p className="text-xs text-slate-300">
-                A temporary rendering glitch occurred. Your candidate profile and progress data remain safely saved.
-              </p>
-            </div>
-
-            {this.state.error?.message && (
-              <div className="bg-slate-900/80 p-3 rounded-xl border border-slate-700 text-left">
-                <p className="text-[11px] font-mono text-amber-300 break-words line-clamp-3">
-                  {this.state.error.message}
-                </p>
-              </div>
-            )}
-
-            <div className="pt-2 flex flex-col gap-2.5">
-              <button
-                onClick={this.handleReset}
-                className="w-full bg-[#2E86FF] hover:bg-blue-600 text-white font-black text-xs py-3.5 px-4 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2"
-              >
-                <RefreshCw className="w-4 h-4" />
-                <span>Reload Application</span>
-              </button>
-
-              <button
-                onClick={this.handleClearCacheAndReset}
-                className="w-full bg-slate-700 hover:bg-slate-600 text-slate-200 font-bold text-xs py-3 px-4 rounded-xl transition-all"
-              >
-                Reset Session Cache & Return
-              </button>
-            </div>
+            <h2 className="text-xl font-black">Something went wrong</h2>
+            <p className="text-xs text-slate-400">
+              {this.state.error?.message || 'An unexpected runtime exception occurred.'}
+            </p>
+            <button
+              onClick={this.handleReset}
+              className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs flex items-center justify-center gap-2 mx-auto transition"
+            >
+              <RotateCcw className="w-4 h-4" />
+              <span>Reload Application</span>
+            </button>
           </div>
         </div>
       );

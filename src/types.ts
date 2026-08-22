@@ -1,350 +1,137 @@
-export type ExamCategory = 
-  | 'English' 
-  | 'Numerical Reasoning' 
-  | 'Verbal Reasoning' 
-  | 'General Knowledge' 
-  | 'Technical Aptitude' 
-  | 'Aviation Safety & Regulations' 
-  | 'Customer & Flight Operations'
-  | 'Situational Judgment (SJT)'
-  | 'English Vocabulary & Synonyms'
-  | 'Grammar & Sentence Correction'
-  | 'Reading Comprehension';
+export type Language = 'en' | 'am' | 'or' | 'ti';
 
-export type AviationRole = 'Cabin Crew' | 'Pilot / Cadet' | 'Aircraft Maintenance (AMT)' | 'Ground Operations' | 'All';
+export type AviationRole = 'cabin_crew' | 'pilot' | 'amt' | 'commercial';
 
-export type TrainingSchool = 
-  | 'CABIN CREW TRAINING SCHOOL'
-  | 'PILOT TRAINING SCHOOL'
-  | 'AIRCRAFT MAINTENANCE TECHNICIAN TRAINING SCHOOL'
-  | 'COMMERCIAL AND GROUND SERVICE TRAINING SCHOOL';
-
-export interface TrainingSchoolOption {
-  id: TrainingSchool;
-  name: string;
-  amharicName: string;
-  role: AviationRole;
-  programs: string[];
-  disabled?: boolean;
-}
-
-export const TRAINING_SCHOOLS_DATA: TrainingSchoolOption[] = [
-  {
-    id: 'CABIN CREW TRAINING SCHOOL',
-    name: 'Cabin Crew Training School',
-    amharicName: 'የበረራ አስተናጋጅ ስልጠና ትምህርት ቤት',
-    role: 'Cabin Crew',
-    programs: [
-      'CABIN CREW TRAINEE (AIRLINE-SPONSORED)'
-    ]
-  },
-  {
-    id: 'PILOT TRAINING SCHOOL',
-    name: 'Pilot Training School',
-    amharicName: 'የአብራሪዎች ስልጠና ትምህርት ቤት',
-    role: 'Pilot / Cadet',
-    programs: [
-      'TRAINEE PILOT (AIRLINE-SPONSORED)'
-    ]
-  },
-  {
-    id: 'AIRCRAFT MAINTENANCE TECHNICIAN TRAINING SCHOOL',
-    name: 'Aircraft Maintenance Technician Training School',
-    amharicName: 'የአውሮፕላን ጥገና ቴክኒሻን ስልጠና ትምህርት ቤት',
-    role: 'Aircraft Maintenance (AMT)',
-    programs: [
-      'A/C MECHANIC',
-      'A/C MAINTENANCE TECHNICIAN',
-      'A/C POWERPLANT TECHNICIAN',
-      'A/C STRUCTURE TECHNICIAN',
-      'A/C AVIONICS TECHNICIAN',
-      'A/C CABIN MAINTENANCE',
-      'A/C AIRFRAME TECHNICIAN'
-    ]
-  },
-  {
-    id: 'COMMERCIAL AND GROUND SERVICE TRAINING SCHOOL',
-    name: 'Commercial and Ground Service Training School',
-    amharicName: 'የንግድ እና የመሬት ላይ አገልግሎት ስልጠና ትምህርት ቤት',
-    role: 'Ground Operations',
-    disabled: false,
-    programs: [
-      'PASSENGER HANDLING & CUSTOMER SERVICE',
-      'RAMP OPERATIONS & BAGGAGE HANDLING',
-      'FLIGHT DISPATCH & FLIGHT OPERATIONS',
-      'CARGO OPERATIONS & LOGISTICS',
-      'TICKETING, RESERVATIONS & SALES',
-      'AIRPORT SECURITY & GROUND SUPPORT'
-    ]
-  }
-];
-
-export interface AviationVacancyItem {
-  id: string;
-  name: string;
-  amharicName?: string;
-  schoolId: TrainingSchool;
-  schoolName: string;
-  role: AviationRole;
-  badge: string;
-  iconType: 'plane' | 'users' | 'wrench' | 'headphones';
-}
-
-export const ALL_AVIATION_VACANCIES: AviationVacancyItem[] = [
-  {
-    id: 'CABIN CREW TRAINEE (AIRLINE-SPONSORED)',
-    name: 'Cabin Crew Trainee (Airline-Sponsored)',
-    amharicName: 'የበረራ አስተናጋጅ ተለማማጅ (በአየር መንገድ ወጪ)',
-    schoolId: 'CABIN CREW TRAINING SCHOOL',
-    schoolName: 'Cabin Crew Training School',
-    role: 'Cabin Crew',
-    badge: 'In-Flight Crew',
-    iconType: 'users',
-  },
-  {
-    id: 'TRAINEE PILOT (AIRLINE-SPONSORED)',
-    name: 'Trainee Pilot (Airline-Sponsored)',
-    amharicName: 'ተለማማጅ ፓይለት / አብራሪ (በአየር መንገድ ወጪ)',
-    schoolId: 'PILOT TRAINING SCHOOL',
-    schoolName: 'Pilot Training School',
-    role: 'Pilot / Cadet',
-    badge: 'Flight Deck',
-    iconType: 'plane',
-  },
-  {
-    id: 'A/C MECHANIC',
-    name: 'A/C Mechanic',
-    amharicName: 'የአውሮፕላን መካኒክ',
-    schoolId: 'AIRCRAFT MAINTENANCE TECHNICIAN TRAINING SCHOOL',
-    schoolName: 'Aircraft Maintenance Technician Training School',
-    role: 'Aircraft Maintenance (AMT)',
-    badge: 'AMT School',
-    iconType: 'wrench',
-  },
-  {
-    id: 'A/C MAINTENANCE TECHNICIAN',
-    name: 'A/C Maintenance Technician',
-    amharicName: 'የአውሮፕላን ጥገና ቴክኒሻን',
-    schoolId: 'AIRCRAFT MAINTENANCE TECHNICIAN TRAINING SCHOOL',
-    schoolName: 'Aircraft Maintenance Technician Training School',
-    role: 'Aircraft Maintenance (AMT)',
-    badge: 'AMT School',
-    iconType: 'wrench',
-  },
-  {
-    id: 'A/C POWERPLANT TECHNICIAN',
-    name: 'A/C Powerplant Technician',
-    amharicName: 'የአውሮፕላን ሞተር ቴክኒሻን',
-    schoolId: 'AIRCRAFT MAINTENANCE TECHNICIAN TRAINING SCHOOL',
-    schoolName: 'Aircraft Maintenance Technician Training School',
-    role: 'Aircraft Maintenance (AMT)',
-    badge: 'AMT School',
-    iconType: 'wrench',
-  },
-  {
-    id: 'A/C STRUCTURE TECHNICIAN',
-    name: 'A/C Structure Technician',
-    amharicName: 'የአውሮፕላን ስትራክቸር ቴክኒሻን',
-    schoolId: 'AIRCRAFT MAINTENANCE TECHNICIAN TRAINING SCHOOL',
-    schoolName: 'Aircraft Maintenance Technician Training School',
-    role: 'Aircraft Maintenance (AMT)',
-    badge: 'AMT School',
-    iconType: 'wrench',
-  },
-  {
-    id: 'A/C AVIONICS TECHNICIAN',
-    name: 'A/C Avionics Technician',
-    amharicName: 'የአውሮፕላን አቪዮኒክስ ቴክኒሻን',
-    schoolId: 'AIRCRAFT MAINTENANCE TECHNICIAN TRAINING SCHOOL',
-    schoolName: 'Aircraft Maintenance Technician Training School',
-    role: 'Aircraft Maintenance (AMT)',
-    badge: 'AMT School',
-    iconType: 'wrench',
-  },
-  {
-    id: 'A/C CABIN MAINTENANCE',
-    name: 'A/C Cabin Maintenance',
-    amharicName: 'የካቢን ጥገና ቴክኒሻን',
-    schoolId: 'AIRCRAFT MAINTENANCE TECHNICIAN TRAINING SCHOOL',
-    schoolName: 'Aircraft Maintenance Technician Training School',
-    role: 'Aircraft Maintenance (AMT)',
-    badge: 'AMT School',
-    iconType: 'wrench',
-  },
-  {
-    id: 'A/C AIRFRAME TECHNICIAN',
-    name: 'A/C Airframe Technician',
-    amharicName: 'የኤርፍሬም ቴክኒሻን',
-    schoolId: 'AIRCRAFT MAINTENANCE TECHNICIAN TRAINING SCHOOL',
-    schoolName: 'Aircraft Maintenance Technician Training School',
-    role: 'Aircraft Maintenance (AMT)',
-    badge: 'AMT School',
-    iconType: 'wrench',
-  },
-  {
-    id: 'PASSENGER HANDLING & CUSTOMER SERVICE',
-    name: 'Passenger Handling & Customer Service',
-    amharicName: 'የመንገደኞች አቀባበል እና የደንበኞች አገልግሎት',
-    schoolId: 'COMMERCIAL AND GROUND SERVICE TRAINING SCHOOL',
-    schoolName: 'Commercial and Ground Service Training School',
-    role: 'Ground Operations',
-    badge: 'Ground Services',
-    iconType: 'headphones',
-  },
-  {
-    id: 'RAMP OPERATIONS & BAGGAGE HANDLING',
-    name: 'Ramp Operations & Baggage Handling',
-    amharicName: 'የራምፕ ስራዎች እና የሻንጣ አያያዝ',
-    schoolId: 'COMMERCIAL AND GROUND SERVICE TRAINING SCHOOL',
-    schoolName: 'Commercial and Ground Service Training School',
-    role: 'Ground Operations',
-    badge: 'Ground Services',
-    iconType: 'headphones',
-  },
-  {
-    id: 'FLIGHT DISPATCH & FLIGHT OPERATIONS',
-    name: 'Flight Dispatch & Flight Operations',
-    amharicName: 'የበረራ መረጃ እና የበረራ ስራዎች',
-    schoolId: 'COMMERCIAL AND GROUND SERVICE TRAINING SCHOOL',
-    schoolName: 'Commercial and Ground Service Training School',
-    role: 'Ground Operations',
-    badge: 'Ground Services',
-    iconType: 'headphones',
-  },
-  {
-    id: 'CARGO OPERATIONS & LOGISTICS',
-    name: 'Cargo Operations & Logistics',
-    amharicName: 'የካርጎ ስራዎች እና ሎጅስቲክስ',
-    schoolId: 'COMMERCIAL AND GROUND SERVICE TRAINING SCHOOL',
-    schoolName: 'Commercial and Ground Service Training School',
-    role: 'Ground Operations',
-    badge: 'Ground Services',
-    iconType: 'headphones',
-  },
-  {
-    id: 'TICKETING, RESERVATIONS & SALES',
-    name: 'Ticketing, Reservations & Sales',
-    amharicName: 'ቲኬት፣ ቦታ ማስያዝ እና ሽያጭ',
-    schoolId: 'COMMERCIAL AND GROUND SERVICE TRAINING SCHOOL',
-    schoolName: 'Commercial and Ground Service Training School',
-    role: 'Ground Operations',
-    badge: 'Ground Services',
-    iconType: 'headphones',
-  },
-  {
-    id: 'AIRPORT SECURITY & GROUND SUPPORT',
-    name: 'Airport Security & Ground Support',
-    amharicName: 'የአውሮፕላን ማረፊያ ደህንነት እና የመሬት ድጋፍ',
-    schoolId: 'COMMERCIAL AND GROUND SERVICE TRAINING SCHOOL',
-    schoolName: 'Commercial and Ground Service Training School',
-    role: 'Ground Operations',
-    badge: 'Ground Services',
-    iconType: 'headphones',
-  }
-];
-
-export type Language = 'en' | 'am';
+export type TrainingSchool = 'cabin_crew' | 'pilot' | 'amt' | 'commercial';
 
 export interface UserProfile {
   id: string;
-  phone_number: string;
-  password?: string;
-  full_name?: string;
-  training_school?: TrainingSchool | string;
-  training_program?: string;
-  department?: string;
-  field?: string;
-  stage?: string;
+  name: string;
+  phone: string;
   email?: string;
-  is_paid: boolean;
-  paid_at?: string | null;
-  interested_to_upgrade?: boolean;
-  upgrade_interest_at?: string;
-  free_exam_used: boolean;
-  selected_role?: AviationRole;
-  created_at: string;
+  role: AviationRole;
+  school: TrainingSchool;
+  isPremier: boolean;
+  premierExpiresAt?: string;
+  targetAirline: string;
+  candidateNumber: string;
+  completedExams: number;
+  averageScore: number;
+  streakDays: number;
+  lastActive: string;
+  avatarSeed?: string;
+  created_at?: string;
 }
 
 export interface ExamQuestion {
   id: string;
-  category: ExamCategory;
-  role?: AviationRole;
-  training_school?: TrainingSchool | string;
-  training_program?: string;
-  question: string;
-  amharicQuestion?: string;
-  options: string[];
-  amharicOptions?: string[];
-  correctIndex: number;
-  explanation: string;
-  amharicExplanation?: string;
+  school: TrainingSchool;
+  category: 'aviation_knowledge' | 'english_communication' | 'situational_judgment' | 'technical_aptitude' | 'safety_security';
+  question: {
+    en: string;
+    am: string;
+    or: string;
+    ti: string;
+  };
+  options: {
+    en: string[];
+    am: string[];
+    or: string[];
+    ti: string[];
+  };
+  correctAnswer: number;
+  explanation: {
+    en: string;
+    am: string;
+    or: string;
+    ti: string;
+  };
+  audioText?: string;
 }
 
 export interface ExamAttempt {
   id: string;
-  user_id: string;
-  category: ExamCategory;
-  role?: AviationRole;
+  userId: string;
+  school: TrainingSchool;
   score: number;
-  total_questions: number;
-  time_taken_seconds: number;
-  completed_at: string;
-}
-
-export interface GroupDiscussionTopic {
-  id: string;
-  role?: AviationRole;
-  training_school?: TrainingSchool | string;
-  title: string;
-  amharicTitle?: string;
-  scenario: string;
-  amharicScenario?: string;
-  evaluatorCriteria: string[];
-  dos: string[];
-  donts: string[];
-  starterPhrases: string[];
-}
-
-export interface StarFramework {
-  situation: string;
-  task: string;
-  action: string;
-  result: string;
+  totalQuestions: number;
+  percentage: number;
+  passed: boolean;
+  timeSpentSeconds: number;
+  date: string;
+  categoryBreakdown: Record<string, { correct: number; total: number }>;
 }
 
 export interface InterviewQuestion {
   id: string;
-  role?: AviationRole;
-  training_school?: TrainingSchool | string;
-  question: string;
-  amharicQuestion?: string;
-  category: 'Aviation Knowledge' | 'Behavioral & Scenario' | 'Customer Service' | 'Leadership & Pressure';
-  isFreePreview: boolean;
-  starFramework: StarFramework;
-  keyPhrases: string[];
+  school: TrainingSchool;
+  title: {
+    en: string;
+    am: string;
+    or: string;
+    ti: string;
+  };
+  question: {
+    en: string;
+    am: string;
+    or: string;
+    ti: string;
+  };
+  competency: string;
+  starFramework: {
+    situation: string;
+    task: string;
+    action: string;
+    result: string;
+  };
+  bestModelAnswer: {
+    en: string;
+    am: string;
+    or: string;
+    ti: string;
+  };
+  evaluatorChecklist: string[];
+  audioScript?: string;
 }
 
-export interface PaymentSubmission {
+export interface GroupDiscussionTopic {
   id: string;
-  user_id: string;
-  telebirr_transaction_id: string;
-  receipt_image_url: string;
-  amount_claimed: number;
-  status: 'pending' | 'verified' | 'rejected' | 'duplicate';
-  submitted_at: string;
-  verified_at?: string | null;
-  rejection_reason?: string | null;
+  school: TrainingSchool;
+  title: {
+    en: string;
+    am: string;
+    or: string;
+    ti: string;
+  };
+  scenario: {
+    en: string;
+    am: string;
+    or: string;
+    ti: string;
+  };
+  recommendedRoles: string[];
+  keyStrategies: string[];
+  winningStatements: {
+    en: string[];
+    am: string[];
+    or: string[];
+    ti: string[];
+  };
+  pitfallsToAvoid: string[];
 }
 
-export interface AudioRecording {
-  questionId: string;
-  audioUrl: string;
-  recordedAt: string;
-  durationSeconds: number;
-}
-
-export interface SupabaseConfig {
-  url: string;
-  anonKey: string;
-  merchantNumber: string;
+export interface TelebirrTransaction {
+  id: string;
+  userId: string;
+  userName: string;
+  userPhone: string;
+  transactionId: string;
+  amount: number;
+  receiverPhone: string;
+  receiverName: string;
+  screenshotUrl?: string;
+  status: 'pending' | 'approved' | 'rejected';
+  submittedAt: string;
+  verifiedAt?: string;
+  notes?: string;
 }

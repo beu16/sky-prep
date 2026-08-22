@@ -1,34 +1,24 @@
-// Explicit Vite Asset Imports for 100% Reliable Asset Loading
-import cabinCrewSvc from './images/intl_cabin_crew_svc_1787160538797.jpg';
-import pilotCockpit from './images/intl_pilot_cockpit_1787160561614.jpg';
-import academyGrad from './images/intl_academy_grad_1787160582785.jpg';
-import terminalWalk from './images/intl_terminal_walk_1787160597599.jpg';
-import globalHero from './images/global_aviation_hero_1787159402032.jpg';
-import flightSimulator from './images/flight_simulator_1786443425493.jpg';
-import cabinCrewTeam from './images/cabin_crew_team_1786443414204.jpg';
-import groupDiscussionImg from './images/group_discussion_1786443106727.jpg';
-import pilotsBriefing from './images/pilots_briefing_1786528412510.jpg';
-import airlinerTakeoff from './images/airliner_takeoff_1786528424590.jpg';
-import cabinCrewGeneral from './images/cabin_crew_1786443078115.jpg';
-import pilotCadet from './images/pilot_cadet_1786443364864.jpg';
-import airlineTerminal from './images/airline_terminal_1786443402209.jpg';
-import aircraftMaintenance from './images/aircraft_maintenance_1786443378487.jpg';
-import groundOps from './images/ground_operations_1786443390284.jpg';
-
+// Curated, resilient high-resolution Aviation imagery
 export const IMAGES = {
-  cabinCrewSvc,
-  pilotCockpit,
-  academyGrad,
-  terminalWalk,
-  globalHero,
-  flightSimulator,
-  cabinCrewTeam,
-  groupDiscussionImg,
-  pilotsBriefing,
-  airlinerTakeoff,
-  cabinCrewGeneral,
-  pilotCadet,
-  airlineTerminal,
-  aircraftMaintenance,
-  groundOps,
+  globalHero: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=1600&auto=format&fit=crop',
+  cabinCrewSvc: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=1000&auto=format&fit=crop',
+  pilotCockpit: 'https://images.unsplash.com/photo-1508873696983-2df5293cb32f?q=80&w=1000&auto=format&fit=crop',
+  amtMaintenance: 'https://images.unsplash.com/photo-1583863788434-e58a36330cf0?q=80&w=1000&auto=format&fit=crop',
+  groundOps: 'https://images.unsplash.com/photo-1529074963764-98f45c47344b?q=80&w=1000&auto=format&fit=crop',
+  terminalWalk: 'https://images.unsplash.com/photo-1530521954074-e64f6810b32d?q=80&w=1000&auto=format&fit=crop',
+  academyGrad: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=1000&auto=format&fit=crop',
+  flightSimulator: 'https://images.unsplash.com/photo-1519074069444-1ba4ea16e917?q=80&w=1000&auto=format&fit=crop',
+  groupDiscussion: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=1000&auto=format&fit=crop',
+  pilotsBriefing: 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?q=80&w=1000&auto=format&fit=crop',
+  cabinCrewTeam: 'https://images.unsplash.com/photo-1569154941061-e231b4725ef1?q=80&w=1000&auto=format&fit=crop',
+  airlineTerminal: 'https://images.unsplash.com/photo-1473862170180-84427c485aca?q=80&w=1000&auto=format&fit=crop',
+  pilotCadet: 'https://images.unsplash.com/photo-1517649763962-0c623266ddc0?q=80&w=1000&auto=format&fit=crop',
+  cabinCrewGeneral: 'https://images.unsplash.com/photo-1577962917302-cd874c4e31d2?q=80&w=1000&auto=format&fit=crop'
+};
+
+export const SCHOOL_IMAGES: Record<string, string> = {
+  cabin_crew: IMAGES.cabinCrewSvc,
+  pilot: IMAGES.pilotCockpit,
+  amt: IMAGES.amtMaintenance,
+  commercial: IMAGES.groundOps
 };
